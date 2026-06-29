@@ -37,3 +37,15 @@ public/learn.html
 public/mispriced.html
 public/accuracy.html
 public/embed.html
+
+# Local-only working files — never publish to this (now PUBLIC) repo
+.claude/
+.design-sync/
+.ds-sync/
+ds-bundle/
+lab/
+brag-output/
+card-mock.html
+Pretext design exploration/
+docs/business/
+tasks/
