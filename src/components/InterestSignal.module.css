@@ -1,0 +1,52 @@
+/* A wrapping "receipts" line under a quiet top rule. Normal inline flow → it wraps to
+   as many lines as it needs (1 when it fits, 2+ on a narrow phone) and NEVER clamps or
+   cuts off, so a long crowd read or an extra signal stays fully readable. The old
+   -webkit-line-clamp:2 ellipsised the third line away on small screens — that's gone. */
+.row {
+  margin-top: var(--s-1);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+/* Short signals never split mid-phrase, so "▲ rising" or "$5.1M in play" stays whole;
+   the line only breaks BETWEEN them. The verbose crowd read (.read) is intentionally
+   NOT in this list — a long favored name wraps to the next line rather than overflowing
+   the card, which is exactly the "use a second row if it needs one" the brief asks for. */
+.strong,
+.up,
+.down,
+.gap {
+  white-space: nowrap;
+}
+
+.strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* The separators carry the inter-item spacing in the inline flow. */
+.sep {
+  margin: 0 0.35em;
+  color: var(--border-strong);
+}
+
+.up {
+  color: var(--up);
+  font-weight: 600;
+}
+
+.down {
+  color: var(--down);
+  font-weight: 600;
+}
+
+/* Cross-market divergence — a small editorial flag, not a number dump */
+.gap {
+  color: var(--accent);
+  font-weight: 650;
+}

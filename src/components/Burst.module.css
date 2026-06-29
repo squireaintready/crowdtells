@@ -1,0 +1,65 @@
+.burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.spark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--spark);
+  opacity: 0;
+  animation: sparkFly 540ms cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+@keyframes sparkFly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-1px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-17px) scale(0.3);
+  }
+}
+
+.accent {
+  --spark: var(--accent);
+}
+.gold {
+  --spark: #cda23f;
+}
+.rose {
+  --spark: var(--down);
+}
+
+/* Icon pop — a spring scale for the acted-on glyph (heart, upvote, bookmark, lock mark). Replayed
+   by keying the element on each action so the animation re-fires. */
+.pop {
+  animation: iconPop 460ms cubic-bezier(0.2, 0.9, 0.25, 1.45) both;
+  transform-origin: center;
+}
+@keyframes iconPop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.55);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burst {
+    display: none;
+  }
+  .pop {
+    animation: none;
+  }
+}
+

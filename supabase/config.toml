@@ -1,0 +1,30 @@
+# Supabase project config.
+#
+# Why this file exists: it PERSISTS the per-function deploy settings below. Without
+# it, `verify_jwt` defaults to ON and must be turned off with `--no-verify-jwt` on
+# EVERY deploy — a plain `supabase functions deploy <name>` silently re-enables
+# Supabase's platform JWT gate and breaks the hooks (the gate rejects the inbound
+# POST before our own auth check runs). That exact slip produced empty "{}" errors
+# on magic-link sign-in, then "email rate limit exceeded" from the retries.
+#
+# With this committed, a flagless redeploy stays correct; the CLI flag is now just
+# belt-and-suspenders.
+project_id = "tywaueceynslsyvxkgdl"
+
+# Supabase Auth "Send Email" hook. Authenticates with its OWN Standard-Webhooks
+# HMAC signature (verified inside the function), not a Supabase JWT — so the
+# platform JWT gate must be off or the hook POST never reaches our code.
+[functions.auth-email]
+verify_jwt = false
+
+# Newsletter double-opt-in webhook. Guarded by our own x-confirm-secret header,
+# not a JWT — same reasoning as above.
+[functions.send-confirm]
+verify_jwt = false
+
+# RFC 8058 one-click List-Unsubscribe endpoint. Public by design: the per-recipient
+# unsubscribe token in the URL is the only credential (the same token the existing
+# anon RPCs already accept), so the platform JWT gate must be off for a mailbox
+# provider's unauthenticated POST to reach it.
+[functions.unsubscribe]
+verify_jwt = false

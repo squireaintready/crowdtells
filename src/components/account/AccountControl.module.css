@@ -1,0 +1,73 @@
+.trigger {
+  position: relative; /* positioning context for the level chip's mobile corner badge */
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  font-weight: 650;
+  max-width: 180px;
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+
+.trigger:hover {
+  border-color: var(--text-mute);
+  color: var(--text);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+/* Phone, signed in: show JUST the avatar (a 44px ring matching the search + theme
+ * controls). The display name is what widened the pill enough to clash with the
+ * collapsed wordmark in the top row — dropping it is the market standard (NYT /
+ * Apple News: avatar-only, tap → menu). Signed out keeps the short "Sign in" text.
+ * The button's aria-label still carries the name, so it stays announced. */
+@media (max-width: 560px) {
+  .signedIn {
+    width: 44px;
+    height: 44px;
+    max-width: none;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+  .signedIn .label {
+    display: none;
+  }
+  .signedIn .avatar,
+  .signedIn .dot {
+    width: 28px;
+    height: 28px;
+  }
+  .signedIn .dot {
+    font-size: 0.9rem;
+  }
+}

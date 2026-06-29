@@ -1,0 +1,193 @@
+.list {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.claim {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* A lead label before a claim — the outlet name, for the perspectives (fact/opinion) poll. */
+.lead {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-mute);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 5px 12px;
+  line-height: 1.3;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.choice:hover:not(:disabled) {
+  border-color: var(--text-mute);
+}
+
+.choice:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* The chip's label + tally, wrapped so the whole content springs as one on a fresh
+   pick (the wrapper is re-keyed to replay the pop). Reproduces the chip's own gap so
+   the spacing is unchanged. */
+.chipInner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.n {
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-mute);
+}
+
+/* Selected state tints the chip to its meaning. */
+.picked.accurate {
+  border-color: var(--up);
+  background: var(--up-tint);
+  color: var(--up);
+}
+.picked.unsure {
+  border-color: var(--text-mute);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.picked.inaccurate {
+  border-color: var(--down);
+  background: var(--down-tint);
+  color: var(--down);
+}
+/* Fact / opinion (perspectives) — a non-judgmental split: ink for the grounded "fact",
+   an editorial purple for "opinion". Neither reads as right/wrong. */
+.picked.fact {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+.picked.opinion {
+  border-color: var(--polymarket);
+  background: color-mix(in srgb, var(--polymarket) 12%, transparent);
+  color: var(--polymarket);
+}
+.picked .n {
+  color: inherit;
+}
+
+/* Fact / opinion split — a clean editorial bar. A hairline frame on surface-2 so the
+   segments read as a measured whole; a thin seam between segments keeps adjacent fills
+   legible from one another. */
+.bar {
+  display: flex;
+  height: 9px;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  /* The bar only mounts once the reader has voted, so this plays on the secret-ballot
+     reveal — a small payoff for weighing in. */
+  animation: pollReveal var(--t) ease both;
+}
+@keyframes pollReveal {
+  from {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+  }
+}
+
+.seg {
+  display: block;
+  height: 100%;
+}
+.seg + .seg {
+  border-left: 1px solid var(--surface);
+}
+.seg.accurate {
+  background: var(--up);
+}
+.seg.unsure {
+  background: var(--text-mute);
+}
+.seg.inaccurate {
+  background: var(--down);
+}
+.seg.fact {
+  background: var(--accent);
+}
+.seg.opinion {
+  background: var(--polymarket);
+}
+
+.total {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-mute);
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-mute);
+}
+
+@media (max-width: 560px) {
+  .claim {
+    font-size: 0.95rem;
+  }
+}
+
+/* Fill the forced 44px touch box so the poll chips read as solid pills, matching
+   the category/topic/source chips elsewhere instead of a label floating in air. */
+@media (pointer: coarse) {
+  .choice {
+    padding-block: 9px;
+  }
+}

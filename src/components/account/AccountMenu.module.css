@@ -1,0 +1,279 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-4);
+  /* Keep the fully-expanded (max-height:90vh) sheet clear of the iOS home
+     indicator and side insets on notched phones. */
+  padding-bottom: max(var(--s-4), env(safe-area-inset-bottom));
+  padding-left: max(var(--s-4), env(safe-area-inset-left));
+  padding-right: max(var(--s-4), env(safe-area-inset-right));
+  background: rgba(20, 18, 14, 0.55);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: fade var(--t-fast);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--s-6) var(--s-5) var(--s-5);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  display: grid;
+  gap: var(--s-4);
+}
+
+.close {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-size: 1.4rem;
+  line-height: 1;
+  border-radius: var(--r);
+}
+
+.close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* Square the dismiss target up to the touch minimum (the global rule only sets
+   height); the flex centering above keeps the × centered at either size. */
+@media (pointer: coarse) {
+  .close {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+/* The sign-in invitation reads as a standfirst — set it in the editorial prose
+   face. The identity chip + the transient "Loading…" note stay in the UI sans. */
+.lead {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+  text-wrap: pretty;
+}
+
+.identity,
+.note {
+  font-size: 0.92rem;
+  color: var(--text-dim);
+}
+
+.identity {
+  font-weight: 650;
+  color: var(--text);
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface-2);
+  border-radius: var(--r);
+}
+
+.signedOut,
+.account {
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* Account-lifecycle actions, divided off as a footer cluster (matches the
+   section rhythm above: gap supplies the space over the rule, padding below). */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.action {
+  flex: 1 1 auto;
+  padding: 9px 16px;
+  border-radius: var(--r);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+  font-size: 0.88rem;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+
+.action:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--text-mute);
+}
+
+.action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.danger {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.deleteLink {
+  background: none;
+  border: none;
+  color: var(--down);
+  font-size: 0.84rem;
+  font-weight: 650;
+  padding: 4px 0;
+}
+
+.deleteLink:hover {
+  text-decoration: underline;
+}
+
+/* Quiet inline text affordance — opt out of the 44px coarse-pointer floor so it
+   doesn't sit in a tall empty box under the danger-zone rule. */
+@media (pointer: coarse) {
+  .deleteLink {
+    min-height: 0;
+    padding: 8px 0;
+  }
+}
+
+.confirm {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.confirmText {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.confirmRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.deleteConfirm {
+  flex: 1 1 auto;
+  padding: 9px 16px;
+  border-radius: var(--r);
+  border: none;
+  background: var(--down);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.deleteConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  font-size: 0.85rem;
+  color: var(--down);
+}
+
+/* Privacy toggle: "show my calls to followers" (the opt-in for shared calls). */
+.toggleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.toggleText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.toggleTitle {
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: var(--text);
+}
+.toggleHint {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-mute);
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2, var(--accent-tint));
+  transition: background var(--t-fast);
+  margin-top: 2px;
+}
+.switchOn {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.switchKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform var(--t-fast);
+}
+.switchOn .switchKnob {
+  transform: translateX(18px);
+}
+.switch:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* The whole label row is the touch target, so opt the 26px pill out of the
+   global coarse-pointer 44px min-height floor — otherwise it stretches and the
+   knob floats to the top. */
+@media (pointer: coarse) {
+  .switch {
+    min-height: 0;
+  }
+}

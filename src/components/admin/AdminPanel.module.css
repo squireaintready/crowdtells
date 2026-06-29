@@ -1,0 +1,1001 @@
+/* Admin console — a dense operator back-office. Its own wide layout (not the 800px
+ * reading column), built from the shared design tokens so it themes with the app
+ * (light / bordeaux / forest) and stays usable on every screen + pointer type. */
+
+.root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+/* ───────────── top bar ───────────── */
+/* Bar + tabs stick to the viewport top as ONE unit (so two top:0 sticky elements
+ * can't overlap), keeping navigation reachable while a long table scrolls. */
+.head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.barInner {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: var(--s-3) var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+
+.brandTag {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--on-accent);
+  background: var(--accent);
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+}
+
+.barSpacer {
+  flex: 1 1 auto;
+}
+
+.barActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.who {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ───────────── tabs ───────────── */
+.tabsWrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 0 var(--s-4);
+  display: flex;
+  gap: var(--s-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex: 0 0 auto;
+  padding: var(--s-3) var(--s-3);
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tabOn {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* ───────────── main content ───────────── */
+.main {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: var(--s-4);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-3);
+}
+
+.search {
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.88rem;
+}
+.search::placeholder {
+  color: var(--text-mute);
+}
+
+.select {
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.84rem;
+}
+
+.count {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  white-space: nowrap;
+}
+
+.toolSpacer {
+  flex: 1 1 auto;
+}
+
+/* ───────────── table ───────────── */
+.tableWrap {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  padding: var(--s-2) var(--s-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-2);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mute);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rowClickable {
+  cursor: pointer;
+}
+.rowClickable:hover td {
+  background: var(--surface-2);
+}
+.rowMuted td {
+  opacity: 0.55;
+}
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.sortBtn:hover {
+  color: var(--text);
+}
+.sortArrow {
+  font-size: 0.7em;
+  color: var(--accent);
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-mute);
+}
+
+.primaryCell {
+  white-space: normal;
+  min-width: 12rem;
+  max-width: 28rem;
+}
+.bodyCell {
+  white-space: normal;
+  min-width: 16rem;
+  max-width: 40rem;
+  color: var(--text-dim);
+}
+
+.who2 {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-pill);
+  object-fit: cover;
+  background: var(--surface-2);
+  flex: 0 0 auto;
+}
+.avatarFallback {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-pill);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+/* ───────────── pills / status ───────────── */
+.pill {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.pillAdmin {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.pillOk {
+  color: var(--up);
+  background: var(--up-tint);
+  border-color: transparent;
+}
+.pillBad {
+  color: var(--down);
+  background: var(--down-tint);
+  border-color: transparent;
+}
+.pillMute {
+  color: var(--text-mute);
+}
+.dotOk {
+  color: var(--up);
+}
+.dotBad {
+  color: var(--down);
+}
+
+/* ───────────── buttons ───────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast),
+    color var(--t-fast);
+}
+.btn:hover {
+  border-color: var(--accent);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btnPrimary {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.btnPrimary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+.btnDanger {
+  color: var(--down);
+  border-color: var(--down);
+}
+.btnDanger:hover {
+  background: var(--down);
+  color: #fff;
+  border-color: var(--down);
+}
+.btnGhost {
+  border-color: transparent;
+  background: none;
+  color: var(--text-dim);
+}
+.btnGhost:hover {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+.btnSm {
+  padding: 3px 8px;
+  font-size: 0.76rem;
+}
+.actions {
+  display: inline-flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+/* ───────────── pager ───────────── */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+  font-size: 0.8rem;
+  color: var(--text-mute);
+  flex-wrap: wrap;
+}
+
+/* ───────────── banner / states ───────────── */
+.banner {
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r);
+  font-size: 0.84rem;
+  margin-bottom: var(--s-3);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+}
+.bannerErr {
+  color: var(--down);
+  border-color: var(--down);
+  background: var(--down-tint);
+}
+.bannerOk {
+  color: var(--up);
+  border-color: transparent;
+  background: var(--up-tint);
+}
+
+.empty,
+.loading {
+  padding: var(--s-7) var(--s-4);
+  text-align: center;
+  color: var(--text-mute);
+  font-size: 0.9rem;
+}
+
+/* ───────────── gate (not-admin / signed-out) ───────────── */
+.gate {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5);
+  text-align: center;
+}
+.gateCard {
+  max-width: 30rem;
+  display: grid;
+  gap: var(--s-3);
+  justify-items: center;
+}
+.gateCard h1 {
+  font-size: 1.5rem;
+}
+
+/* ───────────── dialog / drawer ───────────── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-end;
+}
+.backdropCenter {
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-4);
+}
+
+.drawer {
+  width: min(640px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg);
+  border-left: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-2);
+  animation: slideIn var(--t-fast);
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(16px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    animation: none;
+  }
+}
+
+.dialog {
+  width: min(440px, 100%);
+  background: var(--elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  padding: var(--s-4);
+  display: grid;
+  gap: var(--s-3);
+}
+.dialog h2 {
+  font-size: 1.1rem;
+}
+.dialogText {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.drawerHead {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: var(--s-3) var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  z-index: 1;
+}
+.drawerTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.drawerName {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drawerBody {
+  padding: var(--s-4);
+  display: grid;
+  gap: var(--s-5);
+}
+
+.section {
+  display: grid;
+  gap: var(--s-2);
+}
+.sectionHead {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--s-1);
+}
+
+.kvGrid {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  gap: var(--s-2) var(--s-4);
+  font-size: 0.85rem;
+}
+.kvKey {
+  color: var(--text-mute);
+}
+.kvVal {
+  color: var(--text);
+  word-break: break-word;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--s-2);
+}
+.stat {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface);
+}
+.statNum {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.statLabel {
+  font-size: 0.68rem;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.miniList {
+  display: grid;
+  gap: var(--s-1);
+}
+.miniRow {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: 0.8rem;
+}
+.miniMeta {
+  font-size: 0.7rem;
+  color: var(--text-mute);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ───────────── forms (reused in dialogs) ───────────── */
+.field {
+  display: grid;
+  gap: var(--s-1);
+}
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+}
+.input,
+.textarea {
+  width: 100%;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.88rem;
+}
+.textarea {
+  min-height: 4rem;
+  resize: vertical;
+}
+
+/* ───────────── responsive ───────────── */
+/* On the medium-narrow desktop table, drop secondary columns before resorting to a
+ * scrollbar. (Below 640px the table becomes cards and these reappear — see below.) */
+@media (max-width: 760px) {
+  .hideSm {
+    display: none;
+  }
+}
+
+/* ───────────── mobile: tables become stacked cards ─────────────
+ * A horizontally-scrolling dense table can't fit a phone, so below 640px each row
+ * collapses into a self-contained card: the primary cell is the card header, every
+ * other cell shows its column label (from data-label, via ::before) beside its value,
+ * and long-text cells stack the value under the label. Result: no horizontal overflow,
+ * everything on one screen-width, and the columns dropped on the narrow desktop table
+ * reappear (cards have vertical room). */
+@media (max-width: 640px) {
+  .main {
+    padding: var(--s-3);
+  }
+  .barInner {
+    padding: var(--s-2) var(--s-3);
+  }
+  .who {
+    display: none;
+  }
+  .backdrop {
+    justify-content: stretch;
+  }
+  .drawer {
+    width: 100%;
+    border-left: none;
+  }
+
+  .tableWrap {
+    overflow-x: visible;
+    border: none;
+    border-radius: 0;
+    background: none;
+  }
+  .table {
+    font-size: 0.9rem;
+  }
+  /* Keep the header in the DOM for assistive tech, but off-screen — the visible labels
+     come from each cell's data-label. */
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    background: var(--surface);
+    margin-bottom: var(--s-3);
+    padding: var(--s-1) var(--s-3);
+  }
+  .table td {
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: var(--s-2) 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-4);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-align: right;
+    min-height: 0;
+    min-width: 0;
+    max-width: none;
+  }
+  .table tr td:last-child {
+    border-bottom: none;
+  }
+  .table td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    text-align: left;
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-mute);
+    white-space: nowrap;
+  }
+  /* The primary cell is the card header: full width, no label. */
+  .table td.primaryCell {
+    display: block;
+    text-align: left;
+    padding-top: var(--s-2);
+  }
+  .table td.primaryCell::before {
+    content: none;
+  }
+  /* Long-text cells: label on its own line, value full width below. */
+  .table td.bodyCell {
+    display: block;
+    text-align: left;
+  }
+  .table td.bodyCell::before {
+    display: block;
+    margin-bottom: var(--s-1);
+  }
+  /* Cards have vertical room — restore the columns the narrow desktop table dropped. */
+  .hideSm {
+    display: flex;
+  }
+  .hideSm.bodyCell {
+    display: block;
+  }
+}
+
+/* Comfortable touch targets without bloating the dense desktop grid. */
+@media (pointer: coarse) {
+  .tab {
+    min-height: 44px;
+  }
+}
+
+/* ════════════════ Operations console ════════════════ */
+
+/* Gemini health banner — the headline "are we hitting limits?" signal. */
+.opsBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: var(--s-4);
+  background: var(--surface);
+}
+.opsBannerOk {
+  background: var(--up-tint);
+}
+.opsBannerBad {
+  background: var(--down-tint);
+}
+.opsDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+  margin-top: 0.3rem;
+  flex: 0 0 auto;
+}
+.opsDotOk {
+  background: var(--up);
+}
+.opsDotBad {
+  background: var(--down);
+  animation: opsPulse 1.6s ease-in-out infinite;
+}
+@keyframes opsPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.opsBannerSub {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+}
+.opsLink {
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.opsLink:hover {
+  text-decoration: underline;
+}
+
+/* Stat cards — latest run + window totals. */
+.opsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+.statCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface);
+}
+.statLabel {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mute);
+}
+.statValue {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.statSub {
+  font-size: 0.68rem;
+  color: var(--text-mute);
+}
+.warnNum {
+  color: var(--down);
+}
+
+/* Trend sparklines (oldest → newest, left → right). */
+.trends {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+}
+.trendItem {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface);
+  color: var(--accent);
+}
+.trendHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-1);
+}
+.trendNow {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.spark {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.opsH3 {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: var(--s-5) 0 var(--s-2);
+}
+
+/* Provider pills. */
+.provGem,
+.provGroq {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--r-pill);
+  vertical-align: middle;
+}
+.provGem {
+  background: var(--accent-tint);
+  color: var(--accent-strong);
+}
+.provGroq {
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+
+/* Source-fetch error chips (latest run). */
+.opsChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.opsErrChip {
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-dim);
+}
+
+/* Run log — terminal aesthetic, scrollable, wraps on narrow screens. */
+.terminal {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s-2) var(--s-3);
+  max-height: 22rem;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.termLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  padding: 0.22rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.termLine:last-child {
+  border-bottom: 0;
+}
+.termTime {
+  color: var(--text-mute);
+  flex: 0 0 auto;
+}
+.termSeg {
+  color: var(--text-dim);
+}
+.termBadge {
+  font-size: 0.66rem;
+  padding: 0.06rem 0.45rem;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+}
+.termBadgeOk {
+  background: var(--up-tint);
+  color: var(--up);
+}
+.termBadgeBad {
+  background: var(--down-tint);
+  color: var(--down);
+}
+.termCommit {
+  color: var(--text-mute);
+  margin-left: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opsDotBad {
+    animation: none;
+  }
+}

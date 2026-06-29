@@ -1,0 +1,112 @@
+.fields {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.field {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-mute);
+}
+
+.hint {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Frequency — a hairline segmented control (matches the editorial chrome). */
+.seg {
+  display: inline-flex;
+  gap: var(--s-2);
+}
+
+.segBtn {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+
+.segBtn:hover {
+  border-color: var(--border-strong);
+}
+
+.segOn {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--accent-tint);
+}
+
+.segHint {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-mute);
+}
+
+/* Topic chips — pills (the one place pills are allowed: tags). */
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.chip {
+  composes: chipToggle from '../styles/primitives.module.css';
+}
+
+.chipOn {
+  composes: chipToggleOn from '../styles/primitives.module.css';
+}
+
+/* "Show all N topics" / "Show fewer" — a quiet text affordance under the chip
+   rail (the rail itself collapses to two rows in EmailPrefs.tsx). */
+.topicsToggle {
+  justify-self: start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.topicsToggle:hover {
+  text-decoration: underline;
+}
+
+@media (pointer: coarse) {
+  /* Fill the forced 44px touch box so chips read as solid pills, not labels
+     floating in empty space — matches the category/source chips elsewhere. */
+  .chip {
+    padding-block: 9px;
+  }
+
+  /* Keep the toggle reading as inline text, not a 44px box. */
+  .topicsToggle {
+    min-height: 0;
+    padding-block: var(--s-2);
+  }
+}

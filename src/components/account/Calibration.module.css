@@ -1,0 +1,352 @@
+/* Section rhythm: the divider's space ABOVE the rule comes from the parent
+   .account grid gap; padding-top supplies the space below. (No margin-top, or
+   it would double up with the gap.) */
+.wrap {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+/* Editorial section head — an uppercase sans kicker sits on a hairline rule, the
+   plain-language note trailing it. (This <h3> carries the heading semantics.) */
+.title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin: 0;
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--border);
+}
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.titleNote {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text-mute);
+}
+/* Link out to the full Standing hub (?standing) — the dedicated, discoverable record page. */
+.fullLink {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fullLink:hover {
+  text-decoration: underline;
+}
+
+.building {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* Standing card — the panel's headline: the level number beside its title, a progress bar to
+   the next rung, and what it unlocks. Accent-framed so it leads the section. */
+.standing {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  background: var(--accent-tint);
+}
+.levelHead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.levelMark {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.levelN {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 10vw, 3.2rem);
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.levelOf {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-mute);
+}
+.levelMeta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.levelTitle {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 560;
+  line-height: 1.12;
+  color: var(--text);
+}
+.progress {
+  height: 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  overflow: hidden;
+}
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width var(--t);
+  /* Grow from empty when the panel opens — a small "filling up" flourish. */
+  transform-origin: left;
+  animation: fillGrow 760ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes fillGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    animation: none;
+  }
+}
+.toNext {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.unlock {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+.unlockKey {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+/* Claim-verification activity line, ruled in with the rest of the record. */
+.verify {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* The desk — the signature panel: a bordered surface card holding the big rating
+   figure beside its read, with the calibration curve ruled off beneath. Mirrors
+   the article's Market Lens treatment. */
+.desk {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface-2);
+}
+
+/* Rating figure — big serif lining-figure on the left, the verdict + tally beside
+   it. Wraps and stacks on a phone so the figure never crowds its label. */
+.figure {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+}
+.rating {
+  flex: none;
+  font-family: var(--font-serif);
+  font-size: clamp(3.4rem, 16vw, 5.2rem);
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.figureMeta {
+  flex: 1;
+  min-width: 11rem;
+  display: grid;
+  gap: var(--s-1);
+}
+.verdict {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 540;
+  line-height: 1.2;
+  color: var(--text);
+}
+.sub {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-mute);
+}
+
+/* Calibration curve — ruled off from the figure above. */
+.curve {
+  display: grid;
+  gap: var(--s-2);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+.curveLabel {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-mute);
+}
+.curveFoot {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+}
+.row {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr auto;
+  align-items: center;
+  gap: var(--s-3);
+}
+.conf {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: right;
+}
+.bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  /* visible so the perfect-calibration tick can sit above the track */
+  overflow: visible;
+}
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+/* Perfect-calibration reference tick (overlaid; sits above the fill). */
+.tick {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 12px;
+  background: var(--text-mute);
+  transform: translateX(-1px);
+}
+.hit {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.rowN {
+  font-weight: 500;
+  color: var(--text-mute);
+}
+
+/* The record — tier, streak, and earned badges as a row of clean chips. */
+.record {
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* Tier + streak */
+.trust {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.tier {
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.steward {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.streak {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.best {
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+/* Badge medallions — a struck-medal grid: earned in full colour with a caption, still-to-earn
+   muted (the Medallion component draws the disc; this just lays them out + captions them). */
+.medalGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-3);
+}
+.medalCell {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-1);
+  width: 4.4rem;
+  text-align: center;
+}
+.medalCap {
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-dim);
+}
+.lockedCell .medalCap {
+  color: var(--text-mute);
+}
+
+/* Phone — tighten the desk card and let the figure stack above its read. */
+@media (max-width: 30rem) {
+  .desk {
+    padding: var(--s-4);
+  }
+  .figure {
+    gap: var(--s-1) var(--s-4);
+  }
+  .figureMeta {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+}

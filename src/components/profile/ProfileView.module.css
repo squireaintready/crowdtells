@@ -1,0 +1,232 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s-5) var(--s-4) var(--s-4);
+  border-bottom: 1px solid var(--border);
+}
+.wordmark {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-decoration: none;
+}
+.back {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.back:hover {
+  text-decoration: underline;
+}
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--s-4);
+}
+.note {
+  font-size: 0.92rem;
+  color: var(--text-dim);
+}
+.empty {
+  text-align: center;
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-7) 0;
+}
+.emptyTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 560;
+}
+.cta {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* The profile card — a bordered surface holding the identity, the standing block, the
+   calibration figure, and the badges. */
+.card {
+  display: grid;
+  gap: var(--s-5);
+  padding: var(--s-6);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.avatar {
+  border-radius: 999px;
+  object-fit: cover;
+  flex: none;
+}
+.avatarFallback {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.headMeta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.name {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 560;
+  line-height: 1.1;
+}
+.sub {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-mute);
+}
+
+/* Standing block — accent-framed, the page's headline. */
+.levelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding: var(--s-5);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  background: var(--accent-tint);
+}
+.levelN {
+  flex: none;
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.levelMeta {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 8rem;
+}
+.levelTitle {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 560;
+  color: var(--text);
+}
+.levelOf {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+}
+.streak {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.cal {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+}
+.rating {
+  font-family: var(--font-serif);
+  font-size: 3.4rem;
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.calMeta {
+  display: grid;
+  gap: var(--s-1);
+}
+.verdict {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 540;
+  color: var(--text);
+}
+.calSub {
+  font-size: 0.86rem;
+  color: var(--text-mute);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-3);
+}
+.badgeCell {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-1);
+  width: 4.6rem;
+  text-align: center;
+}
+.badgeCap {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-dim);
+}
+
+.foot {
+  margin: 0;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-serif);
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--text-mute);
+}
+
+@media (max-width: 30rem) {
+  .card {
+    padding: var(--s-5);
+  }
+  .levelN {
+    font-size: 2.6rem;
+  }
+  .rating {
+    font-size: 2.8rem;
+  }
+}

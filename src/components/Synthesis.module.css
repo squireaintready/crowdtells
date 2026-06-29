@@ -1,0 +1,138 @@
+.wrap {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+}
+
+.block {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-mute);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.dispute {
+  color: var(--down);
+  background: var(--down-tint);
+}
+.angle {
+  color: var(--accent);
+  background: var(--accent-tint);
+}
+.agree {
+  color: var(--up);
+  background: var(--up-tint);
+}
+
+/* Framing for the reader poll — editorial meta (Inter/mute), not body copy, so
+   the tally reads as reader perception rather than an adjudicated fact-check. */
+.note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-mute);
+}
+
+.list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding-left: var(--s-5);
+}
+
+.list li {
+  font-size: 0.94rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.perspectives {
+  display: grid;
+  gap: var(--s-3);
+  list-style: none;
+}
+
+.perspectives li {
+  display: grid;
+  gap: 2px;
+}
+
+.outletRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.outlet {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+/* Subtle left/center/right lean dot beside a Perspectives outlet — conventional political
+   colors (not theme accents) so it reads instantly; only shown for outlets we recognize. */
+.lean {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+.left {
+  background: var(--lean-left);
+}
+.center {
+  background: var(--lean-center);
+}
+.right {
+  background: var(--lean-right);
+}
+
+.view {
+  font-size: 0.94rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    padding: var(--s-3);
+    gap: var(--s-3);
+  }
+  .list li,
+  .view {
+    font-size: 0.9rem;
+  }
+  /* Proportion the disc hang to the panel's own 12px padding (was 24px, twice
+     the padding) so claim text keeps its measure on a phone. */
+  .list {
+    padding-left: var(--s-4);
+  }
+}

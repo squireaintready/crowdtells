@@ -1,0 +1,215 @@
+.wrap {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
+.note {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+
+/* A bridged-helpful note reads as established, cross-viewpoint context — a clear
+   callout. House rule: a centered top-fade accent (the bridged "up" hue here, since
+   green is this note's meaning), NEVER a left bar; quiet up-tint ground; body set
+   justified for an authoritative, settled-record feel. */
+.helpful {
+  position: relative;
+  border-color: var(--up);
+  background: var(--up-tint);
+  padding-top: var(--s-4);
+  overflow: hidden;
+}
+.helpful::before {
+  content: '';
+  position: absolute;
+  inset: 0 28% auto;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--up), transparent);
+}
+
+.tag {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--up);
+}
+
+.body {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+/* The established note's body reads as settled context — justified, like the
+   reference callout. (Proposed notes stay left-ragged — they're not endorsed.) */
+.helpful .body {
+  text-align: justify;
+  text-wrap: pretty;
+  hyphens: auto;
+}
+
+.meta {
+  font-size: 0.76rem;
+  color: var(--text-mute);
+}
+.author {
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.raters {
+  font-weight: 500;
+}
+
+.rate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.rateBtn {
+  min-height: 36px;
+  padding: 5px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast),
+    color var(--t-fast);
+}
+.rateBtn:hover {
+  border-color: var(--accent);
+}
+.rOn {
+  border-color: var(--up);
+  background: var(--up);
+  color: var(--on-accent);
+}
+.rOff {
+  border-color: var(--down);
+  background: var(--down);
+  color: var(--on-accent);
+}
+
+.linkBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.linkBtn:hover {
+  color: var(--down);
+  text-decoration: underline;
+}
+
+/* Proposed (not-yet-bridged) notes — neutral, collapsed, never read as endorsed. */
+.proposed {
+  font-size: 0.82rem;
+}
+.proposedSummary {
+  cursor: pointer;
+  color: var(--text-mute);
+  font-weight: 600;
+  padding: var(--s-1) 0;
+}
+.proposedList {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+/* Composer + the add affordance */
+.addLink {
+  justify-self: start;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.addLink:hover {
+  text-decoration: underline;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-mute);
+}
+
+.composer {
+  display: grid;
+  gap: var(--s-2);
+}
+.composer textarea {
+  width: 100%;
+  padding: var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+.composer textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.composerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-3);
+}
+.add {
+  composes: btnFilled from '../../styles/primitives.module.css';
+}
+
+.err {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--down);
+}
+
+/* Mobile: rating buttons grow to comfortable full-width taps. */
+@media (max-width: 560px) {
+  .rateBtn {
+    flex: 1;
+    min-height: 44px;
+  }
+}
+
+/* Any touch device (incl. touch-capable laptops): full 44px touch targets. */
+@media (pointer: coarse) {
+  .rateBtn {
+    min-height: 44px;
+  }
+}

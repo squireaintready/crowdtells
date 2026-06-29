@@ -1,0 +1,70 @@
+name: Breaking Alerts
+
+# Emails the subscribers who opted into breaking alerts when a genuinely
+# alert-worthy event lands (a briefed market resolves, a mapped event goes final,
+# a fresh corroborated developing cluster pins, or a big 24h odds swing). Reads
+# the published feed.json and dedupes every event in Supabase, so it never sends
+# the same thing twice no matter how often it runs.
+#
+# REAL-TIME path is the "Send breaking-news alerts" step inside the Pulse Pipeline,
+# which fires right after each feed refresh (no extra Actions minutes). THIS workflow
+# is the manual-dispatch escape hatch — run it (optionally with dry_run) to test or
+# to fire an out-of-band pass. DARK by default: gated on BREAKING_ALERTS_ENABLED, and
+# manual dispatch always runs so it can be tested before the pipeline path is enabled.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'true = detect + log candidates but do not claim or send'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Never run two alert passes at once — the claim-before-send dedup assumes a
+# single in-flight run.
+concurrency:
+  group: breaking
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Gate: dark until the owner flips BREAKING_ALERTS_ENABLED=true (manual dispatch
+    # always runs, so it can be tested before enabling the pipeline path).
+    if: ${{ vars.BREAKING_ALERTS_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Send breaking alerts
+        run: npm run breaking
+        env:
+          # Secrets (encrypted, never in the repo).
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # Public-ish config (repo variables).
+          MAILGUN_DOMAIN: ${{ vars.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK: ${{ secrets.ALERT_WEBHOOK }}
+        run: |
+          echo "::error::Breaking alerts failed (run ${{ github.run_id }})."
+          if [ -n "$ALERT_WEBHOOK" ]; then
+            curl -s -m 10 -X POST -H 'Content-Type: application/json' \
+              -d "{\"text\":\"🚨 Crowdtells breaking alerts failed — run ${{ github.run_id }}: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+              "$ALERT_WEBHOOK" || true
+          fi

@@ -1,0 +1,177 @@
+.stack {
+  position: fixed;
+  z-index: 1200;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--s-2);
+  width: min(340px, calc(100vw - 32px));
+  pointer-events: none;
+}
+@media (max-width: 30rem) {
+  .stack {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  pointer-events: auto;
+  background: var(--elevated);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  /* No overflow clip: the level-up ring-burst + the medallion glow are meant to spill past the
+     card edge. The timer line is inset (below) so it still respects the rounded corners. */
+  animation: toastIn 480ms cubic-bezier(0.2, 0.85, 0.3, 1.2) both;
+}
+.levelToast {
+  border-left-color: #cda23f;
+  background: linear-gradient(120deg, rgba(205, 162, 63, 0.1), transparent 60%), var(--elevated);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: var(--s-3) var(--s-3) var(--s-3) var(--s-3);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.medalWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+/* Concentric rings that burst outward behind a level-up medallion. */
+.ring {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(205, 162, 63, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  animation: ringBurst 950ms ease-out both;
+}
+.r2 {
+  animation-delay: 170ms;
+}
+
+.text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.lead {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-mute);
+}
+.title {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-weight: 560;
+  line-height: 1.15;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close {
+  flex: none;
+  align-self: flex-start;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: 0;
+  color: var(--text-mute);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+/* A full 44px touch target on touch devices (a11y) — the dismiss is small but tappable. */
+@media (pointer: coarse) {
+  .close {
+    width: 44px;
+    height: 44px;
+  }
+}
+.close:hover {
+  color: var(--text);
+}
+
+/* The auto-dismiss countdown, draining left→right. */
+.timer {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: toastTimer 6500ms linear both;
+}
+.levelToast .timer {
+  background: #cda23f;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ringBurst {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.3);
+  }
+}
+@keyframes toastTimer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+  .ring {
+    display: none;
+  }
+  .timer {
+    animation-duration: 6500ms;
+    animation-timing-function: step-end;
+  }
+}

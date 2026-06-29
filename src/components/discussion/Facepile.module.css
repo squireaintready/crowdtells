@@ -1,0 +1,38 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.stack {
+  display: inline-flex;
+}
+
+.av {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--surface);
+  background: var(--accent-tint);
+}
+/* Overlap the avatars into a stack; first sits on top. */
+.av:not(:first-child) {
+  margin-left: -8px;
+}
+
+.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-weight: 750;
+  font-size: 0.62rem;
+}
+
+.label {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+  font-weight: 600;
+}

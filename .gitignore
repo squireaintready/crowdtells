@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+
+# build output
+/dist
+/coverage
+
+# generator runtime state (persisted on the `data` branch, never on main)
+/.data
+
+# local env / secrets
+.env
+.env.local
+.env.*.local
+
+# editor / OS
+.DS_Store
+*.log
+.vite
+.gstack/
+
+# Supabase CLI local scratch
+supabase/.temp/
+
+# Cron-generated syndication (built fresh each run)
+public/feed.xml
+public/embed.json
+public/_redirects
+public/sitemap.xml
+public/sitemap-news.xml
+public/s/
+public/topic/
+public/og/
+public/learn/
+public/event/
+public/learn.html
+public/mispriced.html
+public/accuracy.html
+public/embed.html

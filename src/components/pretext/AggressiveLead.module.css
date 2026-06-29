@@ -1,0 +1,47 @@
+/* The aggressive belief lead: the briefing prose on top, with a real horizontal
+   odds-over-time chart strip (time → x, probability → y) set BENEATH it — the lead
+   reads as the text sitting on top of its belief curve. In calm mode this shell adds
+   nothing — it renders the plain prose paragraph and there's no chart, so the article
+   and the feed card look exactly as shipped. No left accent bar (house style); the
+   chart's own time axis IS the structure. */
+
+.lead {
+  position: relative;
+}
+
+/* The chart strip below the lead text — a positioned box of a fixed (measured) height
+   that holds the SVG. A small gap sets it just beneath the prose so the text reads as
+   resting on the curve. */
+.figure {
+  position: relative;
+  width: 100%;
+  margin-top: var(--s-2);
+}
+
+/* The chart SVG fills the strip. Pointer-transparent; preserveAspectRatio:none maps
+   it 1:1 to the box. */
+.chart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Axis tick labels (dates). Small, muted, tabular. */
+.axis {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* The bold final-odds label near the last point. */
+.axisStrong {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,972 @@
+.story {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-6) 0;
+  border-bottom: 1px solid var(--border);
+  /* No content-visibility here: the feed is windowed (App renders one page of
+     ~12 cards at a time), so the "skip off-screen layout" win is negligible — and
+     it made some browsers (Safari) collapse off-screen cards to zero height,
+     hiding the feed. Pagination supersedes it. */
+  /* No boxes/gaps — stay an editorial list. A faint category-tinted glow at the
+     top-left edge gives a premium hint of colour that fades to the page before
+     it ever reaches the body text. */
+  background: radial-gradient(
+    115% 70% at -5% 0%,
+    color-mix(in srgb, hsl(var(--cat-h, 220) 58% 52%) 7%, transparent),
+    transparent 55%
+  );
+}
+
+/* ——— "On the board" — a digest (un-briefed line/prop) as a quiet board row ———
+   A sports line or a recurring/price prop is never briefed, so it reads as a
+   demoted betting-board line beneath the news — shorter, lighter, no hero, no
+   gesture, no "briefing incoming". A sibling of .story: same hairline + a fainter
+   category glow, but tighter rhythm and a smaller serif title so it never competes
+   with a real headline. The whole row links out to the platform. */
+.board {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--border);
+  /* The same top-left tint as .story but fainter — a board line is demoted. */
+  background: radial-gradient(
+    115% 70% at -5% 0%,
+    color-mix(in srgb, hsl(var(--cat-h, 220) 58% 52%) 4%, transparent),
+    transparent 55%
+  );
+}
+
+/* The row is one external link; keep it a plain block (no underline) and give touch
+   users a quick tint, mirroring the card's .clickable affordance. */
+.boardLink {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .boardLink:hover .boardTitle {
+    color: var(--accent);
+  }
+}
+.boardLink:active .boardTitle {
+  color: var(--accent);
+}
+
+/* The board kicker reuses the eyebrow rhythm; "On the board" leads it as a quiet
+   uppercase label (the demoted counterpart to the card's BREAKING/DECIDED chips). */
+.boardEyebrow {
+  margin-bottom: calc(-1 * var(--s-1));
+}
+
+.boardLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.625rem; /* 10px — matches the .decided chip scale */
+  font-weight: 750;
+  color: var(--text-mute);
+}
+
+/* A board line is a betting question, not a story headline — a smaller serif at a
+   light weight keeps it in the editorial family while reading clearly demoted. */
+.boardTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 440;
+  font-size: 1.02rem;
+  line-height: 1.22;
+  color: var(--text);
+  text-wrap: balance;
+  /* A long unbreakable token (a date range, ticker, hashtag) wraps inside the row
+     rather than being clipped by overflow: hidden. */
+  overflow-wrap: anywhere;
+  transition: color var(--t-fast);
+}
+
+/* The crowd's number inline — the favored outcome, its probability, and the same
+   ProbBar the full card uses, on one quiet baseline. */
+.boardRead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+}
+
+.boardFavored {
+  font-weight: 650;
+  color: var(--text);
+  /* Don't let a long favored name shove the odds + bar off the row — it can ellipsise. */
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.boardOdds {
+  flex: none;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* The ProbBar takes the remaining width, capped so it stays a slim read-out beside
+   the figures rather than a full-width gauge. */
+.boardRead > div {
+  flex: 1 1 auto;
+  max-width: 220px;
+}
+
+/* The other lines on this game/series — a tight row of small contained chips
+   (the established .tag idiom), each its favored outcome + odds, the full facet
+   question on hover. Caps at ~4 in the markup so the row stays a glance. */
+.boardFacets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.boardChip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+  max-width: 100%;
+}
+
+.boardChipName {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.boardChipOdds {
+  flex: none;
+  font-weight: 700;
+  color: var(--text-mute);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@media (max-width: 560px) {
+  .board {
+    padding: var(--s-3) 0;
+  }
+  .boardTitle {
+    font-size: 0.98rem;
+  }
+  /* On a phone let the bar yield so the favored name + odds keep their line. */
+  .boardRead > div {
+    flex: 0 1 120px;
+    max-width: 120px;
+  }
+}
+
+/* ——— Background "curtain" hero ———
+   A subtle image band on the RIGHT whose visibility ramps up toward the edge,
+   so the text always stays the focus. It eases in once the card scrolls into
+   view. Tunable per-card via the --hero-* custom properties (mirrors the values
+   from card-mock.html). Works in both themes — the readability scrim fades to
+   the live --bg, so it adapts automatically. */
+.hasHero {
+  --hero-band: 58%;
+  --hero-peak: 0.78; /* opacity at --reveal 0 — the picture reads clearly at rest, not washed out */
+  --hero-full: 1; /* opacity at --reveal 1 — fully vivid once the curtain is pulled */
+  --hero-scrim: 0.42; /* lighter text wash → the image stays present, and a swipe still reads as a change */
+  /* As the curtain opens past its resting reveal — a deliberate hold/swipe, or
+     the scroll-in entrance that arrives fully open then recedes (StoryCard.tsx) —
+     the band grows leftward and the mask's solid edge slides in, so an open
+     curtain shows much more of the picture (its cover-cropped left side), not
+     just a brighter right-hand sliver. Both extents are keyed to the pull, which
+     is exactly 0 at the resting reveal, so the resting feed is byte-for-byte
+     untouched. */
+  --hero-open-w: 42%; /* extra band width at a full pull → 58% + 42% = the full card width */
+  --hero-open-m: 58%; /* how far the mask's solid edge slides further left at a full pull */
+  --reveal: 0;
+  /* Vertical scrolling stays native; a horizontal drag is ours — pull the
+     curtain back and a full swipe opens the article (see StoryCard.tsx). */
+  touch-action: pan-y;
+}
+
+.hero {
+  position: absolute;
+  inset: 0 0 0 auto;
+  /* The pull (0..1) is how far the curtain is open BEYOND its resting reveal.
+     REVEAL_BASE is 0.42 in StoryCard.tsx → divisor (1 - 0.42) = 0.58; the clamp
+     pins width to --hero-band at and below the resting reveal (pull 0), so the
+     resting state never widens. Keep the 0.42 / 0.58 in sync with REVEAL_BASE. */
+  width: calc(var(--hero-band) + var(--hero-open-w) * clamp(0, (var(--reveal) - 0.42) / 0.58, 1));
+  background-position: top center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Everything tracks one --reveal float (0..1), driven from JS: a rAF tween on
+     scroll-in and spring-back, and the finger 1:1 while dragging. opacity +
+     transform stay composited; the band width + the mask's solid edge move
+     whenever the curtain is open past its resting reveal (a pull/swipe OR the
+     scroll-in entrance recede), and are pinned at rest. */
+  opacity: calc(var(--hero-peak) + (var(--hero-full) - var(--hero-peak)) * var(--reveal));
+  transform: translateX(calc(10px * (1 - var(--reveal))))
+    scale(calc(1 + 0.05 * (1 - var(--reveal))));
+  /* A crisp linear fade from transparent on the text side to fully opaque across
+     the band, so the picture reads as a clean present panel at rest — not a faint
+     right-weighted sliver. The transparent edge marches left as --reveal grows
+     (≈34% at the resting 0.42), and a deliberate pull-past-rest carries it the rest
+     of the way to the band's left edge (the extra −6% term, pull-keyed so rest is
+     untouched) — so a full swipe shows the picture's hidden left side edge-to-edge.
+     The SOLID edge likewise slides further left only as the curtain is pulled past
+     rest, so the widened band fills with picture rather than fade. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent
+      calc(54% - 48% * var(--reveal) - 6% * clamp(0, (var(--reveal) - 0.42) / 0.58, 1)),
+    #000 calc(78% - 14% * var(--reveal) - var(--hero-open-m) * clamp(0, (var(--reveal) - 0.42) / 0.58, 1))
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent
+      calc(54% - 48% * var(--reveal) - 6% * clamp(0, (var(--reveal) - 0.42) / 0.58, 1)),
+    #000 calc(78% - 14% * var(--reveal) - var(--hero-open-m) * clamp(0, (var(--reveal) - 0.42) / 0.58, 1))
+  );
+  /* Only the hover brighten transitions — the band width / mask / opacity are driven
+     directly by --reveal (rAF), so they must stay un-transitioned to follow the finger. */
+  transition: filter var(--t-fast);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Flags, logos and coins aren't full-bleed scenes — render them as a compact
+   right-anchored emblem (sized to the band height, kept clear of the left fade
+   and the text column) rather than a stretched, dissolving slice. Paired with
+   background-position: right center, set inline in StoryCard. They're already
+   shown whole, so there's no hidden left side to uncover — zero out the pull
+   widening/re-mask and keep them exactly put. */
+.heroContain {
+  --hero-open-w: 0%;
+  --hero-open-m: 0%;
+  background-size: auto 58%;
+}
+
+/* No resolvable picture → a slim category-tinted "spine" on the right edge with
+   the section set sideways, so the card still reads as illustrated without a
+   wide band eating the text column. Decorative only (nothing to reveal). */
+.hasSpine {
+  padding-right: 2.6rem;
+}
+.spine {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2.6rem;
+  z-index: -1;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, hsl(var(--cat-h, 220) 55% 52%) 16%, transparent),
+    color-mix(in srgb, hsl(var(--cat-h, 220) 55% 52%) 5%, transparent)
+  );
+}
+.spine span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-mute);
+  white-space: nowrap;
+  overflow: hidden;
+  max-height: 88%;
+}
+
+/* Readability scrim over the text column — solid bg on the left, clearing to the
+   image on the right. Keyed to --bg so it's correct in light and dark. */
+.hasHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Two scrims (both keyed to --bg, so correct in light AND dark): a horizontal
+     one that holds the text column solid on the left then clears CRISPLY to the
+     picture (so the image reads as a present panel, not a wash), and a soft bottom
+     wash so the interest line and actions stay readable over the image. */
+  background:
+    linear-gradient(to top, var(--bg) 14%, transparent 40%),
+    linear-gradient(
+      to right,
+      var(--bg) 0%,
+      var(--bg) 34%,
+      color-mix(in srgb, var(--bg) calc(var(--hero-scrim) * 100%), transparent) 56%,
+      transparent 74%
+    );
+  /* Scrim eases off as the curtain is pulled, so more image shows through on a
+     swipe while the text stays legible at rest. The extra pull-keyed drop clears
+     the left wash on a full swipe (so a fully-pulled photo reads vivid edge-to-edge,
+     not dimmed), while the resting 0.74 — and the text legibility — is untouched. */
+  opacity: calc(1 - 0.62 * var(--reveal) - 0.2 * clamp(0, (var(--reveal) - 0.42) / 0.58, 1));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    transform: none;
+  }
+}
+
+/* Keep the text in a readable column so it never fights the image band. */
+.hasHero .eyebrow,
+.hasHero .headline,
+.hasHero .recap,
+.hasHero .preview,
+.hasHero .outlets {
+  max-width: 70%;
+}
+
+/* The aggressive lead's belief chart measures its own width, so the calm `.preview`
+   max-width can't reach it — constrain the chart shell to the same readable column
+   here, so the horizontal chart + its prose stay clear of the image band. Only applies
+   alongside a picture (without a hero the chart can use the full width). */
+.hasHero .leadFlow {
+  max-width: 70%;
+}
+
+/* Collapsed card is one tap target. Hover hints it on desktop; a quick tint
+   gives touch users immediate feedback without a sticky :hover state. */
+.clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .clickable:hover .headline {
+    color: var(--accent);
+  }
+  /* Desktop hover affordance on the picture: a cheap, compositor-only brighten.
+     This replaces the old JS hover-peek, which animated the band width + mask via
+     rAF on every mouse-over and repainted the hero continuously (the desktop lag).
+     A static filter is a one-shot GPU composite — no per-frame work. */
+  .clickable:hover .hero {
+    filter: brightness(1.06);
+  }
+}
+
+.clickable:active .headline {
+  color: var(--accent);
+}
+
+/* Kicker line: BREAKING · CATEGORY / Source · time */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.breaking {
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--down);
+  font-weight: 750;
+}
+
+/* "Decided" — a settled, matter-of-fact kicker chip (not the urgent red of
+   Breaking). A small uppercase ink-chip: dim-ink fill, paper text. */
+.decided {
+  padding: 1px 7px;
+  border-radius: var(--r-sm);
+  background: var(--text-dim);
+  color: var(--bg);
+  font-size: 0.625rem; /* 10px */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.category {
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.sep {
+  color: var(--border-strong);
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-dim);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.source::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.polymarket {
+  color: var(--polymarket);
+}
+.kalshi {
+  color: var(--kalshi);
+}
+
+.dateline,
+.deadline {
+  color: var(--text-mute);
+  font-weight: 550;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dateline::before,
+.deadline::before {
+  content: '·';
+  margin-right: var(--s-2);
+  color: var(--border-strong);
+}
+
+/* Market-vs-press flag — how the money lines up with the coverage. A thin
+   hairline pill in the accent (ahead) or down (contested) hue, color-on-paper. */
+.pressFlag {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 650;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: var(--r-pill);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+.pressAhead {
+  color: var(--accent);
+}
+.pressContested {
+  color: var(--down);
+}
+
+/* Headline = the story. A balanced serif (Fraunces) at an editorial weight,
+   tightly leaded so it reads as a masthead line. */
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 440;
+  font-size: clamp(1.1875rem, 2.6vw, 1.375rem); /* ~19 → 22px */
+  line-height: 1.08;
+  color: var(--text);
+  text-wrap: balance;
+  /* A long unbreakable token (ticker, hashtag, URL-like question) must wrap
+     inside the constrained hero text column rather than be clipped by
+     .story { overflow: hidden }. */
+  overflow-wrap: anywhere;
+}
+
+.lead .headline {
+  font-size: clamp(1.4375rem, 4vw, 1.75rem); /* ~23 → 28px */
+}
+
+/* Aggressive treatment: the headline scales with the money at stake. --head-px is
+   computed (bounded) in StoryCard.tsx; max() guarantees it is NEVER below the calm
+   size at any viewport or theme, so this can only ever raise the headline. The
+   balance/wrap rules above keep it readable in the ≤70% text column. */
+.aggressive .headline {
+  font-size: max(clamp(1.1875rem, 2.6vw, 1.375rem), var(--head-px, 0px));
+  /* Balanced line lengths (the comp's balancedHead); graceful where unsupported. */
+  text-wrap: balance;
+}
+.aggressive.lead .headline {
+  font-size: max(clamp(1.4375rem, 4vw, 1.75rem), var(--head-px, 0px));
+}
+
+.region {
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* Loading fallback for the lazy discussion panel */
+.dek {
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.analysis {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.56;
+  color: var(--text);
+}
+
+.lead .analysis {
+  font-size: 1.18rem;
+}
+
+/* Collapsed briefing: identical type to the open story, clamped so the feed
+   stays scannable. Opening just lifts the clamp — no typographic jump. */
+.preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+
+.pending {
+  font-style: italic;
+  color: var(--text-mute);
+}
+
+/* Our take — editorial POV, set apart from the neutral briefing */
+.take {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-2);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+/* A centered top accent that fades at both ends — focuses the eye on the center,
+   NOT a left vertical bar. Shared by the editorial callouts. */
+.take::before,
+.marketLens::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14%;
+  right: 14%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+}
+
+.takeKicker {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--accent);
+}
+
+.takeText {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* Resolution recap — did the crowd call it? A clean inline ink line on resolved
+   stories (no tinted box): a ✓/✗ + verdict in the up/down hue, the outcome in ink. */
+.recap {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem; /* ~13px */
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.recapHit .recapMark {
+  color: var(--up);
+}
+.recapMiss .recapMark {
+  color: var(--down);
+}
+
+.recap b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* The resolution date, kept quiet so the outcome leads. */
+.recapWhen {
+  opacity: 0.72;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.recapMark {
+  font-weight: 800;
+}
+
+/* Byline of outlets — ONE line: a fixed ◢ mark, the outlet list (truncates with an
+   ellipsis when it's too wide), and the "+N" overflow count pinned at the end so it
+   never orphans onto its own row. Keeps the card's meta block a consistent 2–3 rows. */
+.outlets {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+.outletsList {
+  /* Size to the outlet names — do NOT grow to fill the row, or the "+N" count gets
+     shoved to the far edge with a gulf of empty space between it and the names. It can
+     still SHRINK + ellipsise when the names are too long for the row. */
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The "+N" overflow count sits right after the names (no flex-grow gap before it). */
+.outletsMore {
+  flex: none;
+}
+
+/* The ◢ marker keeps the accent tick; outlet links stay a quiet byline that
+   only lights up on hover, so it reads as a citation line, not a row of links. */
+.outletsMark {
+  flex: none;
+  color: var(--accent);
+}
+
+.outlets a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .outlets a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+}
+
+/* Outlet links are bare <a> (not covered by the global coarse-pointer rule);
+   pad the vertical hit zone on touch without breaking the inline byline flow. */
+@media (pointer: coarse) {
+  .outlets a {
+    display: inline-block;
+    padding-block: 6px;
+  }
+}
+
+/* The crowd's read — demoted data, set apart by a rule */
+.read {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+}
+
+.readHead {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-mute);
+}
+
+/* The Market Lens — how the crowd's money relates to the coverage */
+.marketLens {
+  position: relative;
+  font-family: var(--font-serif);
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: var(--text);
+  padding: var(--s-3);
+  /* A quiet aside (matches .take/.read) — the market is one cited input, not the
+     headline. The accent lives only on the kicker + the centered top-fade rule. */
+  background: var(--surface-2);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.lensLabel {
+  display: inline-block;
+  margin-right: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.readTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.crowd {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.moves b {
+  font-weight: 700;
+}
+
+.since {
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+.up {
+  color: var(--up);
+}
+.down {
+  color: var(--down);
+}
+
+/* Market facts as a prose line, not a tile grid — figures read as part of the
+ * story's receipts rather than a dashboard. */
+.facts {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-mute);
+}
+
+.facts b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.context {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  padding-top: var(--s-3);
+}
+
+/* AI-authorship + odds disclosure — transparency for a news product, but a quiet
+   colophon at the foot of the article (above Save/Share), not a loud labeled box.
+   A single muted line so it reads as a footnote, never a banner. */
+.aiNote {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-mute);
+}
+
+/* Pricing provenance — cites where the odds come from, not a betting CTA */
+.provenance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  border-top: 1px solid var(--border);
+  padding-top: var(--s-3);
+  font-size: 0.78rem;
+}
+
+.provLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-mute);
+}
+
+.provLink {
+  color: var(--text-dim);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+a.provLink {
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+}
+
+a.provLink:hover {
+  border-bottom-color: var(--accent);
+}
+
+.gap {
+  color: var(--text-mute);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.gap::before {
+  content: '·';
+  margin-right: var(--s-2);
+  color: var(--border-strong);
+}
+
+.corroboration {
+  color: var(--text-mute);
+  font-weight: 600;
+}
+
+.corroboration::before {
+  content: '·';
+  margin-right: var(--s-2);
+  color: var(--border-strong);
+}
+
+/* Actions — one primary filled accent button, the rest ghost secondaries. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+}
+
+/* "Read article" — the primary call: a filled accent button (paper-on-ink).
+   Box metrics match the ghost Share pill so the row sits on one baseline; only the
+   fill + square radius set it apart as the primary. */
+.disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 7px 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
+}
+
+.disclosure:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+/* The source count rides inside the filled button — paper ink, gently dimmed. */
+.count {
+  color: var(--bg);
+  opacity: 0.72;
+  font-weight: 550;
+}
+
+.count::before {
+  content: '·';
+  margin-right: var(--s-2);
+  color: currentColor;
+  opacity: 0.8;
+}
+
+@media (max-width: 560px) {
+  .story {
+    padding: var(--s-5) 0;
+    gap: var(--s-2);
+  }
+  .headline {
+    line-height: 1.1;
+  }
+  /* Narrower card → keep the band a touch tighter so the picture sits clear of the
+     denser text, but keep it present (not faint) — the owner wants the image to show. */
+  .hasHero {
+    --hero-band: 52%;
+    --hero-peak: 0.74;
+    /* Mobile band starts narrower (52%), so it needs a bit more open-width to reach
+       the full card edge on a swipe — 52% + 48% = 100%. */
+    --hero-open-w: 48%;
+  }
+  .hasHero .eyebrow,
+  .hasHero .headline,
+  .hasHero .recap,
+  .hasHero .preview,
+  .hasHero .outlets {
+    max-width: 74%;
+  }
+  /* Trim the placeholder spine so its width-share matches desktop and the denser
+     mobile type keeps a little more room. */
+  .hasSpine {
+    padding-right: 2.2rem;
+  }
+  .spine {
+    width: 2.2rem;
+  }
+  .region {
+    gap: var(--s-3);
+  }
+  /* Denser type on small screens — we surface a lot of copy per card. */
+  .analysis {
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+  .lead .analysis {
+    font-size: 1.06rem;
+  }
+  .takeText {
+    font-size: 0.96rem;
+  }
+  .context {
+    font-size: 0.84rem;
+  }
+  /* One fewer line in the collapsed brief keeps the feed scannable on a phone. */
+  .preview {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+  /* Lift the smallest pill above the mobile legibility floor (it was 0.66rem)
+     and give it symmetric breathing room so it sits level with the dotted
+     source/eyebrow tokens on the same meta line. */
+  .pressFlag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    line-height: 1.2;
+  }
+  /* Let the odds sparkline yield width so a long "Crowd: <name> NN%" label keeps
+     its line in the numbers panel instead of wrapping against the chart. */
+  .readTop svg {
+    flex: 0 1 96px;
+    max-width: 96px;
+  }
+}

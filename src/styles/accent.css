@@ -1,0 +1,21 @@
+/*
+ * On-accent text color, kept in its own file (not tokens.css/global.css) so it
+ * doesn't collide with an in-flight brand rework on those files.
+ *
+ * Light theme: white on the dark ink-blue accent.
+ * Dark themes: dark ink on the warm brass/gold accent — white there fails WCAG AA.
+ * Imported after global.css in main.tsx, so the .skip-link override wins.
+ */
+:root {
+  --on-accent: #ffffff;
+}
+[data-theme='bordeaux'] {
+  --on-accent: #291106;
+}
+[data-theme='forest'] {
+  --on-accent: #11231a;
+}
+
+.skip-link {
+  color: var(--on-accent);
+}

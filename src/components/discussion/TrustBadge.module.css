@@ -1,0 +1,19 @@
+.badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+/* Steward reads a touch stronger than Contributor. */
+.steward {
+  background: var(--accent);
+  color: var(--on-accent);
+}

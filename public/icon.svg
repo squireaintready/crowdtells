@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Crowdtells">
+  <!-- Lettermark "C": brass on the brand's deep oxblood tile. Maskable-safe padding. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c1a20" />
+      <stop offset="1" stop-color="#130a0e" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)" />
+  <svg x="92" y="92" width="328" height="328" viewBox="0 0 64 64">
+    <path d="M46 18 A20 20 0 1 0 46 46" fill="none" stroke="#eccd97" stroke-width="7.5" stroke-linecap="round" />
+  </svg>
+</svg>

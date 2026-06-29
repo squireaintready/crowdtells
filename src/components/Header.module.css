@@ -1,0 +1,481 @@
+.masthead {
+  padding-top: var(--s-5);
+}
+
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Tracked-uppercase dateline — the editorial nameplate rule. Sans, small, wide
+   tracking, muted ink (the reference's "DATE · Free to read" register). */
+.dateline {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 650;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+/* Article view: the back-to-feed control takes the masthead's left slot (where the
+   dateline sits on the feed), so the reading view keeps a one-tap path back without
+   spending a separate row on it. */
+.back {
+  /* Hidden by default → the DESKTOP article keeps the original masthead + its own
+     standalone back row. Revealed only in the phone-article media block below. */
+  display: none;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+.back:hover {
+  color: var(--accent);
+}
+
+.utilities {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* Top-row search affordance (phone): an icon that expands the inline field below.
+   On desktop the search lives in the Controls bar, so this icon is hidden there. */
+.searchBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-mute);
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+.searchBtn:hover {
+  border-color: var(--text-mute);
+  color: var(--text);
+}
+@media (pointer: coarse) {
+  .searchBtn {
+    min-width: 44px;
+  }
+}
+@media (min-width: 561px) {
+  .searchBtn {
+    display: none;
+  }
+}
+
+/* The inline search field the icon expands into (full-width row under the top row). */
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  padding: 0 var(--s-3);
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+}
+.searchRow:focus-within {
+  border-color: var(--accent);
+}
+.searchRowIcon {
+  flex-shrink: 0;
+  color: var(--text-mute);
+}
+.searchRow input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  /* 16px so focusing the field never triggers iOS zoom. */
+  font-size: 1rem;
+  outline: none;
+}
+.searchRow input::placeholder {
+  color: var(--text-mute);
+}
+.searchClose {
+  flex-shrink: 0;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-size: 1rem;
+  line-height: 1;
+}
+.searchClose:hover {
+  color: var(--text);
+}
+@media (pointer: coarse) {
+  .searchClose {
+    min-width: 44px;
+  }
+}
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-mute);
+}
+
+/* The Live/updated indicator placed beside the wordmark on a PHONE — it fills the
+   slot the tagline vacates so the compact masthead is one row shorter. Hidden by
+   default; the desktop masthead shows Live in the utilities row instead. */
+.freshness {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-mute);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--up);
+  animation: pulse 2.4s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 5px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+}
+
+.nameplateRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  padding: var(--s-4) 0 var(--s-4);
+}
+
+.nameplate {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.7rem, 5.6vw, 2.4rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--text);
+  display: inline-block;
+}
+
+/* The wordmark is the home link (resets every route — works on the feed and the
+   article view, where it's the quickest way back). Reset the anchor so it looks
+   exactly like the inert masthead, with a clear keyboard-focus ring. */
+.home {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--r);
+}
+.home:hover .rule {
+  background: var(--accent-strong);
+}
+.home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+@media (hover: hover) {
+  .home:hover {
+    opacity: 0.92;
+  }
+}
+
+/* Animated wordmark: letters settle in, a brass "record rule" draws beneath,
+ * and a live brass tell-dot pops and keeps a slow pulse. */
+.word {
+  display: block;
+}
+.letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.16em);
+  animation: npDrop 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rule {
+  position: relative;
+  display: block;
+  height: 2px;
+  margin-top: 9px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: npDraw 0.7s cubic-bezier(0.4, 0, 0.1, 1) 0.9s both;
+}
+.tell {
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  transform: translateY(-50%) scale(0);
+  animation:
+    npPop 0.3s ease 0.9s both,
+    npPulse 2.8s ease-in-out 1.8s infinite;
+}
+@keyframes npDrop {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes npDraw {
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes npPop {
+  to {
+    transform: translateY(-50%) scale(1);
+  }
+}
+@keyframes npPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  15% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .rule {
+    transform: scaleX(1);
+    animation: none;
+  }
+  .tell {
+    transform: translateY(-50%) scale(1);
+    animation: none;
+  }
+}
+
+/* Standfirst beside the wordmark — the masthead pun + live story count. Reads as
+   an editorial subhead: serif italic, dimmed ink, settled on the wordmark baseline. */
+.tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+/* Aggressive masthead (desktop): Header sizes the wordmark inline to fill the column
+   (the comp's §01 fitFontSize wordmark), so settle the tagline on its own line beneath
+   it rather than squeezing it alongside. Desktop-only — the mobile masthead keeps its
+   shipped compact reading-bar (no enlarged wordmark there). */
+@media (min-width: 561px) {
+  .nameplateRowBold {
+    align-items: flex-start;
+  }
+  .nameplateRowBold .tagline {
+    width: 100%;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* The masthead is sticky on the phone FEED too (not just the article): the top
+     row + the Controls tabs below stay pinned. No bottom border here — the Controls
+     bar carries the single separator, so there's never a doubled rule. */
+  .masthead {
+    padding-top: var(--s-3);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
+  }
+
+  /* Collapse on scroll = the SAME wordmark scaling down and gliding up into the top
+     row (one font getting smaller, not a swap between two elements). Tunables: how far
+     it rises (--np-rise), how much it shrinks (--np-scale ≈ 1.3rem at rest ~1.65rem),
+     and how far the row's vacated space is pulled up so the tabs meet it (--np-pull). */
+  .masthead {
+    --np-rise: -38px;
+    --np-scale: 0.8;
+  }
+  .home {
+    transform-origin: left top;
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    /* Promote to its own compositor layer so the scale/rise runs on the GPU and
+       stays crisp + jank-free through the collapse. */
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  .collapsed .home {
+    transform: translateY(var(--np-rise)) scale(var(--np-scale));
+    /* Stay tappable (it's the home link) even though its row is now click-through. */
+    pointer-events: auto;
+  }
+  /* The wordmark's row folds to nothing as the wordmark (overflow-visible) glides up
+     into the top row; the tabs below then rise to meet the collapsed bar. Snappy
+     ease-out so the fold reads as one quick, smooth motion with the wordmark. */
+  .nameplateRow {
+    max-height: 56px;
+    overflow: visible;
+    transition:
+      max-height 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      padding 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .collapsed .nameplateRow {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    /* The wordmark glides up into the top row but this row's box (overflow-visible)
+       stays put, and at z-index 20 it would swallow taps on the section tabs
+       beneath it — on iOS the left tabs went unclickable once the header pinned.
+       Make the collapsed row click-through; only .home above re-enables itself. */
+    pointer-events: none;
+  }
+  /* As the wordmark rises to take over the top row, the things sharing that row
+     fade out so it never sits on top of them: the date + Live tell (feed) AND the
+     "← back" link (article — it lives in the date's slot). They reappear at the top
+     of the page when nothing is pinned. */
+  .dateline,
+  .freshness,
+  .back {
+    transition: opacity 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .collapsed .dateline,
+  .collapsed .freshness,
+  .collapsed .back {
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home,
+    .nameplateRow,
+    .dateline,
+    .freshness,
+    .back {
+      transition: none;
+    }
+  }
+  /* Compact reading bar — applies to BOTH the feed and the article on a phone.
+     Drop the topline's hairline and pull the rows tight; the Live indicator moves
+     out of the utilities row (below) and up beside the wordmark, and the tagline is
+     hidden. Two short rows: [date|back + controls] then [wordmark + Live]. */
+  .topline {
+    gap: var(--s-1) var(--s-3);
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+  }
+  /* Tighten the utilities cluster (search · theme · avatar) so it leaves room for the
+     collapsed wordmark gliding up into this row — the main cause of the old clash was
+     the wide signed-in account pill, now avatar-only (see AccountControl). */
+  .utilities {
+    gap: var(--s-2);
+  }
+  /* Live shows beside the wordmark on a phone, not in the utilities row. */
+  .live {
+    display: none;
+  }
+  /* Keep the wordmark + Live on ONE row (Live fills the slot the tagline vacates)
+     so the masthead stays short. WRAP (not nowrap): on a sub-320px screen or under
+     large user text-zoom, the Live caption drops to its own line below the wordmark
+     instead of overflowing into body{overflow-x:hidden} and getting clipped. */
+  .nameplateRow {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
+    padding: var(--s-3) 0 var(--s-3);
+  }
+  .tagline {
+    display: none;
+  }
+  .freshness {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  /* Phone ARTICLE only (pinned ≡ article): the date's slot becomes the back control.
+     Everything above is shared with the feed, so the two pages look identical apart
+     from date ↔ "← All stories". */
+  .masthead.pinned .dateline {
+    display: none;
+  }
+  .masthead.pinned .back {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Very small phones (≤360px, e.g. the original iPhone SE): the collapsed wordmark and
+   the utilities cluster come within a few px of each other, so tighten the cluster's
+   gaps the rest of the way. Scoped here so normal phones keep the roomier spacing. */
+@media (max-width: 360px) {
+  .utilities {
+    gap: var(--s-1);
+  }
+}
+
+/* ── Article view: pin the masthead ───────────────────────────────────────────
+   The article sets `pinned` on the Header (the feed doesn't — its Controls bar is
+   already sticky), so the masthead pins ONLY on the article: a persistent path home
+   through a long story, no double-pinning on the feed. `pinned` adds JUST the
+   stickiness here; the compact phone layout it shares with the feed lives in the
+   media block above, and the only feed/article difference is the date ↔ back swap.
+   Driven by an explicit class (NOT `:has(+ main)`) with a SOLID opaque background and
+   NO backdrop-filter: iOS Safari has a long-standing bug where position:sticky +
+   backdrop-filter on one element fails to stick, and an opaque bar reads cleaner. */
+.masthead.pinned {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}

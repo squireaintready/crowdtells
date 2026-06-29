@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <title>Privacy Policy — Crowdtells</title>
+    <meta
+      name="description"
+      content="How Crowdtells handles your data: what we collect, the analytics we use, our privacy-first account model, and your rights. We never sell your data."
+    />
+    <meta name="author" content="Crowdtells" />
+    <link rel="canonical" href="https://crowdtells.com/privacy" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Crowdtells" />
+    <meta property="og:title" content="Privacy Policy — Crowdtells" />
+    <meta
+      property="og:description"
+      content="How Crowdtells handles your data: what we collect, our privacy-first model, and your rights."
+    />
+    <meta property="og:url" content="https://crowdtells.com/privacy" />
+    <meta property="og:image" content="https://crowdtells.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Privacy Policy — Crowdtells" />
+    <meta name="twitter:image" content="https://crowdtells.com/og.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#fbfaf7" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('crowdtell-theme');
+          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
+          if (t !== 'light' && t !== 'bordeaux' && t !== 'forest')
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'bordeaux' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+          var c = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' }[t];
+          var m = document.querySelector('meta[name=theme-color]');
+          if (m && c) m.setAttribute('content', c);
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      @font-face {
+        font-family: 'Fraunces Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/fraunces-latin.woff2) format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/inter-latin.woff2) format('woff2-variations');
+      }
+      :root {
+        --bg: #fbfaf7;
+        --ink: #1a1813;
+        --dim: #54504a;
+        --mute: #6f695e;
+        --accent: #27496d;
+        --border: #e7e2d8;
+      }
+      [data-theme='bordeaux'] {
+        color-scheme: dark;
+        --bg: #090406;
+        --ink: #f4ece9;
+        --dim: #c7b9b6;
+        --mute: #968985;
+        --accent: #d6a35b;
+        --border: #381b21;
+      }
+      [data-theme='forest'] {
+        color-scheme: dark;
+        --bg: #0c1410;
+        --ink: #eaf1ea;
+        --dim: #aebdb2;
+        --mute: #8a9b8f;
+        --accent: #cf9d63;
+        --border: #27392e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          color-scheme: dark;
+          --bg: #090406;
+          --ink: #f4ece9;
+          --dim: #c7b9b6;
+          --mute: #968985;
+          --accent: #d6a35b;
+          --border: #381b21;
+        }
+      }
+      body {
+        font-family:
+          'Inter Variable',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 5rem;
+        line-height: 1.65;
+        color: var(--ink);
+        background: var(--bg);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+      }
+      h2 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        letter-spacing: -0.01em;
+      }
+      .muted {
+        color: var(--mute);
+        font-size: 0.9rem;
+      }
+      .back {
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="back"><a href="/">← Back to Crowdtells</a></p>
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: June 2026</p>
+
+    <p>
+      Crowdtells (“we”, “us”) is a free news service that reads prediction markets and the press
+      together. This policy explains what we collect, why, and your choices. We keep data collection
+      to the minimum needed to run the site.
+    </p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>
+        <strong>Account info</strong> — if you sign in (Google or email), we store your email and,
+        for Google, your display name and avatar URL, to attribute your comments. We never see your
+        Google password.
+      </li>
+      <li>
+        <strong>Your contributions</strong> — comments, likes, and claim votes you post, with their
+        timestamps.
+      </li>
+      <li>
+        <strong>Saved stories &amp; followed topics</strong> — when you are signed in, these sync to
+        your account so they follow you across devices. Signed out, they stay only in your browser.
+      </li>
+      <li>
+        <strong>Theme</strong> — your light/dark choice is stored only in your browser
+        (localStorage) and never leaves your device.
+      </li>
+    </ul>
+    <p>We do not sell your data, and we do not run advertising trackers.</p>
+
+    <h2>Analytics &amp; cookies</h2>
+    <p>
+      We measure how the site is used to understand what readers find useful — never to
+      identify you. We honor your browser&apos;s <strong>Do Not Track</strong> signal: with it
+      on, neither Google Analytics nor PostHog loads at all.
+    </p>
+    <ul>
+      <li>
+        <strong>Cloudflare Web Analytics</strong> — privacy-first and <strong>cookieless</strong>.
+        It counts page views and referrers without cookies, without cross-site tracking, and
+        without ever identifying you.
+      </li>
+      <li>
+        <strong>Google Analytics 4</strong> — aggregate usage analytics. It sets first-party
+        cookies (e.g. <code>_ga</code>) to gauge new vs. returning visits; we do not link it to
+        advertising or Google Ads. You can opt out with the
+        <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer" target="_blank"
+          >Google Analytics opt-out add-on</a
+        >
+        or by blocking cookies. This is the only cookie the site sets — everything else (your
+        theme, signed-out saves) stays in your browser&apos;s localStorage.
+      </li>
+      <li>
+        <strong>PostHog</strong> — product analytics that helps us see how features are used (do
+        readers reach the end of a story, make a Call, join a discussion) so we can improve them.
+        It is <strong>cookieless</strong> — it keeps an anonymous id in your browser&apos;s
+        localStorage, not a cookie — and is hosted in the US. We do not collect what you type
+        (comments, search, and form fields are excluded), and we never sell your data or use it
+        for advertising. If you are signed in, your activity is linked to your account so we can
+        understand the signed-in experience; signed out, it stays anonymous. We may record
+        anonymized, replayed sessions to diagnose usability problems, with all text you enter
+        masked. Do Not Track, or blocking <code>posthog.com</code>, turns it off entirely.
+      </li>
+    </ul>
+
+    <h2>Service providers</h2>
+    <p>We rely on a small set of providers to operate:</p>
+    <ul>
+      <li>
+        <strong>Supabase</strong> — authentication and the database storing accounts and comments.
+      </li>
+      <li>
+        <strong>Google</strong> — optional sign-in (Google OAuth) and Google Analytics (aggregate
+        usage stats; see Analytics &amp; cookies above).
+      </li>
+      <li>
+        <strong>Cloudflare</strong> — static site hosting (Cloudflare Pages) and privacy-first,
+        cookieless Web Analytics.
+      </li>
+      <li>
+        <strong>Polymarket, Kalshi, Google News, Groq</strong> — public market data, news headlines,
+        and AI-generated briefings. These power the content; they do not receive your personal data.
+      </li>
+    </ul>
+
+    <h2>Your choices &amp; rights</h2>
+    <ul>
+      <li>You can edit or delete any comment you’ve posted.</li>
+      <li>
+        You can <strong>export your data</strong> or
+        <strong>permanently delete your account</strong>
+        from the account menu (or by contacting us). Deletion removes your profile, comments, likes,
+        votes, saved stories, and topic interests, and unsubscribes your email — it cannot be
+        undone.
+      </li>
+      <li>You can clear local preferences anytime by clearing your browser storage.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>
+      Questions or data requests:
+      <a href="mailto:hello@crowdtells.com">hello@crowdtells.com</a>.
+    </p>
+  </body>
+</html>

@@ -1,0 +1,337 @@
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /* Solid opaque bar — NOT a translucent backdrop-filter. The tabs bar pins over the
+     feed (the most-scrolled surface), so a blur(10px) forced the compositor to
+     re-rasterize the blurred backdrop on every scroll frame — the main desktop scroll
+     jank. A solid fill reads cleaner under the feed, matches the pinned masthead and the
+     mobile bar, and sidesteps the iOS position:sticky + backdrop-filter bug (see
+     Header.module.css). */
+  background: var(--bg);
+  border-bottom: 2px solid var(--rule);
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+/* Section navigation — newspaper section bar. Scrolls horizontally only:
+   overflow-y hidden + contained overscroll so a sideways swipe never nudges the
+   page vertically or reveals a scrollbar gutter. */
+.tabs {
+  display: flex;
+  gap: var(--s-5);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  white-space: nowrap;
+  padding: var(--s-3) 0;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  transition: color var(--t-fast);
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tabActive {
+  color: var(--accent);
+}
+
+/* The active section reads in accent with a 2px accent underline flush to the
+   bar's bottom rule — the editorial section marker. */
+.tabActive::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* Search */
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  align-self: center;
+  padding: 0 var(--s-3);
+  height: 34px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-mute);
+  transition: border-color var(--t-fast);
+}
+
+.search:focus-within {
+  border-color: var(--accent);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+}
+
+.search input {
+  width: 150px;
+  max-width: 38vw;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  /* Sit at the control-bar scale on desktop (tabs/chips are ~0.75rem) instead of
+     the inherited 16px body size, which read oversized. */
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: var(--text-mute);
+}
+
+/* Wrapper around the standfirst + chip rail. Desktop: display:contents, so it's an
+   invisible box and the two flow exactly as before (standfirst line, then chips).
+   Mobile: it becomes one flex row (see the media query) — Personalize pinned left,
+   chips scrolling beside it. */
+.filterArea {
+  display: contents;
+}
+
+/* Standfirst hint + personalize affordance under the section bar */
+.standfirst {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) 0 0;
+}
+
+.hint {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.86rem;
+  line-height: 1.3;
+  color: var(--text-dim);
+}
+
+.interests {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 650;
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
+}
+
+.interests:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* The tune icon stands in for the text label on phones; desktop shows the text. */
+.interestsIcon {
+  display: none;
+}
+
+/* Category filters. Desktop: wrap, so every chip is mouse-reachable (a scrolled
+   row hides chips behind an invisible scrollbar a mouse can't reach). Mobile:
+   a single swipeable row (below), so the bar stays compact instead of a tall
+   multi-row block. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3) 0 var(--s-1);
+}
+
+.chip {
+  composes: chipToggle from '../styles/primitives.module.css';
+  flex-shrink: 0;
+}
+
+.chipActive {
+  composes: chipToggleOn from '../styles/primitives.module.css';
+  /* iOS/WebKit: .controls is a sticky, backdrop-filtered layer that defers the
+     descendant text repaint on a class toggle — the fill flips instantly but the
+     label color lags until the next reflow/scroll. Promoting the selected chip to
+     its own compositor layer forces the color to rasterize in the same paint as
+     the background. Scoped to the (single) active chip, so no per-chip layer cost. */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* The "show all / fewer" toggle is an inline rail item (measured in Controls.tsx
+   to land at the END of row two), styled as a quiet text affordance so it reads
+   as an action, not a selectable topic chip. */
+.moreChips {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: var(--s-1);
+  padding: 5px 4px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.moreChips:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  /* The masthead is sticky above us on phones (its collapsed top row), so the tabs
+     bar pins just beneath it rather than at the very top. Kept in sync with the
+     collapsed masthead height (--mast-h, written by Header). The solid background +
+     no-blur is now the base rule (shared with desktop), so only the offset differs here. */
+  .controls {
+    top: var(--mast-h, 54px);
+  }
+
+  /* On phones the search moved into the masthead's top row (an icon that expands an
+     inline field), so the in-bar search is gone — the tabs get the full row. */
+  .row {
+    gap: var(--s-2);
+  }
+
+  .search {
+    display: none;
+  }
+
+  /* Compact, swipeable filter row on phones (wrapping 20+ chips made a tall,
+     awkward block). Horizontal-only scroll with a hidden scrollbar, roomier
+     gaps for thumbs, snap, and a soft right-edge fade hinting there's more. */
+  .chips {
+    flex-wrap: nowrap;
+    gap: var(--s-2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-left: var(--s-1);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, #000 84%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 84%, transparent 100%);
+  }
+
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip {
+    scroll-snap-align: start;
+  }
+
+  /* The rail scrolls on phones, so the desktop collapse + toggle don't apply. */
+  .moreChips {
+    display: none;
+  }
+
+  /* The section hint just restates the active tab's meaning; on a phone the tab
+     plus the dense feed make it redundant, and it costs a full serif line. Hide
+     it on mobile (keep on desktop); the standfirst then carries just the quiet
+     Personalize affordance. */
+  .hint {
+    display: none;
+  }
+
+  /* Collapse the Personalize affordance and the chip rail onto ONE row: the
+     standfirst (just the Personalize button here — the hint is hidden) pins left at
+     its natural width, the chip rail takes the rest and scrolls. */
+  .filterArea {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-block: var(--s-2);
+  }
+
+  /* The hint is hidden on mobile, so standfirst carries only the Personalize button;
+     pin it left at its own width rather than letting it grow. */
+  .standfirst {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-top: 0;
+  }
+
+  /* The chip rail fills the remaining width and scrolls; min-width:0 lets the flex
+     item shrink below its content so the overflow scroll (not page overflow) kicks in. */
+  .chips {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* On a phone the text "Personalize"/"Edit interests" ate the width the chip rail
+     needs, so swap it for a compact tune icon (the standard personalize/filter glyph)
+     pinned left of the scrolling chips — a 44px ringed control matching the chips'
+     touch height. The text label stays announced via the button's aria-label. */
+  .interests {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    color: var(--accent);
+  }
+  .interests:hover {
+    border-color: var(--accent);
+  }
+  .interests[aria-pressed='true'] {
+    background: var(--accent-tint);
+    border-color: var(--accent);
+  }
+  .interestsLabel {
+    display: none;
+  }
+  .interestsIcon {
+    display: block;
+  }
+
+  /* The filterArea now owns the vertical channel (padding-block above); the rail's
+     own block padding is zero so the chips' touch height (the coarse-pointer rule
+     below) isn't padded twice and the row stays a single comfortable band. */
+  .chips {
+    padding-block: 0;
+  }
+}
+
+/* Fill the touch box so every chip reads as the same compact pill instead of a
+   tiny label floating in the forced 44px height (matches the source/topic chips
+   elsewhere). */
+@media (pointer: coarse) {
+  .chip {
+    padding-block: 9px;
+  }
+}

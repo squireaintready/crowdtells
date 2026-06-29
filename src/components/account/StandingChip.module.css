@@ -1,0 +1,107 @@
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--chip-bd);
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  font-family: var(--font-sans);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.lv {
+  font-size: 0.56rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+.n {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.reader {
+  --chip-bg: var(--surface-2);
+  --chip-fg: var(--text-dim);
+  --chip-bd: var(--border);
+}
+.contributor {
+  --chip-bg: var(--accent-tint);
+  --chip-fg: var(--accent);
+  --chip-bd: transparent;
+}
+.steward {
+  --chip-bg: var(--accent-tint);
+  --chip-fg: var(--accent);
+  --chip-bd: #cda23f;
+}
+
+/* Level-up: a gold ring expands + fades once, with a brief brighten. */
+.flash::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid #cda23f;
+  opacity: 0;
+  pointer-events: none;
+  animation: chipFlash 1400ms ease-out 1;
+}
+.flash {
+  animation: chipBrighten 1400ms ease-out 1;
+}
+@keyframes chipFlash {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes chipBrighten {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  35% {
+    box-shadow: 0 0 10px 1px rgba(205, 162, 63, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash::after,
+  .flash {
+    animation: none;
+  }
+}
+
+/* Phone: the account button collapses to an avatar-only ring (see AccountControl), so the
+   inline pill won't fit — become a compact level badge tucked into the avatar's corner (the
+   standard mobile pattern), with a ring in the page colour to separate it from the avatar.
+   Positioned INSIDE the button so it never overflows the tight masthead. */
+@media (max-width: 560px) {
+  .chip {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    gap: 0;
+    padding: 0;
+    min-width: 16px;
+    height: 16px;
+    justify-content: center;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1.5px var(--bg);
+  }
+  .lv {
+    display: none;
+  }
+  .n {
+    font-size: 0.6rem;
+  }
+}

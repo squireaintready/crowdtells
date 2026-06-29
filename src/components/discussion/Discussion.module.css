@@ -1,0 +1,494 @@
+.wrap {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/* On phones the like + count + sort-pill group exceeds the content width; let
+   the sort group wrap to its own line (its margin-left:auto keeps it right-
+   aligned) instead of overflowing the article horizontally. */
+@media (max-width: 560px) {
+  .bar {
+    flex-wrap: wrap;
+    row-gap: var(--s-2);
+  }
+  /* Tighten the discussion block on a phone: less air above the Like/comments row
+     and between it and the composer below. */
+  .wrap {
+    padding-top: var(--s-4);
+    gap: var(--s-3);
+  }
+}
+
+.storyLike {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.84rem;
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+
+.storyLike:hover:not(:disabled) {
+  border-color: var(--down);
+  color: var(--down);
+}
+
+.storyLike:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.count {
+  font-size: 0.82rem;
+  color: var(--text-mute);
+  font-weight: 600;
+}
+
+/* Sort control */
+.sort {
+  display: inline-flex;
+  margin-left: auto;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+
+.sortBtn {
+  padding: 3px 11px;
+  border: none;
+  background: none;
+  border-radius: var(--r-pill);
+  color: var(--text-mute);
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.sortBtn:hover {
+  color: var(--text);
+}
+
+.sortOn {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+}
+
+/* Sign-in */
+.signin {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+}
+
+.signinLead {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-weight: 560;
+  color: var(--text);
+}
+
+.google {
+  /* Fill the sign-in panel and center the logo+label so the fallback button
+     matches the centered GIS iframe on both desktop and mobile (no orphaned,
+     under-sized button when GIS can't load). */
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: var(--r);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 650;
+  font-size: 0.9rem;
+}
+
+.google:hover {
+  background: var(--surface-2);
+}
+
+/* Container for Google's own rendered GIS button */
+.gisButton {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+  /* Contain the fixed-width GIS iframe inside the sign-in panel on a 320px
+     phone rather than letting it overflow the viewport. */
+  max-width: 100%;
+  overflow: hidden;
+  color-scheme: light;
+}
+
+.emailRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.emailRow input {
+  flex: 1;
+  min-width: 180px;
+  padding: 9px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.emailRow input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.emailRow button {
+  padding: 9px 16px;
+  border-radius: var(--r);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+/* Composer */
+.composer {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.composer textarea,
+.replyComposer textarea,
+.editBox textarea {
+  width: 100%;
+  resize: vertical;
+  padding: var(--s-3);
+  border-radius: var(--r);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.5;
+}
+
+.composer textarea:focus,
+.replyComposer textarea:focus,
+.editBox textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.composerActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Reply composer — same control, lighter footprint, indented by .replyWrap */
+.replyComposer {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* Inline edit box */
+.editBox {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.editActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-3);
+}
+
+.post {
+  composes: btnFilled btnFilledPill from '../../styles/primitives.module.css';
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: var(--text-mute);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px;
+}
+
+.linkBtn:hover {
+  color: var(--text);
+}
+
+/* Comments */
+.list {
+  display: grid;
+  gap: var(--s-5);
+  list-style: none;
+}
+
+.thread {
+  display: grid;
+  gap: var(--s-3);
+  list-style: none;
+}
+
+.threadInner {
+  display: grid;
+  gap: var(--s-4);
+  list-style: none;
+}
+
+.comment {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--s-3);
+}
+
+/* A reply: indented under its thread root, with a hairline lead-in rule. */
+.replyComment {
+  margin-left: var(--s-5);
+  padding-left: var(--s-4);
+  border-left: 2px solid var(--border);
+}
+
+.replyWrap {
+  margin-left: calc(var(--s-5) + var(--s-4));
+}
+
+.avatar,
+.avatarFallback {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-weight: 750;
+  font-size: 0.92rem;
+}
+
+.commentBody {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.commentHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px var(--s-2);
+  /* Author/meta belongs to the bubble below — sit it tight on a hair of margin. */
+  margin: 0 2px;
+}
+
+.author {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.time {
+  font-size: 0.74rem;
+  color: var(--text-mute);
+}
+
+/* Follow toggle beside another reader's name in the thread. */
+.follow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  background: transparent;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  white-space: nowrap;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+.follow:hover:not(:disabled) {
+  background: var(--accent-tint);
+}
+.followingOn {
+  color: var(--text-mute);
+  border-color: var(--border-strong);
+}
+.followingOn:hover:not(:disabled) {
+  color: var(--down);
+  border-color: var(--down);
+  background: var(--down-tint);
+}
+.follow:disabled {
+  opacity: 0.6;
+}
+
+.edited {
+  font-style: italic;
+}
+
+/* Quiet inline badge when a comment was posted as a note on the author's call. */
+.callTag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-mute);
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Comment body — a tidy bubble that hugs its content (never full-width ragged),
+   on a comfortable reading measure. Others read on a surface card; the reader's
+   own messages are accent-filled (text in the AA-safe --on-accent). The serif at
+   ~15.2px / 1.55 keeps the thread reading like prose, not chat chrome. */
+.text {
+  width: fit-content;
+  max-width: min(100%, 56ch);
+  margin: 0;
+  padding: var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  /* Square the top-left corner toward the avatar so the bubble "points" at its author. */
+  border-top-left-radius: var(--r-sm);
+  background: var(--surface);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* The reader's own comments — accent-filled bubble, AA-safe text-on-accent. */
+.mine .text {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-4);
+  margin: 0 2px;
+}
+
+/* Inline "why are you flagging this?" category picker (replaces the Report link). */
+.flagMenu {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+.flagged {
+  font-size: 0.78rem;
+  color: var(--text-mute);
+}
+
+.like {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--text-mute);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.like:hover:not(:disabled),
+.liked {
+  color: var(--accent);
+}
+
+/* Anchors the one-shot spark burst + glyph pop to the like icon (▲ / ♥), so the
+   flourish radiates from the glyph rather than the whole button. */
+.likeIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Empty / loading state ("No comments yet…", "Loading…") — a compact, centered,
+   quiet prompt that reads as deliberate rather than an afterthought, without a tall
+   empty box. */
+.note {
+  padding: var(--s-3) 0 var(--s-2);
+  font-size: 0.92rem;
+  color: var(--text-mute);
+  text-align: center;
+}
+.error {
+  font-size: 0.86rem;
+  color: var(--text-mute);
+}
+
+.error {
+  color: var(--down);
+}
+
+/* Touch refinements — keep the quiet inline comment affordances reading as text
+   (not hollow 44px boxes), the segmented sort compact, and the magic-link field
+   level with its button. Mirrors the affordance treatment used across the app
+   (Customize / Unsubscribe / Delete account). The email input keeps its 16px
+   font so focusing it never triggers iOS zoom — only its height is pinned. */
+@media (pointer: coarse) {
+  .linkBtn,
+  .like {
+    min-height: 0;
+    padding-block: 6px;
+  }
+  .sortBtn {
+    min-height: 0;
+    padding-block: 7px;
+  }
+  .emailRow input {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* The 16px gap reads as a loose band once the action affordances are de-bloated
+     to inline text; tighten it so the comment actions read as one line. */
+  .commentActions {
+    gap: var(--s-3);
+  }
+}

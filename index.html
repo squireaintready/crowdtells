@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Render-critical brand fonts: preload so they're fetched before CSS parses. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/fraunces-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/source-serif-4-latin.woff2" crossorigin />
+    <!-- Hero/entity images load cross-origin; warm the TLS connections early. -->
+    <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
+    <link rel="preconnect" href="https://coin-images.coingecko.com" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Crowdtells" />
+    <!-- Set the theme before paint to avoid a flash of the wrong palette.
+         Themes: light, bordeaux, forest. Legacy 'dark'/'oxblood' migrate to bordeaux. -->
+    <script>
+      (function () {
+        try {
+          var bg = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' };
+          var t = localStorage.getItem('crowdtell-theme');
+          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
+          if (!bg[t]) {
+            // Light is the universal default; a dark theme (bordeaux/forest) is
+            // opt-in via the toggle and then persisted, regardless of the OS
+            // color scheme.
+            t = 'light';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', bg[t]);
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Set the reading style ("intensity") before paint, same as the theme, so
+         there's no flash. 'aggressive' (the bold Pretext treatment) is the default;
+         'calm' (the settled editorial design) is opt-in via settings, then persisted.
+         NOTE: this only sets the attribute — the aggressive visual layer is a
+         client-side progressive enhancement applied after the engine loads, so the
+         first paint and any no-JS/crawler view stay on the real calm text. -->
+    <script>
+      (function () {
+        try {
+          var i = localStorage.getItem('ct:intensity');
+          document.documentElement.setAttribute(
+            'data-intensity',
+            i === 'calm' ? 'calm' : 'aggressive',
+          );
+        } catch (e) {
+          document.documentElement.setAttribute('data-intensity', 'aggressive');
+        }
+      })();
+</script>
+
+    <title>Crowdtells — A living record of what the crowd believes</title>
+    <meta
+      name="description"
+      content="A news platform built on the crowd's read. Prediction markets flag the story; Crowdtells briefs it from many outlets and keeps a living record of how opinion moves over time."
+    />
+    <!-- Absolute URLs for the live custom domain. -->
+    <link rel="canonical" href="https://crowdtells.com/" />
+    <link rel="alternate" type="application/rss+xml" title="Crowdtells" href="/feed.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Crowdtells" />
+    <meta property="og:title" content="Crowdtells" />
+    <meta
+      property="og:description"
+      content="A living record of what the crowd believes — news, told through the crowd. The money's read and the people's read, on one timeline."
+    />
+    <meta property="og:url" content="https://crowdtells.com/" />
+    <meta property="og:image" content="https://crowdtells.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Crowdtells" />
+    <meta
+      name="twitter:description"
+      content="A living record of what the crowd believes — news, told through the crowd. The money's read and the people's read, on one timeline."
+    />
+    <meta name="twitter:image" content="https://crowdtells.com/og.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "NewsMediaOrganization",
+            "@id": "https://crowdtells.com/#org",
+            "name": "Crowdtells",
+            "url": "https://crowdtells.com/",
+            "email": "hello@crowdtells.com",
+            "foundingDate": "2026",
+            "founder": {
+              "@type": "Person",
+              "name": "Samuel Jo",
+              "url": "https://crowdtells.com/about"
+            },
+            "masthead": "https://crowdtells.com/about#whos-behind-it",
+            "publishingPrinciples": "https://crowdtells.com/about#how-briefings-are-written",
+            "ethicsPolicy": "https://crowdtells.com/about#standards",
+            "correctionsPolicy": "https://crowdtells.com/about#standards",
+            "actionableFeedbackPolicy": "https://crowdtells.com/about#contact",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://crowdtells.com/icon-512.png",
+              "width": 512,
+              "height": 512
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://crowdtells.com/#website",
+            "name": "Crowdtells",
+            "url": "https://crowdtells.com/",
+            "description": "A living record of what the crowd believes — news, told through the crowd, with the market's read and the community's read on one timeline.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://crowdtells.com/#org" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://crowdtells.com/?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Crowdtells needs JavaScript enabled to display the live feed.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+/* Slim first-run "personalize your feed" nudge — non-blocking, dismissible, replaces
+   the old auto-popping welcome modal. House style: surface-2 panel, hairline, no left
+   accent bar. Sits at the top of the feed and scrolls away under the sticky controls. */
+/* A single, quiet row — never wraps; the lead truncates before the action pill or
+   dismiss are pushed off. Deliberately understated (slim padding, a ghost CTA) so it
+   reads as a gentle nudge, not a call-out box. */
+.banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  animation: bannerIn var(--t) ease;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.lead {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  /* Truncate rather than wrap so the row stays one line on any width. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Ghost pill — accent outline, not a filled block, so the nudge stays subtle. */
+.cta {
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.cta:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--text-mute);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--t-fast),
+    background var(--t-fast);
+}
+
+.dismiss:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+@media (pointer: coarse) {
+  .dismiss {
+    min-width: 44px;
+  }
+}
+
+@keyframes bannerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+}
+
+/* Phone: drop the second line so it stays a single tight row (lead + CTA + dismiss). */
+@media (max-width: 560px) {
+  .sub {
+    display: none;
+  }
+}

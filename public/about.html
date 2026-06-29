@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <title>About Crowdtells — how it works &amp; who's behind it</title>
+    <meta
+      name="description"
+      content="What Crowdtells is, how stories are chosen and briefed, our editorial standards and sources, and how to reach us."
+    />
+    <meta name="author" content="Samuel Jo" />
+    <link rel="canonical" href="https://crowdtells.com/about" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Crowdtells" />
+    <meta property="og:title" content="About Crowdtells" />
+    <meta
+      property="og:description"
+      content="How Crowdtells chooses and briefs stories, our standards and sources, and how to reach us."
+    />
+    <meta property="og:url" content="https://crowdtells.com/about" />
+    <meta property="og:image" content="https://crowdtells.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About Crowdtells" />
+    <meta name="twitter:image" content="https://crowdtells.com/og.png" />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#fbfaf7" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('crowdtell-theme');
+          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
+          if (t !== 'light' && t !== 'bordeaux' && t !== 'forest')
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'bordeaux' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+          var c = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' }[t];
+          var m = document.querySelector('meta[name=theme-color]');
+          if (m && c) m.setAttribute('content', c);
+        } catch (e) {}
+      })();
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "name": "About Crowdtells",
+        "url": "https://crowdtells.com/about",
+        "dateModified": "2026-06-17",
+        "mainEntity": {
+          "@type": "Organization",
+          "name": "Crowdtells",
+          "url": "https://crowdtells.com/",
+          "logo": "https://crowdtells.com/icon-512.png",
+          "founder": {
+            "@type": "Person",
+            "name": "Samuel Jo",
+            "jobTitle": "Editor",
+            "url": "https://crowdtells.com/about",
+            "sameAs": ["https://github.com/squireaintready", "https://x.com/squireaintready"]
+          }
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Crowdtells", "item": "https://crowdtells.com/" },
+          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://crowdtells.com/about" }
+        ]
+      }
+    </script>
+    <style>
+      @font-face {
+        font-family: 'Fraunces Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/fraunces-latin.woff2) format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/inter-latin.woff2) format('woff2-variations');
+      }
+      :root {
+        --bg: #fbfaf7;
+        --ink: #1a1813;
+        --dim: #54504a;
+        --mute: #6f695e;
+        --accent: #27496d;
+        --border: #e7e2d8;
+      }
+      [data-theme='bordeaux'] {
+        color-scheme: dark;
+        --bg: #090406;
+        --ink: #f4ece9;
+        --dim: #c7b9b6;
+        --mute: #968985;
+        --accent: #d6a35b;
+        --border: #381b21;
+      }
+      [data-theme='forest'] {
+        color-scheme: dark;
+        --bg: #0c1410;
+        --ink: #eaf1ea;
+        --dim: #aebdb2;
+        --mute: #8a9b8f;
+        --accent: #cf9d63;
+        --border: #27392e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          color-scheme: dark;
+          --bg: #090406;
+          --ink: #f4ece9;
+          --dim: #c7b9b6;
+          --mute: #968985;
+          --accent: #d6a35b;
+          --border: #381b21;
+        }
+      }
+      body {
+        font-family:
+          'Inter Variable',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 5rem;
+        line-height: 1.65;
+        color: var(--ink);
+        background: var(--bg);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+      }
+      h2 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        letter-spacing: -0.01em;
+      }
+      .muted {
+        color: var(--mute);
+        font-size: 0.9rem;
+      }
+      .back {
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="back"><a href="/">← Back to Crowdtells</a></p>
+    <h1>About Crowdtells</h1>
+    <p class="muted">News, ranked by what the world is watching — the crowd tells it first.</p>
+
+    <p>
+      Crowdtells is a free, independent news service that treats prediction markets as a signal of
+      what matters. It reads the money on <a href="https://polymarket.com">Polymarket</a> and
+      <a href="https://kalshi.com">Kalshi</a> — where people trade real money on real-world outcomes —
+      to find the questions the crowd cares about right now, then briefs each one with grounded,
+      cross-source reporting.
+    </p>
+
+    <h2>How stories are chosen</h2>
+    <p>
+      Every 30 minutes we score active markets by how newsworthy they are: trading volume and
+      24-hour activity, resting liquidity and open interest (how much conviction is behind a
+      position), how sharply the odds have moved, and how contested the question is. The top stories
+      are selected with a diversity pass so one topic or one platform doesn't crowd out the rest.
+    </p>
+
+    <h2 id="how-briefings-are-written">How briefings are written</h2>
+    <p>
+      Each briefing is generated by an AI model (<a href="https://groq.com">Groq</a>) grounded in
+      real, recent news coverage retrieved for that market. We report what the sources agree on,
+      where they diverge, and how outlets frame it — and a "Market lens" on how the crowd's money
+      lines up with the press. Market figures (odds, volume, the cross-platform gap) are never
+      written by the model; they're filled in from the live market data at render time, so the
+      numbers in the prose always match the market and can't be fabricated. Cited sources are linked
+      on every story.
+    </p>
+
+    <h2>How to read the odds</h2>
+    <p>
+      Prediction-market odds are prices set by people trading real money, and they read as
+      probabilities. "Donald Trump 63%" means the crowd, in aggregate, is pricing a 63% chance of
+      that outcome — not a guarantee, and not our opinion. The number moves in real time as money
+      comes in, which is exactly what makes a sharp swing newsworthy. When the same question trades
+      on both Polymarket and Kalshi, we show the gap between them — a sign of how settled (or
+      contested) the crowd's read really is. Treat it as a fast, money-backed signal to read
+      alongside the reporting, not as financial advice.
+    </p>
+
+    <h2 id="standards">Editorial standards</h2>
+    <ul>
+      <li>Briefings are AI-generated from cited reporting and labeled as such.</li>
+      <li>Every story shows its publish date and links the outlets it draws on.</li>
+      <li>
+        When a market resolves, we record the outcome and whether the crowd called it correctly.
+      </li>
+      <li>
+        Crowdtells is not financial advice. Prediction-market odds are probabilities, not
+        guarantees.
+      </li>
+      <li>Spotted an error? Email us — corrections are welcome.</li>
+    </ul>
+
+    <h2 id="whos-behind-it">Who's behind it</h2>
+    <p>
+      Crowdtells is an independent project built and operated by Samuel Jo. It is not affiliated
+      with Polymarket, Kalshi, or any outlet it cites.
+    </p>
+
+    <h2 id="contact">Contact</h2>
+    <p>
+      Questions, corrections, or press:
+      <a href="mailto:hello@crowdtells.com">hello@crowdtells.com</a>.
+    </p>
+
+    <p class="back" style="margin-top: 2.5rem">
+      <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> ·
+      <a href="/">Live feed</a>
+    </p>
+  </body>
+</html>

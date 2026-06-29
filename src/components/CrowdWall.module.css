@@ -1,0 +1,324 @@
+/*
+ * The Wall — a league table of every live market, ranked by money. Uniform rows,
+ * straight columns, one restrained accent. Legibility is the whole point: nothing
+ * is money-scaled, the headline holds one readable line, and the metric columns are
+ * fixed-width so the eye reads straight down them. Mirrors the editorial system
+ * (hairline rules, --font-sans meta, --prose body) used across the feed.
+ */
+.wall {
+  margin-top: var(--s-5);
+}
+
+/* ——— Header: eyebrow + count on a baseline row, legend beneath ——— */
+.head {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--s-2);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.6875rem; /* 11px */
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.count {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.75rem; /* 12px — meta floor */
+  color: var(--text-mute);
+}
+
+/* ——— Legend: small left-rule swatches, one per crowd-vs-coverage tone ——— */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-4);
+  margin-top: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.75rem; /* 12px */
+  color: var(--text-mute);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+/* A small swatch echoing the row's left rule (a colored left edge on a quiet tile). */
+.legendSwatch {
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--surface-2);
+  border-left: 3px solid currentColor;
+}
+
+.legendAhead {
+  color: var(--accent);
+}
+.legendContested {
+  color: var(--down);
+}
+.legendAligned {
+  color: var(--border-strong);
+}
+
+/* The mode hint, pushed to the trailing edge: what the row's columns mean
+   ("odds · market · money") or, in the front-page index, that type scales with
+   money ("type ∝ money"). Desktop only — on a phone it would force the legend to
+   wrap. tabular so the glyphs sit evenly. */
+.legendHint {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-mute);
+}
+
+@media (max-width: 560px) {
+  .legendHint {
+    display: none;
+  }
+}
+
+/* ——— The table ——— */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each row is one tap target — a real <button>, reset to a flush table row. The
+   global :focus-visible ring (global.css) keeps it keyboard-operable. */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  min-height: 44px; /* comfortable, accessible touch target */
+  padding: var(--s-2) 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--t-fast);
+}
+
+@media (hover: hover) {
+  .row:hover {
+    background: var(--accent-tint);
+  }
+  .row:hover .headline {
+    color: var(--accent);
+  }
+}
+
+.row:active {
+  background: var(--accent-tint);
+}
+
+/* 3px left rule, colored by the crowd-vs-coverage read. */
+.rule {
+  flex: 0 0 3px;
+  align-self: stretch;
+  border-radius: 2px;
+}
+
+.ruleAhead {
+  background: var(--accent);
+}
+.ruleContested {
+  background: var(--down);
+}
+.ruleAligned {
+  background: var(--border-strong);
+}
+
+/* Odds — fixed-width column so the eye reads straight down; the one bit of accent. */
+.odds {
+  flex: 0 0 var(--wall-odds);
+  text-align: right;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.8125rem; /* 13px */
+  color: var(--accent);
+}
+
+/* Thin odds bar — a quiet visual echo of the percentage. Desktop only (redundant
+   with the % on a phone, and dropping it frees headline room). */
+.bar {
+  flex: 0 0 var(--wall-bar);
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* Headline — ONE readable line, ellipsized if long. Type never shrinks with the
+   money; it takes the flexible middle column. */
+.headline {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-serif);
+  font-weight: 460;
+  font-size: 0.90625rem; /* ~14.5px */
+  line-height: 1.3;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The favored outcome — a dim, optional aside (desktop only). Capped so a long
+   outcome name can't crowd out the headline. */
+.favored {
+  flex: 0 1 auto;
+  max-width: 7.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem; /* 12px */
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Money in play — right-aligned, fixed-width, dim. */
+.money {
+  flex: 0 0 var(--wall-money);
+  text-align: right;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.75rem; /* 12px */
+  color: var(--text-dim);
+}
+
+/* Phone: drop the desktop-only bar + favored so rows stay clean and the headline
+   gets the room. Mirrors the MOBILE_MQ breakpoint (src/lib/responsive.ts). */
+@media (max-width: 560px) {
+  .bar,
+  .favored {
+    display: none;
+  }
+}
+
+/*
+ * ——— Front-page index (aggressive intensity) ———
+ * The Wall becomes a newspaper index: each row's HEADLINE size and weight scale
+ * with the money at stake, the biggest markets reading as lead headlines and the
+ * smallest holding a legible floor — over the SAME single shared left edge (the
+ * tone rule, kept). The scaling is fed by `--wall-f` (0 = smallest market in the
+ * visible set, 1 = largest; a log mapping computed in the component) and is BOUNDED
+ * here per breakpoint so legibility comes first: the floor is never below 13px, the
+ * cap stops a runaway lead headline, and a long line ellipsizes on one row.
+ */
+.list.listBold {
+  border-top: 1px solid var(--border);
+  margin-top: var(--s-2);
+}
+
+/* Same accessible button-row as the league table (≥44px tap target, flush reset,
+   global :focus-visible ring), just a richer headline + a combined meta cell. */
+.rowBold {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s-2) 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--t-fast);
+}
+
+@media (hover: hover) {
+  .rowBold:hover {
+    background: var(--accent-tint);
+  }
+  .rowBold:hover .headlineBold {
+    color: var(--accent);
+  }
+}
+
+.rowBold:active {
+  background: var(--accent-tint);
+}
+
+/* The scaled headline. Size + weight ramp from `--wall-f` via calc(), clamped so
+   the smallest market never drops below the 13px legibility floor and the largest
+   tops out as a lead headline (~26px desktop / ~20px mobile). One readable line,
+   ellipsized if long. Fraunces is a variable font, so the calc()'d weight renders. */
+.headlineBold {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-serif);
+  /* desktop: 14px (floor) → 26px (lead), bounded */
+  font-size: clamp(0.8125rem, calc(0.875rem + var(--wall-f, 0) * 0.75rem), 1.625rem);
+  font-weight: calc(430 + var(--wall-f, 0) * 150);
+  line-height: 1.16;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Combined metric cell: odds then money, right-aligned, tabular so they sit evenly
+   row-to-row. Stays a fixed legible meta size (it isn't money-scaled) and can't be
+   squeezed by the flexible headline. */
+.meta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.metaOdds {
+  font-weight: 700;
+  font-size: 0.8125rem; /* 13px */
+  color: var(--accent);
+}
+
+.metaMoney {
+  font-weight: 600;
+  font-size: 0.75rem; /* 12px */
+  color: var(--text-dim);
+}
+
+/* Phone: a tighter floor→lead ramp (13px → 20px) so big headlines never blow out a
+   narrow column, and a slightly tighter meta gap. */
+@media (max-width: 560px) {
+  .headlineBold {
+    font-size: clamp(0.8125rem, calc(0.8125rem + var(--wall-f, 0) * 0.4375rem), 1.25rem);
+  }
+  .meta {
+    gap: var(--s-1);
+  }
+}

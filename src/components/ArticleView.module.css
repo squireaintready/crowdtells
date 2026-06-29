@@ -1,0 +1,1275 @@
+/* The dedicated reading view. A slightly narrower measure than the feed for a
+   comfortable long read, centered in the page column. */
+.article {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: var(--s-4) 0 var(--s-6);
+}
+
+/* Back-to-feed row — shown in the DESKTOP article (the masthead carries the back
+   control on the phone, where this row is hidden to save vertical space). */
+.back {
+  justify-self: start;
+  padding: var(--s-2) 0;
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+.back:hover {
+  color: var(--accent);
+}
+
+/* Subtle "Developing" eyebrow above the headline when the story has fresh
+   corroborated coverage. Restrained, house-style: a warm pulsing dot + plain
+   label, never a flashing alert. Pulls down into the headline's grid gap. */
+.developingTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0 0 calc(-1 * var(--s-2));
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--down);
+}
+
+.developingTag::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--down);
+  animation: developingPulse 2s ease-in-out infinite;
+}
+
+@keyframes developingPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .developingTag::before {
+    animation: none;
+  }
+}
+
+/* The topline (category · source · deadline · press flag) is the article's first
+   element now that the back control lives in the masthead. Reads as the editorial
+   kicker above the cover headline: a wider-tracked accent line. Pull it tight to the
+   headline below (trim the 1rem grid gap), but let the article's top padding sit
+   it a comfortable distance under the sticky masthead. */
+.topline {
+  margin-bottom: calc(-1 * var(--s-2));
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+/* Cover headline — a large, balanced serif that carries the page. */
+.headline {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 5.4vw, 2.875rem);
+  font-weight: 380;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+  margin: 0;
+}
+
+/* Standfirst — the larger Source-Serif lede under the head. */
+.dek {
+  font-family: var(--font-display);
+  font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--text-dim);
+  text-wrap: pretty;
+  /* Bind the standfirst tight to the headline (pull up out of the --s-4 grid gap). */
+  margin: calc(-1 * var(--s-2)) 0 0;
+}
+
+/* Byline meta — one editorial rule: who the crowd favors, money in play, the
+   story's span. Tabular figures, closed by the hairline that ends the header. */
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: calc(-1 * var(--s-2)) 0 0;
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.bylineFavored {
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.bylineSep {
+  color: var(--border-strong);
+}
+
+/* "When" line — the real-world clock, stated up front so a reader never has to hunt
+   for the date. Sits just under the byline hairline as a news-style status dateline.
+   Upcoming = a live accent dot; awaiting-result = a hollow/muted dot (pending). */
+.timing {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: var(--s-3) 0 calc(-1 * var(--s-2));
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-dim);
+}
+.timingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+.timingAwait {
+  color: var(--text-mute);
+}
+.timingAwait .timingDot {
+  background: transparent;
+  border: 1.5px solid var(--text-mute);
+}
+.timingHint {
+  font-weight: 450;
+  color: var(--text-mute);
+}
+
+/* Lead figure — a portrait reads as an editorial cutout, not a full-bleed band. */
+.hero {
+  margin: var(--s-2) 0 0;
+}
+
+.hero img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 440px;
+  width: auto;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+
+.cap {
+  margin-top: var(--s-2);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--text-mute);
+}
+
+.body {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.sec {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.h2 {
+  font-family: var(--font-serif);
+  font-size: 1.32rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+  margin: var(--s-2) 0 0;
+}
+
+.prose {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.62;
+  color: var(--text);
+}
+
+/* "The precedent" — factual historical context (records, base rates, parallels)
+   compiled by the model, em-dash listed and footnoted as AI context. */
+.precedents {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.precedent {
+  position: relative;
+  padding-left: var(--s-4);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.precedent::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--text-mute);
+}
+
+.precedentNote {
+  margin: var(--s-3) 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--text-mute);
+}
+
+/* ——— Market Lens — the article's signature panel ———
+   The crowd's odds set large in serif, beside the labeled "market lens" read. The
+   market is still one cited input (placed after the reporting), but here it's the
+   showpiece: a bordered surface-2 card with a big lining-figure on the left. */
+.lens {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin: 0;
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface-2);
+}
+
+.lensOdds {
+  flex: none;
+  font-family: var(--font-serif);
+  font-size: clamp(6.5rem, 22vw, 11.5rem);
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.lensBody {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.lensLabel {
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-mute);
+}
+
+.lensRead {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* ——— Our take — the labeled opinion that closes the prose ———
+   An accent callout, distinct from the neutral briefing: a left accent edge over a
+   tinted ground, the take itself in italic serif. */
+.take {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  background: var(--accent-tint);
+}
+
+.takeKicker {
+  display: block;
+  margin-bottom: var(--s-1);
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+.takeText {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.03rem;
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--text);
+}
+
+/* ——— The crowd's read shifted — a quiet labeled metric line under the read ———
+   Sits in the market panel; the kicker mirrors the lens/take label vocabulary. The
+   sentence is the only place the move is stated in words (the chart shows it visually). */
+.shiftNote {
+  margin: var(--s-1) 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.shiftKicker {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-mute);
+}
+
+/* ——— Related on the board — sibling markets sharing an entity, LINKED not merged ———
+   The noteworthy intersection (two same-city teams, two contracts on one figure)
+   surfaced as quiet rows that open in-app, distinct from the "tracked across N markets"
+   corroboration badge (which is one event across platforms). */
+.related {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.relatedHead {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.relatedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.relatedLink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-2);
+  width: 100%;
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+
+.relatedLink:hover {
+  border-color: var(--border-strong);
+  background: var(--accent-tint);
+}
+
+.relatedTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.relatedOdds {
+  flex: none;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.relatedVia {
+  flex-basis: 100%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-mute);
+}
+
+/* ——— The crowd's read across this story — the absorbed sub-markets ———
+   The other facets of the SAME development that the crowd is pricing (distinct from
+   "Related on the board", which is a different question sharing only an entity). Sits
+   with the crowd's read, reusing the related-row treatment: quiet surface-2 rows that
+   link out, each carrying its favored odds, a slim ProbBar, and 24h momentum. */
+.facets {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.facetsHead {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.facetsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.facetLink {
+  display: grid;
+  gap: var(--s-2);
+  width: 100%;
+  margin: 0;
+  padding: var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+
+a.facetLink:hover {
+  border-color: var(--border-strong);
+  background: var(--accent-tint);
+}
+
+/* Row 1 — the facet question + its favored odds, baselined together. */
+.facetMain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.facetTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.facetOdds {
+  flex: none;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Row 2 — the read-out: a slim ProbBar that fills the row, then the 24h move pinned
+   at the end, quiet. */
+.facetMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 0.78rem;
+}
+
+.facetMeta > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.facetMeta > span {
+  flex: none;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ——— Supporting figures — composition-driven placement ———
+   The layout is chosen from the SHAPE of the figure set (see src/lib/figureLayout
+   + the <Figures> dispatcher) instead of forcing every image to one height in a
+   flat row. Editorial voice matched to StoryCard: hairline rules, surface-2
+   panels, mostly-square radii, no heavy shadows, no left accent bars. Logos/tokens
+   keep a legible LIGHT tile in BOTH themes (a mark may ship its own
+   white/cream/transparent field) with a hairline so it never floats. */
+
+/* Outer wrapper around any mode — vertical rhythm matching the body gap. */
+.figs {
+  margin: var(--s-2) 0;
+}
+
+/* One captioned cell — frame + caption stacked, centered — shared by every mode
+   so a logo, flag and photo always sit on the same vertical grid. */
+.fig {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: center;
+  align-content: start;
+  margin: 0;
+  min-width: 0; /* let cells shrink inside grid/flex without overflowing */
+}
+
+/* The image FRAME — a shared media box; kind decides the chrome below. */
+.fig img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--r);
+}
+
+/* Logo / token: a legible LIGHT tile in BOTH themes. Pure white in light; a
+   near-white plate + stronger hairline in dark so a dark-inked or transparent
+   mark still reads without a harsh slab floating on the deep ground. */
+.fig.logo img {
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 12px;
+}
+[data-theme='bordeaux'] .fig.logo img,
+[data-theme='forest'] .fig.logo img {
+  background: #f3f1ec;
+  border-color: var(--border-strong);
+}
+
+/* Flag: a bordered landscape chip — flags are inherently landscape in our data. */
+.fig.flag img {
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+
+/* Photo / scene / topic poster: natural aspect on a quiet surface-2 backing
+   (no white tile — a person/scene isn't a "mark"). */
+.fig.photo img {
+  background: var(--surface-2);
+  border-radius: var(--r);
+}
+
+/* Figure caption sits on the grid gap (no extra top margin); the name reads as
+   a quiet label. */
+.fig .cap {
+  margin: 0;
+  line-height: 1.35;
+}
+.figName {
+  font-weight: 650;
+  color: var(--text-dim);
+}
+
+/* ── SOLO — one figure, large, centered, sized by kind ───────────────────── */
+.solo {
+  display: grid;
+  justify-items: center;
+}
+.solo .fig img {
+  max-height: 150px;
+}
+.solo .fig.flag img {
+  max-height: 116px; /* landscape — a touch shorter to balance its width */
+}
+.solo .fig.photo img {
+  max-height: 300px; /* a portrait poster / scene can stand tall */
+}
+.solo .cap {
+  font-size: 0.76rem;
+}
+
+/* ── VERSUS — two same-kind marks facing off; trailers demoted ───────────── */
+.versus {
+  display: grid;
+  gap: var(--s-3);
+}
+.matchup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-5) var(--s-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.matchup .fig img {
+  max-height: 92px;
+}
+.matchup .fig.flag img {
+  max-height: 74px;
+}
+
+/* The "vs" divider — a hairline rule with a tiny uppercase chip centered on it.
+   Restrained meta voice (matches StoryCard), not a scoreboard graphic. */
+.vs {
+  position: relative;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  min-width: var(--s-6);
+}
+.vs::before {
+  content: '';
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  width: 1px;
+  background: var(--border-strong);
+}
+.vsLabel {
+  position: relative;
+  z-index: 1;
+  padding: 2px 7px;
+  background: var(--surface-2); /* knock out the rule behind the chip */
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-mute);
+}
+
+/* Demoted trailing marks (league/org logo, a topic, an extra flag) — small
+   secondary tags, never co-equal tiles. A tiny contained mark + label. */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2) var(--s-3);
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 3px 9px 3px 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.tagMark {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  padding: 2px;
+}
+[data-theme='bordeaux'] .tagMark,
+[data-theme='forest'] .tagMark {
+  background: #f3f1ec;
+  border-color: var(--border-strong);
+}
+
+/* ── LINEUP — 3+ same-kind peers, a multi-way field of equal named tiles ──── */
+.lineup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: var(--s-4) var(--s-3);
+  align-items: start;
+  justify-items: center;
+}
+.lineup .fig img {
+  max-height: 78px;
+}
+.lineup .fig.flag img {
+  max-height: 60px;
+}
+
+/* ── PAIR — two non-versus figures, balanced two-up ──────────────────────── */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+  align-items: start;
+}
+.pair .fig img {
+  max-height: 120px;
+}
+.pair .fig.flag img {
+  max-height: 96px;
+}
+
+/* ── GALLERY — role-aware: one feature subject + a supporting strip ───────── */
+.gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+/* The feature (lead) cell — bigger, content left-aligned. */
+.galleryFeature {
+  display: grid;
+  justify-items: start;
+}
+.galleryFeature .cap {
+  text-align: left;
+}
+.galleryFeature .fig img {
+  max-height: 240px; /* a portrait poster / photo leads the spread */
+}
+.galleryFeature .fig.logo img {
+  max-height: 168px; /* a logo lead shouldn't tower */
+}
+/* The supporting strip — smaller, tidy, uniform context marks. */
+.gallerySupport {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+  align-content: start;
+}
+.gallerySupport .fig img {
+  max-height: 64px;
+}
+.gallerySupport .cap {
+  font-size: 0.68rem;
+}
+
+/* Flat gallery — a true peer set (all logos/flags, no clear lead): one even,
+   auto-fit row. A uniform row is right when the items genuinely are a set. */
+.galleryFlat {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--s-4) var(--s-3);
+  align-items: start;
+  justify-items: center;
+}
+.galleryFlat .fig img {
+  max-height: 76px;
+}
+.galleryFlat .fig.flag img {
+  max-height: 60px;
+}
+
+/* Resolution criteria — the legalistic "how it settles" text, demoted to an
+   opt-in disclosure under the market box so the box stays clean (it's reference
+   detail, not the news). */
+.resolves {
+  /* No own divider/padding — the .read grid gap (--s-3) already separates this
+     opt-in row from the facts above and the pricing provenance below, which keeps
+     its own hairline. Avoids the doubled top/bottom space around the box. */
+  margin: 0;
+}
+
+.resolvesSummary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+.resolvesSummary::-webkit-details-marker {
+  display: none;
+}
+
+.resolvesSummary::marker {
+  content: '';
+}
+
+.resolvesSummary::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform var(--t-fast);
+}
+
+.resolves[open] .resolvesSummary::before {
+  transform: rotate(90deg);
+}
+
+.resolvesText {
+  margin: var(--s-3) 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+@media (pointer: coarse) {
+  .resolvesSummary {
+    min-height: 44px;
+  }
+}
+
+/* "Trace our read" — how the briefing changed as the odds moved, collapsed by
+   default so it never interrupts the read. */
+.history {
+  margin: 0;
+}
+
+.historySummary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.historySummary::-webkit-details-marker {
+  display: none;
+}
+
+/* Standard marker hide for Firefox/non-webkit (belt-and-suspenders with list-style:none). */
+.historySummary::marker {
+  content: '';
+}
+
+.historySummary::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform var(--t-fast);
+}
+
+.history[open] .historySummary::before {
+  transform: rotate(90deg);
+}
+
+/* The revision-timeline toggle is a <summary>, which the global coarse-pointer
+   touch-target rule doesn't cover — give it a comfortable tap height on touch. */
+@media (pointer: coarse) {
+  .historySummary {
+    min-height: 44px;
+  }
+}
+
+.timeline {
+  list-style: none;
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-4);
+}
+
+.timeline li {
+  position: relative;
+  padding-left: var(--s-5);
+}
+
+/* vertical rail connecting the dots (hidden on the last node) */
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  bottom: calc(-1 * var(--s-4));
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline li:last-child::before {
+  display: none;
+}
+
+.tdot {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.tnow .tdot {
+  background: var(--accent);
+}
+
+/* The foreground content of one timeline node — the `.titem` wrapper (a <div> for
+   the Now / non-expandable rows) and the expandable `.trev` <details> subtree.
+   Both are lifted into their own stacking layer ABOVE the decorative ghost numeral
+   behind the step (z-index over the ghost's 0), so the real, legible odds + hook +
+   dek (and the expanded prior read) are never dimmed or obscured by the ghost. */
+.titem,
+.trev {
+  position: relative;
+  z-index: 1;
+}
+
+/* The "then-odds" ghost numeral behind each step. CALM hides it entirely (the
+   timeline is byte-for-byte the shipped design); the aggressive reveal lives in
+   the data-intensity block below. */
+.tghost {
+  display: none;
+}
+
+.tmeta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+}
+
+.twhen {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-mute);
+}
+
+.todds {
+  color: var(--text-dim);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.thook {
+  display: block; /* works both as a <p> row and as a <span> inside a <summary> */
+  margin: 2px 0 0;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.tdek {
+  display: block;
+  margin: 2px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text-mute);
+}
+
+.tHit {
+  font-weight: 700;
+  color: var(--up);
+}
+
+.tMiss {
+  font-weight: 700;
+  color: var(--down);
+}
+
+/* An expandable past version — click a revision to re-read what we said then,
+   inline, with a word-diff of how the headline changed. Collapsed by default so
+   the timeline stays a quiet glance. */
+.trev {
+  margin: 0;
+}
+
+.trev > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.trev > summary::-webkit-details-marker {
+  display: none;
+}
+
+.trev > summary::marker {
+  content: '';
+}
+
+.tmore {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  margin-top: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.tmore::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform var(--t-fast);
+}
+
+.trev[open] .tmore::before {
+  transform: rotate(90deg);
+}
+
+@media (pointer: coarse) {
+  .trev > summary {
+    min-height: 44px;
+  }
+}
+
+/* The expanded prior read — a recessed panel (no left accent bar, per house
+   style) holding the headline diff + the lead/take/lens as they read then. */
+.tread {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  background: var(--surface-2);
+  border-radius: var(--r);
+  display: grid;
+  gap: var(--s-3);
+}
+
+.tdiff {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.tdiffKicker {
+  display: block;
+  margin-bottom: var(--s-1);
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mute);
+}
+
+.dadd {
+  background: var(--up-tint);
+  color: var(--up);
+  border-radius: var(--r-sm);
+  padding: 0 2px;
+}
+
+.ddel {
+  color: var(--text-mute);
+  text-decoration: line-through;
+  text-decoration-color: var(--down);
+}
+
+.treadBody {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.treadTake {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.treadKicker {
+  margin-right: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mute);
+}
+
+.treadLens {
+  margin: 0;
+  font-style: italic;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text-mute);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: center;
+}
+
+/* ——— AGGRESSIVE reading style ———
+   The bold Pretext treatment. Only the type *weight/scale* and the Market Lens
+   prominence are CSS (the lead's horizontal belief chart is the AggressiveLead
+   enhancement). Scoped to the global `data-intensity` attribute on <html> (CSS Modules
+   leaves the attribute selector intact and scopes the class), so CALM is byte-for-byte
+   the shipped design. No left accent bars — emphasis comes from weight, scale, and the
+   chart, per house style. */
+/* Body paragraphs avoid a stranded last word (the comp's text-wrap:pretty); the
+   chart-over-lead prose composes `.prose`, so it inherits this too. */
+:global([data-intensity='aggressive']) .prose {
+  text-wrap: pretty;
+}
+
+:global([data-intensity='aggressive']) .headline {
+  font-weight: 460;
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  letter-spacing: -0.025em;
+  /* Balance the line lengths (the comp's balancedHead) so the headline never leaves a
+     lonely last word; degrades to normal wrapping where unsupported. */
+  text-wrap: balance;
+}
+
+/* The Market Lens reads as the article's showpiece in aggressive: a heavier accent
+   frame and a larger odds figure, so the crowd's number lands harder. */
+:global([data-intensity='aggressive']) .lens {
+  border-width: 2px;
+  border-color: var(--accent);
+}
+/* The odds figure is exact-fit in aggressive (measured to fill its column by FitText,
+   which sets the size inline). We keep only the weight here — FitText measures at this
+   weight, and it's the pre-fit size until the engine loads (then it snaps to exact). */
+:global([data-intensity='aggressive']) .lensOdds {
+  font-weight: 340;
+}
+:global([data-intensity='aggressive']) .lensLabel {
+  color: var(--accent);
+}
+
+/* ——— AGGRESSIVE revision timeline — the "ghost odds" behind each step ———
+   The moat made visible: behind every step the odds we saw THEN, set as a large,
+   low-opacity serif numeral (the Pretext sTimeline bold branch). It's purely
+   decorative — anchored to the relative <li>, sat BEHIND the foreground (z-index
+   under `.titem`'s 1), pointer-events off, aria-hidden — so the real, legible odds
+   in `.todds` and the hook/dek in front are never dimmed or obscured. Sized with a
+   bounded clamp() (no measuring engine, SSR-safe); the <li> clips it at the column
+   edge so a wide figure never bleeds. The hook also reads a touch heavier here. */
+:global([data-intensity='aggressive']) .timeline li {
+  overflow: hidden;
+}
+:global([data-intensity='aggressive']) .tghost {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: -0.35rem;
+  z-index: 0;
+  max-width: 100%;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(3.25rem, 13vw, 6.5rem);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  opacity: 0.16;
+  white-space: nowrap;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+:global([data-intensity='aggressive']) .thook {
+  font-weight: 450;
+}
+
+@media (max-width: 560px) {
+  /* The aggressive headline stays a touch tighter on a phone so it doesn't crowd the
+     narrow column. */
+  :global([data-intensity='aggressive']) .headline {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+  /* On the narrow phone column the ghost sits smaller and a hair lighter so it reads
+     as background texture and never competes with the left-aligned hook in front. */
+  :global([data-intensity='aggressive']) .tghost {
+    font-size: clamp(2.75rem, 16vw, 4rem);
+    opacity: 0.13;
+  }
+  /* On a phone the back control lives in the masthead, so drop the standalone back
+     row and sit the topline a comfortable distance under the sticky masthead. */
+  .back {
+    display: none;
+  }
+  .article {
+    padding-top: var(--s-3);
+  }
+  .prose {
+    font-size: 1.02rem;
+    line-height: 1.56;
+  }
+  .h2 {
+    font-size: 1.2rem;
+  }
+  .hero img {
+    max-height: 360px;
+  }
+  /* Tighten the Market Lens card on a phone so the big figure and the read still
+     sit comfortably side by side in the narrow column. */
+  .lens {
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+  }
+  .lensRead {
+    font-size: 0.9rem;
+  }
+  /* Figures: tighten the matchup panel, let the feature lead, and stack the
+     gallery (feature on top, support a tidy row beneath) on a phone. */
+  .matchup {
+    padding: var(--s-4) var(--s-3);
+    gap: var(--s-2);
+  }
+  .matchup .fig img {
+    max-height: 72px;
+  }
+  .matchup .fig.flag img {
+    max-height: 58px;
+  }
+  .vs {
+    min-width: var(--s-5);
+  }
+  .solo .fig img {
+    max-height: 124px;
+  }
+  .solo .fig.photo img {
+    max-height: 240px;
+  }
+  .pair .fig img {
+    max-height: 96px;
+  }
+  .lineup {
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  }
+  .lineup .fig img {
+    max-height: 64px;
+  }
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+  .galleryFeature .fig img {
+    max-height: 200px;
+  }
+  .gallerySupport {
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  }
+  .galleryFlat {
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  }
+}

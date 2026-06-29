@@ -1,0 +1,70 @@
+.wrap {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-mute);
+  cursor: help;
+}
+
+.blindspot {
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--down);
+}
+
+.bar {
+  display: flex;
+  height: 8px;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--border);
+}
+
+.seg {
+  display: block;
+  height: 100%;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* Conventional political colors (not theme accents) so they read instantly */
+.left {
+  background: var(--lean-left);
+}
+.center {
+  background: var(--lean-center);
+}
+.right {
+  background: var(--lean-right);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,148 @@
+/*
+ * Crowdtells design tokens — an editorial system.
+ * Light is the default; dark themes (bordeaux, forest) opt in via [data-theme] on <html>.
+ * Ink on paper, hairline rules, generous rhythm, one restrained accent.
+ */
+:root {
+  /* Paper + ink (light) */
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f4f1ea;
+  --elevated: #ffffff;
+  --border: #e7e2d8;
+  --border-strong: #d6cfc1;
+  --rule: #1c1a16; /* strong masthead/section rules */
+
+  --text: #1a1813;
+  --text-dim: #54504a;
+  --text-mute: #6f695e; /* AA-contrast on paper for small meta text */
+
+  /* One accent (ink-blue), plus muted finance semantics */
+  --accent: #27496d;
+  --accent-strong: #1b3650;
+  --accent-tint: rgba(39, 73, 109, 0.09);
+  --up: #1f7a4d;
+  --up-tint: rgba(31, 122, 77, 0.1);
+  --down: #b23a2e;
+  --down-tint: rgba(178, 58, 46, 0.1);
+  /* Conventional political L/C/R lean colors (not theme accents) — lightened on dark themes. */
+  --lean-left: #3b6fb0;
+  --lean-center: #9a948a;
+  --lean-right: #b23a2e;
+
+  /* Brand/source hues (muted, theme-shared) */
+  --polymarket: #6a4fb0;
+  --kalshi: #1f7d70;
+
+  /* Type */
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+  /* Spacing scale (4px base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 2.75rem;
+  --s-8: 4rem;
+
+  /* Radii — print-like, mostly square; pills only for tags */
+  --r-sm: 3px;
+  --r: 5px;
+  --r-lg: 8px;
+  --r-pill: 999px;
+
+  /* Elevation — minimal; editorial leans on rules, not shadows */
+  --shadow-1: 0 1px 0 var(--border);
+  --shadow-2: 0 18px 40px rgba(28, 26, 22, 0.12);
+
+  --t-fast: 130ms ease;
+  --t: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --maxw: 800px;
+  --maxw-wide: 1080px;
+
+  color-scheme: light;
+}
+
+[data-theme='bordeaux'] {
+  /* Bordeaux — a near-black base with deep wine steeped into the cards and
+   * hairlines, lit by an antique-brass accent; editorial heritage, ink-and-leather.
+   * Darker and less rose than the retired oxblood. Same surface-ladder as light. */
+  --bg: #090406;
+  --surface: #160a0c;
+  --surface-2: #1d0f12;
+  --elevated: #271419;
+  --border: #381b21;
+  --border-strong: #4c2530;
+  --rule: #eee5e3;
+
+  --text: #f4ece9;
+  --text-dim: #c7b9b6;
+  --text-mute: #968985;
+
+  --accent: #d6a35b;
+  --accent-strong: #e9bd80;
+  --accent-tint: rgba(214, 163, 91, 0.15);
+  --up: #56c395;
+  --up-tint: rgba(86, 195, 149, 0.16);
+  --down: #de846c;
+  --down-tint: rgba(222, 132, 108, 0.16);
+  --lean-left: #7aa6db;
+  --lean-center: #b6afa3;
+  --lean-right: #db8071;
+
+  --polymarket: #c3b0f5;
+  --kalshi: #6fcabd;
+
+  --shadow-1: 0 1px 0 var(--border);
+  --shadow-2: 0 20px 48px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+[data-theme='forest'] {
+  /* Forest Ink — deep bottle-green-black with an aged-brass accent; a late-night
+   * markets desk under a brass lamp. */
+  --bg: #0c1410;
+  --surface: #111c16;
+  --surface-2: #16241c;
+  --elevated: #1d2f25;
+  --border: #27392e;
+  --border-strong: #365044;
+  --rule: #e7efe7;
+
+  --text: #eaf1ea;
+  --text-dim: #aebdb2;
+  --text-mute: #8a9b8f;
+
+  --accent: #cf9d63;
+  --accent-strong: #e0b585;
+  --accent-tint: rgba(207, 157, 99, 0.15);
+  --up: #5fc78d;
+  --up-tint: rgba(95, 199, 141, 0.16);
+  --down: #e8917f;
+  --down-tint: rgba(232, 145, 127, 0.16);
+  --lean-left: #7aa6db;
+  --lean-center: #b6afa3;
+  --lean-right: #db8071;
+
+  --polymarket: #b9a6f0;
+  --kalshi: #74d0c0;
+
+  --shadow-1: 0 1px 0 var(--border);
+  --shadow-2: 0 20px 48px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 0ms;
+    --t: 0ms;
+  }
+}

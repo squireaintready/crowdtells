@@ -1,0 +1,140 @@
+.wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.label {
+  flex: none;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-mute);
+}
+
+/* The clipping window. Default state is a manually-swipeable row (no-JS, reduced-motion,
+   or before the marquee has measured); `.clip` takes over once the auto-scroll is live. */
+.viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+.clip {
+  overflow-x: hidden;
+  /* Fade the chips into the edges instead of hard-cutting them mid-glyph. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 18px,
+    #000 calc(100% - 18px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 18px,
+    #000 calc(100% - 18px),
+    transparent
+  );
+}
+
+.list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--s-2);
+  list-style: none;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+}
+.list > li {
+  flex: none;
+}
+
+/* Constant-speed marquee. `--shift` (one copy + its trailing gap, measured in JS) makes the
+   duplicated track wrap seamlessly; the duration is set inline so speed stays uniform. */
+.scrolling {
+  animation: sources-marquee linear infinite;
+  will-change: transform;
+}
+.paused {
+  animation-play-state: paused;
+}
+/* Keyboard users: pause while a chip is focused so it can't scroll out from under Tab. */
+.viewport:focus-within .scrolling {
+  animation-play-state: paused;
+}
+@keyframes sources-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-1 * var(--shift, 50%)), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolling {
+    animation: none;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.favicon {
+  border-radius: 2px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-mute);
+}
+
+/* Touch devices: these chips are links, so give them a comfortable tap target
+   (the mouse layout stays compact). min-height meets the 44px touch floor. */
+@media (pointer: coarse) {
+  .chip {
+    gap: 7px;
+    padding: 8px 12px 8px 10px;
+    min-height: 44px;
+    box-sizing: border-box;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+  .list {
+    gap: 8px;
+  }
+}

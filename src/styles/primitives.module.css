@@ -1,0 +1,74 @@
+/*
+ * Shared UI primitives — consolidated from the per-component button/chip styles the
+ * audit found drifting. Components `composes:` these so a change lands in one place;
+ * the companion :hover / on-state / @media rules apply because `composes` puts the
+ * shared class onto the element itself. Keep genuinely per-context bits (flex layout,
+ * the iOS repaint fix, the up/down rater colors) as local overrides in the component.
+ *
+ * Canonical values were chosen from the cluster center of the prior instances.
+ */
+
+/* ── Selectable pill toggle ── Controls category rail · EmailPrefs topics · Onboarding topics */
+.chipToggle {
+  padding: 5px 12px;
+  line-height: 1.3;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color var(--t-fast),
+    color var(--t-fast),
+    background var(--t-fast);
+}
+.chipToggle:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+/* Larger variant for the onboarding-modal grid. */
+.chipToggleLg {
+  padding: 8px 14px;
+  font-size: 0.86rem;
+}
+/* Selected state — identical accent fill across all three callers. */
+.chipToggleOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+@media (pointer: coarse) {
+  .chipToggle {
+    padding-block: 9px;
+  }
+}
+
+/* ── Filled accent button ── primary actions (lock call, post, add note, subscribe…) */
+.btnFilled {
+  min-height: 44px;
+  padding: 9px 18px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+.btnFilled:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+.btnFilled:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Pill variant — comment-post / onboarding CTA. */
+.btnFilledPill {
+  border: none;
+  border-radius: var(--r-pill);
+}

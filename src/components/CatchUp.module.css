@@ -1,0 +1,168 @@
+.wrap {
+  margin: var(--s-4) 0 var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  border: none;
+  background: none;
+  text-align: left;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--accent);
+}
+
+.date {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  /* Keep the date on one line so the chevron stays baseline-aligned; if a long
+     weekday+month date would overrun a narrow phone, truncate it rather than
+     wrap or clip the chevron. */
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chev {
+  margin-left: auto;
+  color: var(--text-mute);
+  font-size: 0.8rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--s-2) var(--s-2);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-2) var(--s-3);
+  border: none;
+  background: none;
+  border-radius: var(--r);
+  text-align: left;
+  border-top: 1px solid var(--border);
+}
+
+.list li:first-child .item {
+  border-top: none;
+}
+
+/* Collapsed-state expander (a quiet centered affordance, ruled off from the peek
+   above) — turns the single-story preview into the full list. */
+.showAll {
+  display: block;
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  border: none;
+  border-top: 1px solid var(--border);
+  background: none;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@media (hover: hover) {
+  .showAll:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Collapsed = a space-saving PEEK, so pull everything tight: a slimmer card, a
+   denser header + single story, and a low-profile "Show all" rather than a full row.
+   (Expanded keeps the comfortable spacing.) */
+.compact {
+  margin: var(--s-3) 0 var(--s-4);
+}
+.compact .head {
+  padding: var(--s-2) var(--s-3);
+}
+.compact .list {
+  padding: 0 var(--s-1) var(--s-1);
+}
+.compact .item {
+  padding: var(--s-1) var(--s-2);
+}
+.compact .hook {
+  font-size: 0.86rem;
+}
+.compact .showAll {
+  padding: var(--s-2) var(--s-3);
+  font-size: 0.7rem;
+}
+
+@media (hover: hover) {
+  .item:hover {
+    background: var(--bg);
+  }
+  .item:hover .hook {
+    color: var(--accent);
+  }
+}
+
+.item:active {
+  background: var(--bg);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  font-size: 0.82rem;
+  color: var(--text-mute);
+  min-width: 1ch;
+}
+
+.hook {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.cat {
+  font-size: 0.62rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-mute);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .cat {
+    display: none;
+  }
+  /* .cat (the 3rd column) is hidden on phones; drop the empty track so its
+     trailing gap doesn't reserve dead space on the right of every hook row. */
+  .item {
+    grid-template-columns: auto 1fr;
+  }
+  .hook {
+    font-size: 0.94rem;
+  }
+}

@@ -1,0 +1,373 @@
+name: Pulse Pipeline
+
+on:
+  schedule:
+    # GitHub Actions cron is UTC and does NOT observe DST. Times below are calibrated
+    # to US Eastern DAYLIGHT time (EDT = UTC-4 → UTC = ET + 4). When the US falls back to
+    # EST (UTC-5) in early November, shift each hour range +1 to preserve the same ET windows.
+    #
+    # Sized to stay FREE on a PRIVATE repo (free Actions budget = 2,000 min/mo; each run
+    # bills ~1.8 min — ~1.2 min wall, rounded UP to the next whole minute). Spend is
+    # concentrated where prediction markets actually move: every 30 min during US market
+    # hours, hourly in the active off-market windows, and lean (every-2-3h) overnight +
+    # weekends. ~147 runs/wk → ~1,150 billable min/mo, leaving ~850 min/mo headroom.
+    - cron: '0,30 14-19 * * 1-5' # WEEKDAY MARKET HOURS: every 30 min, 10am-3:30pm ET (mirror: env.MARKET_HOURS_CRON)
+    - cron: '0 11-13 * * 1-5' # weekdays: hourly 7-9am ET (pre-open)
+    - cron: '0 20-23 * * 1-5' # weekdays: hourly 4-7pm ET (market close + evening)
+    - cron: '0 0-2 * * 1-5' # weekdays: hourly 8-10pm ET (UTC next-day wrap)
+    - cron: '0 3,6,9 * * *' # overnight: every ~3h (11pm / 2am / 5am ET), all days
+    - cron: '0 11,13,15,17,19,21,23 * * 0,6' # weekends: every 2h, 7am-7pm ET
+    - cron: '0 1 * * 0,6' # weekends: 9pm ET (UTC next-day wrap)
+  workflow_dispatch:
+    inputs:
+      backfill:
+        description: 'Restyle ALL active briefings to the latest writing style (forces a full rewrite, ~20 stories/run — dispatch 3× to cover all). Leave off for a normal run.'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md', 'LICENSE']
+
+# contents:write → push the durable `data` branch. Cloudflare Pages is deployed with
+# an API token (secrets.CLOUDFLARE_API_TOKEN), so the old pages/id-token perms are gone.
+permissions:
+  contents: write
+
+# Never run two pipelines at once (they share the data branch + Pages).
+concurrency:
+  group: pulse
+  cancel-in-progress: false
+
+# The high-frequency market-hours cron, defined ONCE so the build+deploy gate and
+# the GDELT-skip can't drift apart. GitHub can't template the `on.schedule` literal
+# above, so keep this byte-identical to that cron entry (search "MARKET_HOURS_CRON").
+env:
+  MARKET_HOURS_CRON: '0,30 14-19 * * 1-5'
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    # A hung external fetch can't hold the (serialized) queue for GitHub's 6h default.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Restore prior state from data branch
+        run: |
+          mkdir -p .data
+          git fetch origin data --depth=1 2>/dev/null || echo "no data branch yet"
+          git show origin/data:store.json > .data/store.json 2>/dev/null || true
+          # If the primary store is missing or has no markets, fall back to the
+          # one-run backup (store.prev.json) before giving up on empty state.
+          if ! node -e 'const m=require("./.data/store.json").markets;process.exit(Array.isArray(m)&&m.length>0?0:1)' 2>/dev/null; then
+            echo "primary store invalid/empty — restoring from store.prev.json backup"
+            git show origin/data:store.prev.json > .data/store.json 2>/dev/null \
+              || echo '{"version":1,"generatedAt":null,"markets":[]}' > .data/store.json
+          fi
+          echo "Restored $(wc -c < .data/store.json) bytes of prior state"
+
+      # Free Supabase projects pause after ~7 idle days; this 30-min ping keeps
+      # comments/auth responsive even during early low-traffic periods.
+      - name: Keep Supabase warm
+        if: vars.VITE_SUPABASE_URL != ''
+        run: |
+          curl -s -o /dev/null -m 15 \
+            "${{ vars.VITE_SUPABASE_URL }}/rest/v1/comments?select=id&limit=1" \
+            -H "apikey: ${{ vars.VITE_SUPABASE_ANON_KEY }}" || echo "warm ping failed (non-fatal)"
+
+      # One-shot manual restyle: forces every active briefing to regenerate under the
+      # current writing style by dropping the idle backstop to 0, so pickCandidates treats
+      # all briefed stories as due (oldest first, GENERATE_LIMIT per run). Inert unless the
+      # run was dispatched with backfill=true; a style-only rewrite saves no revision.
+      - name: Backfill mode (restyle all active briefings)
+        if: inputs.backfill
+        run: echo "IDLE_BACKSTOP_HOURS=0" >> "$GITHUB_ENV"
+
+      - name: Generate feed (Polymarket → news → Groq)
+        id: generate
+        run: npm run generate
+        env:
+          # LLM briefing providers (both free-tier, OpenAI-compatible). The generator POOLS
+          # them — Gemini preferred, Groq fallback — and rotates across keys × models on limits.
+          # Comma-separate for multiple keys; either provider alone is enough to brief.
+          GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          # Operations console + alerts (best-effort; each half inert until its creds exist):
+          # the run persists LLM-usage/health telemetry to Supabase (pipeline_runs) for the
+          # admin Operations tab, and on a Gemini availability FLIP posts ALERT_WEBHOOK + emails
+          # OPS_ALERT_EMAIL via Mailgun. SUPABASE_* + MAILGUN_* (below) power those halves.
+          ALERT_WEBHOOK: ${{ secrets.ALERT_WEBHOOK }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          OPS_ALERT_EMAIL: ${{ secrets.OPS_ALERT_EMAIL }}
+          # Events layer keyed sources (best-effort, skipped when unset): Finnhub financial
+          # calendar (earnings + IPOs) and PandaScore esports schedule. RELIEFWEB_APPNAME is
+          # a repo VARIABLE set once an appname is approved (global disasters).
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          PANDASCORE_TOKEN: ${{ secrets.PANDASCORE_TOKEN }}
+          RELIEFWEB_APPNAME: ${{ vars.RELIEFWEB_APPNAME }}
+          # The GDELT "Developing" sweep is 8 serial rate-limited calls (~38.5s). On the
+          # every-15-min market-hours cron that pushes the run over the next billed minute
+          # (~+500 min/mo — over the free budget), so skip it there; the parallel RSS
+          # baseline still corroborates. All lower-frequency crons run the full sweep.
+          BREAKING_SKIP_GDELT: ${{ github.event.schedule == env.MARKET_HOURS_CRON && '1' || '' }}
+          # (The Events layer's networked sources are a single ~2-3s parallel batch, so they
+          # run on EVERY cron — no skip. A market-hours skip saved ~0 billed minutes but
+          # emptied the events strip to the jobs marker during peak hours.)
+          # Service role so the run can grade readers' Calls on markets that just
+          # settled (gamification scoring → call_scores + market_resolutions) and
+          # recompute community-note bridging. Inert without the key.
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          # Bridging is a global recompute over all note ratings — too heavy for the
+          # every-15-min market-hours tier, so skip it there (like the GDELT/events
+          # skips above). Every lower-frequency cron refreshes it; notes don't move fast.
+          BRIDGING_SKIP: ${{ github.event.schedule == env.MARKET_HOURS_CRON && '1' || '' }}
+
+      # Phase 2c: the data path (generate → Supabase sync → persist) runs EVERY run,
+      # but the static build+deploy is throttled once the live Realtime feed carries
+      # the data — that's what saves the GitHub-minutes budget. Legacy "build every
+      # run" is the DEFAULT; set vars.BUILD_EVERY_RUN=false at cutover to make the
+      # high-frequency 15-min market-hours cron (the dominant tier) data-only. Pushes,
+      # manual dispatch, and every lower-frequency cron still build+deploy, so the
+      # static site + /s/ SEO pages refresh several times a day. TRADEOFF: during
+      # market hours (the data-only tier) the STATIC surface (/s/ pages, news
+      # sitemap, RSS, feed.json) lags until the next build tier — acceptable because
+      # /s/ pages are append-only/permanent and the live SPA reads fresh data from
+      # Supabase. EXCEPTION: when generate created a BRAND-NEW indexable /s/ page this
+      # run (steps.generate.outputs.new_static_pages > 0), we DO build+deploy even on
+      # the market-hours tier, so a story that breaks mid-session reaches Google News
+      # + its share link promptly instead of waiting ~hours for the next build tier.
+      # New indexable stories are infrequent (a handful/week), so this protects the
+      # budget while closing the breaking-news indexing gap.
+      - name: Decide whether to build + deploy this run
+        id: gate
+        env:
+          # Passed via env (not inlined into the script) — the safe GitHub pattern.
+          BUILD_EVERY_RUN: ${{ vars.BUILD_EVERY_RUN }}
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          NEW_PAGES: ${{ steps.generate.outputs.new_static_pages }}
+        run: |
+          if [ "$BUILD_EVERY_RUN" = "false" ] && [ "$EVENT_NAME" = "schedule" ] \
+             && [ "$SCHEDULE" = "$MARKET_HOURS_CRON" ]; then
+            # Fail-safe: a missing/non-numeric count falls through to data-only (the
+            # `-gt` test is false for empty or non-integer values), so a generate
+            # hiccup can never force a deploy — it only ever ADDS deploys, never
+            # removes the ones that already happen.
+            if [ "${NEW_PAGES:-0}" -gt 0 ] 2>/dev/null; then
+              echo "deploy=true" >> "$GITHUB_OUTPUT"
+              echo "Market-hours run, but $NEW_PAGES new indexable page(s) created — build+deploy to publish them promptly."
+            else
+              echo "deploy=false" >> "$GITHUB_OUTPUT"
+              echo "Data-only run (15-min market cron, no new pages) — Supabase carries the live feed; skipping build+deploy."
+            fi
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            echo "Full run — build+deploy enabled."
+          fi
+
+      - name: Test, typecheck, build
+        if: steps.gate.outputs.deploy == 'true'
+        run: |
+          npm run typecheck
+          npm run test
+          npm run build
+        env:
+          # BASE_PATH repo variable is "/" for the crowdtells.com custom domain.
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          # Public client values; comments stay off until these repo vars are set.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          # Public Google OAuth client id → in-domain GIS sign-in (no supabase.co consent).
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          # Set to "true" to reveal the newsletter signup (after the subscribers
+          # table + Mailgun sender are configured).
+          VITE_NEWSLETTER_ENABLED: ${{ vars.VITE_NEWSLETTER_ENABLED }}
+          # "true" turns on the live Supabase Realtime feed read (Model B). Baked at
+          # BUILD time, so flipping the var needs a build+deploy to take effect.
+          VITE_REALTIME_FEED: ${{ vars.VITE_REALTIME_FEED }}
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.gate.outputs.deploy == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=crowdtell --branch=main --commit-dirty=true
+
+      # Persist after a successful run. `if: success()` covers both shapes: on a
+      # deploy run it still gates on a green build+deploy (a build-breaking store
+      # never poisons the durable branch); on a data-only run (build+deploy skipped,
+      # not failed) the integrity gate is generate's own floor guard (refuses a
+      # markets-less store and fails the step) plus this step's own markets-count
+      # check below. Carries the prior store forward as a one-run backup
+      # (store.prev.json) and refuses to write a markets-less store.
+      - name: Persist state to data branch
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -f .data/store.json ] || { echo "no store produced"; exit 1; }
+          node -e 'const m=require("./.data/store.json").markets;if(!Array.isArray(m)||m.length===0){console.error("store has no markets — refusing to persist");process.exit(1)}'
+          tmp="$(mktemp -d)"
+          repo="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          # Carry the current remote store forward as the one-run backup.
+          git show origin/data:store.json > "$tmp/store.prev.json" 2>/dev/null || true
+          cp .data/store.json "$tmp/store.json"
+          cd "$tmp"
+          git init -q
+          git checkout -q -b data
+          git add store.json
+          [ -s store.prev.json ] && git add store.prev.json
+          git -c user.name="pulse-bot" -c user.email="actions@users.noreply.github.com" \
+            commit -qm "data: run ${{ github.run_id }}"
+          git push -q --force "$repo" data
+
+      # Model B: mirror the published feed into Supabase so the SPA can read it
+      # live via Realtime (no per-update rebuild). Runs post-deploy. Inert unless
+      # vars.FEED_SYNC_ENABLED == 'true'; continue-on-error + the script's own
+      # non-fatal failure mean a sync hiccup can't fail a run whose deploy +
+      # persist already succeeded (the static feed.json remains the fallback).
+      - name: Sync feed to Supabase (Model B)
+        id: feedsync
+        if: success()
+        continue-on-error: true
+        run: npm run sync
+        env:
+          FEED_SYNC_ENABLED: ${{ vars.FEED_SYNC_ENABLED }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+
+      # The sync above is continue-on-error so a hiccup can't fail a run whose
+      # deploy + persist already succeeded — but that masking made a real failure
+      # SILENT, leaving the live Realtime SPA reading stale Supabase rows with no
+      # signal. sync-feed.ts now exits non-zero on a genuine failure (intentional
+      # skips still exit 0), so surface that as a warning annotation + optional
+      # ALERT_WEBHOOK ping. The static feed.json is unaffected either way.
+      - name: Warn on silent feed-sync failure (Model B)
+        if: success() && steps.feedsync.outcome == 'failure'
+        env:
+          ALERT_WEBHOOK: ${{ secrets.ALERT_WEBHOOK }}
+        run: |
+          echo "::warning::Model B feed sync FAILED (run ${{ github.run_id }}) — the live SPA may read stale Supabase data until the next successful sync. Static feed.json is unaffected."
+          if [ -n "$ALERT_WEBHOOK" ]; then
+            curl -s -m 10 -X POST -H 'Content-Type: application/json' \
+              -d "{\"text\":\"⚠️ Crowdtells Model B feed sync failed — run ${{ github.run_id }} (live realtime data may be stale): https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+              "$ALERT_WEBHOOK" || true
+          fi
+
+      # Double opt-in: email a confirm link to any NEW unconfirmed web signups
+      # since the last run (the script marks confirm_sent_at so it never re-mails).
+      # Runs here (not a separate cron) so prompt confirms cost no extra Actions
+      # minutes. continue-on-error + the script's own graceful skips (no Mailgun key,
+      # or the subscribers table not yet migrated for double opt-in) mean it can't
+      # fail the pulse run until the owner finishes provisioning the newsletter.
+      - name: Send pending newsletter confirmations
+        if: success()
+        continue-on-error: true
+        run: npm run confirm
+        env:
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          MAILGUN_DOMAIN: ${{ vars.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      # Breaking-news alerts, real-time: this rides the pulse run that just refreshed
+      # the feed, so a resolution / final event / developing cluster / big swing alerts
+      # within minutes — and costs NO extra Actions minutes (vs a separate cron). The
+      # sender dedupes every event in Supabase (claim-before-send), so running on every
+      # pulse never double-sends. DARK until BREAKING_ALERTS_ENABLED=true; continue-on-error
+      # + the script's own graceful skips (no Mailgun key, table/RPC not migrated) keep it
+      # from ever failing the pulse run.
+      - name: Send breaking-news alerts
+        if: success() && vars.BREAKING_ALERTS_ENABLED == 'true'
+        continue-on-error: true
+        run: npm run breaking
+        env:
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          MAILGUN_DOMAIN: ${{ vars.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          LIST_UNSUBSCRIBE_POST_BASE: ${{ vars.LIST_UNSUBSCRIBE_POST_BASE }}
+          MAILING_ADDRESS: ${{ vars.MAILING_ADDRESS }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      # Resolution cards + gated social auto-post (growth bet #1): rides the pulse
+      # run that just refreshed the feed, so a "we called it" card posts to Bluesky +
+      # Mastodon within minutes of a tracked market settling — at NO extra Actions
+      # minutes. The sender claims each resolution in Supabase (claim-before-post), so
+      # running on every pulse never double-posts. DARK until SOCIAL_POST_ENABLED=true;
+      # continue-on-error + the script's own gating/graceful skips (no creds, flag off,
+      # table/RPC not migrated) keep it from ever failing the pulse run. Creds pass via
+      # secrets.* env (never interpolated into the shell — the safe GitHub pattern).
+      - name: Post resolution cards to social
+        if: success() && vars.SOCIAL_POST_ENABLED == 'true'
+        continue-on-error: true
+        run: npm run social
+        env:
+          SOCIAL_POST_ENABLED: ${{ vars.SOCIAL_POST_ENABLED }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          BLUESKY_SERVICE: ${{ vars.BLUESKY_SERVICE }}
+          MASTODON_INSTANCE: ${{ vars.MASTODON_INSTANCE }}
+          MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
+
+      # Comment reply notifications (retention loop): rides the pulse run so a reply
+      # emails its parent author within minutes — at NO extra Actions minutes. The
+      # sender claims each reply in Supabase (claim-before-send), never emails a
+      # self-reply or an opted-out user, and carries a one-click opt-out. DARK until
+      # REPLY_NOTIFY_ENABLED=true; continue-on-error + the script's own gating/graceful
+      # skips (flag off, no Mailgun key, schema not migrated) keep it from ever failing
+      # the pulse run. Creds pass via secrets.* env (never interpolated into the shell).
+      - name: Send comment reply notifications
+        if: success() && vars.REPLY_NOTIFY_ENABLED == 'true'
+        continue-on-error: true
+        run: npm run replies
+        env:
+          REPLY_NOTIFY_ENABLED: ${{ vars.REPLY_NOTIFY_ENABLED }}
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          MAILGUN_DOMAIN: ${{ vars.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          LIST_UNSUBSCRIBE_POST_BASE: ${{ vars.LIST_UNSUBSCRIBE_POST_BASE }}
+          MAILING_ADDRESS: ${{ vars.MAILING_ADDRESS }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      # A failed cron is otherwise silent. Emit a visible error annotation (shows
+      # in the run + GitHub's failure email) and ping ALERT_WEBHOOK if it's set.
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK: ${{ secrets.ALERT_WEBHOOK }}
+        run: |
+          echo "::error::Pulse pipeline failed (run ${{ github.run_id }}). Site frozen at last good deploy."
+          if [ -n "$ALERT_WEBHOOK" ]; then
+            curl -s -m 10 -X POST -H 'Content-Type: application/json' \
+              -d "{\"text\":\"🚨 Crowdtells pulse failed — run ${{ github.run_id }}: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+              "$ALERT_WEBHOOK" || true
+          fi

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <title>Terms of Service — Crowdtells</title>
+    <meta
+      name="description"
+      content="The terms for using Crowdtells, a free prediction-market-driven news service. Briefings are informational, not financial advice."
+    />
+    <meta name="author" content="Crowdtells" />
+    <link rel="canonical" href="https://crowdtells.com/terms" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Crowdtells" />
+    <meta property="og:title" content="Terms of Service — Crowdtells" />
+    <meta
+      property="og:description"
+      content="The terms for using Crowdtells — a free news service. Briefings are informational, not financial advice."
+    />
+    <meta property="og:url" content="https://crowdtells.com/terms" />
+    <meta property="og:image" content="https://crowdtells.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Terms of Service — Crowdtells" />
+    <meta name="twitter:image" content="https://crowdtells.com/og.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#fbfaf7" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('crowdtell-theme');
+          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
+          if (t !== 'light' && t !== 'bordeaux' && t !== 'forest')
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'bordeaux' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+          var c = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' }[t];
+          var m = document.querySelector('meta[name=theme-color]');
+          if (m && c) m.setAttribute('content', c);
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      @font-face {
+        font-family: 'Fraunces Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/fraunces-latin.woff2) format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(/fonts/inter-latin.woff2) format('woff2-variations');
+      }
+      :root {
+        --bg: #fbfaf7;
+        --ink: #1a1813;
+        --dim: #54504a;
+        --mute: #6f695e;
+        --accent: #27496d;
+        --border: #e7e2d8;
+      }
+      [data-theme='bordeaux'] {
+        color-scheme: dark;
+        --bg: #090406;
+        --ink: #f4ece9;
+        --dim: #c7b9b6;
+        --mute: #968985;
+        --accent: #d6a35b;
+        --border: #381b21;
+      }
+      [data-theme='forest'] {
+        color-scheme: dark;
+        --bg: #0c1410;
+        --ink: #eaf1ea;
+        --dim: #aebdb2;
+        --mute: #8a9b8f;
+        --accent: #cf9d63;
+        --border: #27392e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          color-scheme: dark;
+          --bg: #090406;
+          --ink: #f4ece9;
+          --dim: #c7b9b6;
+          --mute: #968985;
+          --accent: #d6a35b;
+          --border: #381b21;
+        }
+      }
+      body {
+        font-family:
+          'Inter Variable',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 5rem;
+        line-height: 1.65;
+        color: var(--ink);
+        background: var(--bg);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+      }
+      h2 {
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        letter-spacing: -0.01em;
+      }
+      .muted {
+        color: var(--mute);
+        font-size: 0.9rem;
+      }
+      .back {
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="back"><a href="/">← Back to Crowdtells</a></p>
+    <h1>Terms of Service</h1>
+    <p class="muted">Last updated: June 2026</p>
+
+    <p>
+      By using Crowdtells you agree to these terms. Crowdtells is a free, informational news
+      service.
+    </p>
+
+    <h2>Not financial advice</h2>
+    <p>
+      Crowdtells surfaces prediction-market data and AI-assisted, source-grounded briefings for news
+      context. It is <strong>not</strong> financial, investment, or betting advice, and we are not
+      affiliated with Polymarket or Kalshi. Market prices and AI briefings can be wrong, delayed, or
+      incomplete — verify anything important against primary sources.
+    </p>
+
+    <h2>Your account &amp; content</h2>
+    <ul>
+      <li>You’re responsible for activity under your account and for what you post.</li>
+      <li>
+        Don’t post unlawful, harassing, hateful, spam, or infringing content. Keep discussion civil
+        and on-topic.
+      </li>
+      <li>
+        You retain ownership of your comments but grant us a license to display them on the site. We
+        may remove content or accounts that violate these terms.
+      </li>
+    </ul>
+
+    <h2>Community standards</h2>
+    <p>
+      Comments are community-contributed and don’t represent Crowdtells’s views. We may moderate,
+      remove, or rank contributions to keep the discussion useful and trustworthy.
+    </p>
+
+    <h2>Availability &amp; liability</h2>
+    <p>
+      The service is provided “as is,” without warranties, and may change or be unavailable at any
+      time. To the extent permitted by law, Crowdtells is not liable for any damages arising from
+      use of the site or reliance on its content.
+    </p>
+
+    <h2>Contact</h2>
+    <p><a href="mailto:hello@crowdtells.com">hello@crowdtells.com</a></p>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+.grid {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.skeleton {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+
+.skelHead {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.skelLines {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+
+.skelIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.skelBar {
+  height: 6px;
+  border-radius: var(--r-pill);
+}
+
+.skelLine {
+  height: 12px;
+  border-radius: 4px;
+}
+
+.skelIcon,
+.skelBar,
+.skelLine {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--elevated) 37%,
+    var(--surface-2) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skelIcon,
+  .skelBar,
+  .skelLine {
+    animation: none;
+  }
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 72px 24px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.emptyMark {
+  font-size: 2.4rem;
+  color: var(--text-mute);
+}
+
+.retry {
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--accent);
+  background: var(--accent-tint);
+  color: var(--accent-strong);
+  font-weight: 650;
+}

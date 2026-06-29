@@ -1,0 +1,42 @@
+.group {
+  display: grid;
+  gap: var(--s-3);
+}
+
+/* The shareable link + copy button, shown once the profile is public. */
+.shareRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.shareLink {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shareLink:hover {
+  text-decoration: underline;
+}
+.shareCopy {
+  flex: none;
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--t-fast);
+}
+.shareCopy:hover {
+  border-color: var(--text-mute);
+}

@@ -1,0 +1,165 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition: border-color var(--t-fast);
+}
+
+.toggle:hover {
+  border-color: var(--text-mute);
+}
+
+.yin {
+  display: block;
+  /* A gentle overshoot so a theme switch spins the glyph to its new orientation
+     with a little life, rather than a flat linear turn. */
+  transition: transform 0.5s cubic-bezier(0.34, 1.35, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yin {
+    transition: none;
+  }
+}
+
+/* The global coarse-pointer rule gives buttons min-height:44px but not width;
+   supply the missing width so this square control clears the touch minimum. */
+@media (pointer: coarse) {
+  .toggle {
+    min-width: 44px;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px;
+  min-width: 150px;
+  background: var(--elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 550;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.label {
+  flex: 1;
+}
+
+.check {
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+/* A small uppercase group heading inside the popover (Theme / Reading style). The
+   second one carries a hairline above it to separate the two preference groups. */
+.group {
+  display: block;
+  padding: 4px 9px 2px;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+/* Hairline above the "Reading style" heading (it's the 2nd .group in the menu)
+   so the two preference groups read as separate sections. */
+.group ~ .group {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+/* Segmented control: two equal pills sharing one track. The active segment fills
+   with the accent (with AA-contrast on-accent text); the inactive one is quiet. */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin: 4px 4px 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.seg {
+  padding: 6px 8px;
+  border: none;
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.seg:hover:not(.segOn) {
+  color: var(--text);
+}
+
+.segOn {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.seg:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .seg {
+    min-height: 40px;
+  }
+}

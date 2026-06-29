@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+.data
+public/feed.json
+package-lock.json
+# Hand-tuned email HTML (inlined single-line, MSO conditional-comment buttons) —
+# prettier would reflow it and change rendering fidelity. Keep byte-exact.
+docs/supabase-auth-emails.md

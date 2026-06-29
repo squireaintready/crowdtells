@@ -1,0 +1,74 @@
+name: Newsletter Digest
+
+on:
+  schedule:
+    - cron: '0 14 * * 1' # weekly: Mondays 14:00 UTC (~9–10am ET) → frequency=weekly cohort
+    - cron: '30 11 * * *' # daily: every day 11:30 UTC (~7:30am ET) → frequency=daily cohort
+  workflow_dispatch:
+    inputs:
+      cadence:
+        description: 'weekly or daily'
+        type: choice
+        options: [weekly, daily]
+        default: weekly
+      dry_run:
+        description: 'true = build the email but do not send'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Never run two sends at once.
+concurrency:
+  group: digest
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Send digest
+        run: npm run digest
+        env:
+          # Secrets (encrypted, never in the repo).
+          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # Public-ish config (repo variables).
+          MAILGUN_DOMAIN: ${{ vars.MAILGUN_DOMAIN }}
+          MAILGUN_REGION: ${{ vars.MAILGUN_REGION }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          # Email-compliance config (optional). REPLY_TO defaults to hello@crowdtells.com;
+          # LIST_UNSUBSCRIBE_POST_BASE turns on RFC 8058 one-click once the `unsubscribe`
+          # edge function is deployed; MAILING_ADDRESS adds the CAN-SPAM postal line.
+          REPLY_TO: ${{ vars.REPLY_TO }}
+          LIST_UNSUBSCRIBE_POST_BASE: ${{ vars.LIST_UNSUBSCRIBE_POST_BASE }}
+          MAILING_ADDRESS: ${{ vars.MAILING_ADDRESS }}
+          # Manual dispatch wins; otherwise the daily cron sends the daily cohort and
+          # every other schedule (the Monday cron) sends the weekly cohort. The two
+          # cohorts are disjoint (sender filters frequency=eq.CADENCE), so Monday's
+          # overlapping fires never double-send anyone.
+          CADENCE: ${{ inputs.cadence || (github.event.schedule == '30 11 * * *' && 'daily' || 'weekly') }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK: ${{ secrets.ALERT_WEBHOOK }}
+        run: |
+          echo "::error::Newsletter digest failed (run ${{ github.run_id }})."
+          if [ -n "$ALERT_WEBHOOK" ]; then
+            curl -s -m 10 -X POST -H 'Content-Type: application/json' \
+              -d "{\"text\":\"🚨 Crowdtells digest failed — run ${{ github.run_id }}: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+              "$ALERT_WEBHOOK" || true
+          fi
