@@ -24,7 +24,7 @@ on:
   workflow_dispatch:
     inputs:
       backfill:
-        description: 'Restyle ALL active briefings to the latest writing style (forces a full rewrite, ~20 stories/run — dispatch 3× to cover all). Leave off for a normal run.'
+        description: 'Restyle ALL active briefings to the latest writing style in one pass (forces a full rewrite). Leave off for a normal run.'
         type: boolean
         default: false
   push:
@@ -51,7 +51,8 @@ jobs:
   pulse:
     runs-on: ubuntu-latest
     # A hung external fetch can't hold the (serialized) queue for GitHub's 6h default.
-    timeout-minutes: 20
+    # 30 (raised from 20) for headroom on a full backfill re-brief of every active story.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
 
@@ -91,7 +92,11 @@ jobs:
       # run was dispatched with backfill=true; a style-only rewrite saves no revision.
       - name: Backfill mode (restyle all active briefings)
         if: inputs.backfill
-        run: echo "IDLE_BACKSTOP_HOURS=0" >> "$GITHUB_ENV"
+        run: |
+          echo "IDLE_BACKSTOP_HOURS=0" >> "$GITHUB_ENV"
+          # Unlimited Actions minutes → re-brief ALL active stories in ONE pass
+          # (the default GENERATE_LIMIT=20 is for normal runs, not a full restyle).
+          echo "GENERATE_LIMIT=200" >> "$GITHUB_ENV"
 
       - name: Generate feed (Polymarket → news → Groq)
         id: generate
