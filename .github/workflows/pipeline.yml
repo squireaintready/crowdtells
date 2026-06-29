@@ -185,8 +185,11 @@ jobs:
       # refresh) run — they already ran on the push/PR that introduced the code. Skip them
       # on schedule for faster deploys; keep them on direct pushes to main + manual dispatch.
       # `build` (the real data-poison gate) always runs when we deploy.
-      - name: Typecheck + test (skipped on scheduled data refreshes)
-        if: steps.gate.outputs.deploy == 'true' && github.event_name != 'schedule'
+      # Run ONLY on pushes to main (real code changes). Schedule + workflow_dispatch are
+      # data runs on already-tested code — and backfill dispatch exports IDLE_BACKSTOP_HOURS=0
+      # to $GITHUB_ENV, which would otherwise leak into (and fail) the config-dependent tests.
+      - name: Typecheck + test (pushes to main only; dispatch/schedule are data runs)
+        if: steps.gate.outputs.deploy == 'true' && github.event_name == 'push'
         run: |
           npm run typecheck
           npm run test
