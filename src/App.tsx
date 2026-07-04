@@ -825,7 +825,7 @@ export function App() {
           }}
         />
       )}
-      <div className={styles.container}>
+      <div className={`${styles.container} ${activeMarket ? styles.containerArticle : ''}`}>
         <Header
           generatedAt={feed?.generatedAt ?? null}
           total={markets.length}

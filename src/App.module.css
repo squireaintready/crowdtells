@@ -13,6 +13,13 @@
   padding-bottom: calc(var(--s-8) + env(safe-area-inset-bottom));
 }
 
+/* The ARTICLE route opens to the broadsheet spread: the reading column plus the
+   market rail (see ArticleView's two-column grid). The feed keeps the narrow news
+   column — only the dedicated reading view earns the width. */
+.containerArticle {
+  max-width: var(--maxw-wide);
+}
+
 .feed {
   min-height: 50vh;
   /* In article view the masthead pins (sticky); keep #main / skip-link anchor

@@ -313,6 +313,9 @@ export function ArticleView({
       className={styles.article}
       style={{ '--cat-h': categoryHue(m.category) } as CSSProperties}
     >
+      {/* ── The cover band — kicker, headline, standfirst, byline rule. Spans the
+          full broadsheet spread on a wide desktop; the columns start beneath it. */}
+      <header className={styles.head}>
       <button type="button" className={styles.back} onClick={onBack}>
         ← {backLabel ?? 'All stories'}
       </button>
@@ -398,7 +401,10 @@ export function ArticleView({
 
       <BreakingPin items={m.breaking} />
       <EventsPin items={m.events} />
+      </header>
 
+      {/* ── The reading column — the reporting itself. */}
+      <div className={styles.main}>
       {hero && (
         <figure className={styles.hero}>
           <img
@@ -507,7 +513,12 @@ export function ArticleView({
         <SourceBias sources={m.sources} />
         <Sources sources={m.sources} marketId={m.id} />
       </div>
+      </div>
 
+      {/* ── The market rail — the crowd's read beside the reporting on a wide
+          desktop (a broadsheet stock-box, ruled off by a hairline); stacked after
+          the reporting on a phone, exactly where it has always sat. */}
+      <aside className={styles.rail} aria-label="The market on this story">
       <section className={card.read}>
         <h2 className={card.readHead}>What the market shows</h2>
         <div className={card.readTop}>
@@ -706,6 +717,7 @@ export function ArticleView({
           </ul>
         </section>
       )}
+      </aside>
 
       {/* You've seen the crowd's read and ours — now make your own, scored properly
           when it resolves. Lazy (keeps supabase out of the main bundle). */}

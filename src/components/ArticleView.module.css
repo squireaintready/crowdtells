@@ -1,11 +1,74 @@
 /* The dedicated reading view. A slightly narrower measure than the feed for a
-   comfortable long read, centered in the page column. */
+   comfortable long read, centered in the page column — and on a wide desktop, a
+   two-column broadsheet spread (see the min-width media block below). */
 .article {
   display: grid;
   gap: var(--s-4);
   max-width: 46rem;
   margin: 0 auto;
   padding: var(--s-4) 0 var(--s-6);
+}
+
+/* The three bands. Each is a nested grid with the article's own gap, so in the
+   single column they render exactly as the flat stack always did. */
+.head,
+.main,
+.rail {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+  min-width: 0; /* let grid children shrink instead of overflowing the column */
+}
+
+/* ── The broadsheet spread ─────────────────────────────────────────────────
+   On a wide desktop the article stops being a narrow strip in an empty page:
+   the cover band (kicker → headline → standfirst → byline rule) spans the full
+   spread, then the reporting runs in the reading column with the market rail —
+   the crowd's read, the story's other facets, the related board — ruled off
+   beside it by a hairline, like a stock box in a business daily. Journalism
+   leads (the prose column is the wide one); the money is marginalia. Everything
+   below the columns (your call, the revision trail, discussion) returns to the
+   reading column's measure. The page shell widens with it (App's
+   containerArticle → --maxw-wide). */
+@media (min-width: 1060px) {
+  .article {
+    max-width: none;
+    grid-template-columns: minmax(0, 1fr) 19.5rem;
+    column-gap: 0; /* the gutter is the rule's padding, so the hairline sits centered */
+    row-gap: var(--s-5); /* a touch more air between the cover band and the columns */
+  }
+  /* Everything defaults to the reading column; the cover band spans the spread
+     and the rail takes the second column (auto-placed beside the reading column). */
+  .article > * {
+    grid-column: 1;
+  }
+  .head {
+    grid-column: 1 / -1;
+  }
+  .main {
+    padding-right: clamp(var(--s-6), 3.5vw, 3.5rem);
+  }
+  .rail {
+    grid-column: 2;
+    border-left: 1px solid var(--border); /* the column rule (hairline, per house style) */
+    padding-left: clamp(var(--s-5), 2.5vw, 2.25rem);
+  }
+  /* The rail's sections carry their own top hairlines in the single column;
+     beside the column rule that doubles up — the rule + spacing is enough. */
+  .rail .facets,
+  .rail .related {
+    border-top: none;
+    padding-top: 0;
+  }
+  /* The cover headline earns a touch more presence across the wider band, and the
+     standfirst keeps a reading measure instead of stretching the full spread. */
+  .headline {
+    font-size: clamp(2.875rem, 2.1vw + 1.45rem, 3.25rem);
+    max-width: 30ch;
+  }
+  .dek {
+    max-width: 58ch;
+  }
 }
 
 /* Back-to-feed row — shown in the DESKTOP article (the masthead carries the back
