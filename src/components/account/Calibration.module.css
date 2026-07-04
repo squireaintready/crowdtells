@@ -105,14 +105,14 @@
 }
 .progress {
   height: 7px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   overflow: hidden;
 }
 .progressFill {
   display: block;
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--accent);
   transition: width var(--t);
   /* Grow from empty when the panel opens — a small "filling up" flourish. */
@@ -244,7 +244,7 @@
 .bar {
   position: relative;
   height: 8px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--border);
   /* visible so the perfect-calibration tick can sit above the track */
   overflow: visible;
@@ -252,7 +252,7 @@
 .fill {
   display: block;
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--accent);
 }
 /* Perfect-calibration reference tick (overlaid; sits above the fill). */

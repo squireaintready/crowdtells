@@ -1,5 +1,6 @@
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
 }
@@ -77,7 +78,7 @@
   gap: var(--s-4);
 }
 .avatar {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   object-fit: cover;
   flex: none;
 }
@@ -85,7 +86,7 @@
   flex: none;
   width: 64px;
   height: 64px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   display: grid;
   place-items: center;
   background: var(--accent-tint);

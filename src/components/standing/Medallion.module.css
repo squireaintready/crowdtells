@@ -1,6 +1,7 @@
 /* A struck metal medallion. The disc carries the foil gradient + a top-left specular sheen; the
    ::before is the bevelled rim; the ::after is a shine bar that sweeps on mint/hover. Tone classes
-   set the metal via custom props. Colours are fixed (metal reads the same in every theme). */
+   set the metal via custom props. Ink/bronze are fixed (they read the same in every theme); gold's
+   mid/lo track the theme's gold tokens so the medal keeps its lustre in dark. */
 .medal {
   position: relative;
   flex: none;
@@ -52,8 +53,8 @@
 /* ── tones ── */
 .gold {
   --c-hi: #f7e3a8;
-  --c-mid: #cda23f;
-  --c-lo: #8f6a22;
+  --c-mid: var(--gold);
+  --c-lo: var(--gold-deep);
   --c-mark: #5a3f12;
   --c-glow: 231, 196, 92;
 }

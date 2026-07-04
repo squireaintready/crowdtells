@@ -206,6 +206,9 @@
 }
 
 .prose {
+  /* Cap the running text at a comfortable reading measure — the article column
+     is wider than a paragraph should run. Figures/lens/timeline keep the full column. */
+  max-width: 68ch;
   font-family: var(--font-serif);
   font-size: 1.1rem;
   line-height: 1.62;
@@ -264,7 +267,7 @@
 .lensOdds {
   flex: none;
   font-family: var(--font-serif);
-  font-size: clamp(6.5rem, 22vw, 11.5rem);
+  font-size: clamp(5.5rem, 22vw, 11.5rem);
   font-weight: 300;
   line-height: 0.82;
   letter-spacing: -0.03em;

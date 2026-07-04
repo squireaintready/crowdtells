@@ -15,6 +15,16 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        // react/react-dom in their own chunk: its hash only changes on a React
+        // upgrade, so returning readers keep the framework cached across
+        // deploys instead of re-downloading it inside the app bundle.
+        manualChunks(id: string) {
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return 'react';
+        },
+      },
+    },
   },
   test: {
     environment: 'jsdom',

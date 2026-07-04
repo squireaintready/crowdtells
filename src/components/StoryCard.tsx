@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import type { Market } from '../lib/types';
 import { signalsFor } from '../lib/signals';
@@ -141,7 +142,8 @@ function DigestRow({ market: m }: { market: Market }) {
         {m.endDate && <span className={styles.deadline}>{formatDeadline(m.endDate)}</span>}
       </div>
 
-      <h3 className={styles.boardTitle}>{m.title}</h3>
+      {/* Same level as a story headline — a digest first-in-feed must not skip h2→h3. */}
+      <h2 className={styles.boardTitle}>{m.title}</h2>
 
       <div className={`${styles.boardRead} tnum`}>
         <span className={styles.boardFavored}>{m.favored}</span>
@@ -317,6 +319,32 @@ function FullCard({ market: m, onOpen, lead }: Props) {
     [],
   );
 
+  // Hero pictures load lazily: a CSS background-image can't use loading="lazy",
+  // so the URL is only attached once the card nears the viewport (one screen of
+  // look-ahead). First-window cards intersect immediately; cards deep in the
+  // feed never fetch their picture unless the reader scrolls toward them.
+  const [heroSrc, setHeroSrc] = useState<string | null>(null);
+  useEffect(() => {
+    if (!cardImage) return;
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setHeroSrc(cardImage.url);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setHeroSrc(cardImage.url);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '100% 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardImage?.url]);
+
   // The image band is a reveal surface, not a nav target. Touch-and-hold clears it;
   // a horizontal drag (mouse or touch) pulls it across and a full swipe opens the
   // story. touch-action:pan-y (CSS) keeps vertical scroll native, so this never
@@ -470,7 +498,10 @@ function FullCard({ market: m, onOpen, lead }: Props) {
       {cardImage ? (
         <div
           className={`${styles.hero} ${contain ? styles.heroContain : ''}`}
-          style={{ backgroundImage: `url("${cardImage.url}")`, backgroundPosition: heroPos }}
+          style={{
+            ...(heroSrc ? { backgroundImage: `url("${heroSrc}")` } : null),
+            backgroundPosition: heroPos,
+          }}
           aria-hidden="true"
         />
       ) : (

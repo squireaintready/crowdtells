@@ -177,9 +177,30 @@ export function Controls({
                 strokeWidth="2"
                 strokeLinecap="round"
               />
-              <circle cx="8" cy="6" r="2.4" fill="var(--bg)" stroke="currentColor" strokeWidth="2" />
-              <circle cx="13" cy="10" r="2.4" fill="var(--bg)" stroke="currentColor" strokeWidth="2" />
-              <circle cx="7" cy="14" r="2.4" fill="var(--bg)" stroke="currentColor" strokeWidth="2" />
+              <circle
+                cx="8"
+                cy="6"
+                r="2.4"
+                fill="var(--bg)"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <circle
+                cx="13"
+                cy="10"
+                r="2.4"
+                fill="var(--bg)"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <circle
+                cx="7"
+                cy="14"
+                r="2.4"
+                fill="var(--bg)"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
             </svg>
             <span className={styles.interestsLabel}>
               {hasInterests ? 'Edit interests' : 'Personalize'}
@@ -194,6 +215,7 @@ export function Controls({
             <button
               key={it.key}
               data-chip
+              aria-pressed={category === it.cat}
               className={`${styles.chip} ${category === it.cat ? styles.chipActive : ''}`}
               onClick={() => onCategory(it.cat !== null && category === it.cat ? null : it.cat)}
             >

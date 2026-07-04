@@ -6,12 +6,12 @@
   align-items: center;
   justify-content: center;
   padding: var(--s-4);
-  /* Keep the fully-expanded (max-height:90vh) sheet clear of the iOS home
-     indicator and side insets on notched phones. */
+  /* Keep the fully-expanded sheet clear of the iOS home indicator and side
+     insets on notched phones. */
   padding-bottom: max(var(--s-4), env(safe-area-inset-bottom));
   padding-left: max(var(--s-4), env(safe-area-inset-left));
   padding-right: max(var(--s-4), env(safe-area-inset-right));
-  background: rgba(20, 18, 14, 0.55);
+  background: var(--scrim);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   animation: fade var(--t-fast);
@@ -27,8 +27,11 @@
   position: relative;
   width: 100%;
   max-width: 440px;
-  max-height: 90vh;
+  /* min() with 100dvh keeps the sheet inside the visible viewport when iOS's
+     large viewport makes 90vh taller than the screen. */
+  max-height: min(90vh, calc(100dvh - 2 * var(--s-4)));
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--s-6) var(--s-5) var(--s-5);
   background: var(--elevated);
   border: 1px solid var(--border);
@@ -82,7 +85,7 @@
    face. The identity chip + the transient "Loading…" note stay in the UI sans. */
 .lead {
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -176,7 +179,7 @@
 
 .confirmText {
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -206,6 +209,12 @@
 .error {
   font-size: 0.85rem;
   color: var(--down);
+}
+
+/* Stays mounted for a reliable aria-live announcement; out of flow while :empty
+   so it never eats a gap slot in the sheet. */
+.error:empty {
+  position: absolute;
 }
 
 /* Privacy toggle: "show my calls to followers" (the opt-in for shared calls). */
@@ -240,9 +249,9 @@
   flex: none;
   width: 44px;
   height: 26px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border: 1px solid var(--border-strong);
-  background: var(--surface-2, var(--accent-tint));
+  background: var(--surface-2);
   transition: background var(--t-fast);
   margin-top: 2px;
 }

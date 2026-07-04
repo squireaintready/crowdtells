@@ -71,6 +71,10 @@ export default function TheCall({ market }: { market: Market }) {
   const [busy, setBusy] = useState(false);
   // Bumped once when a call is committed, to fire the one-shot lock-in flourish.
   const [lockKey, setLockKey] = useState(0);
+  // Save/post failure message, shown in an ALWAYS-MOUNTED aria-live region at the
+  // section level (a failed castCall flips the render branch mid-flight, so a region
+  // inside a branch would remount with the text already set and never announce).
+  const [error, setError] = useState<string | null>(null);
 
   // Vote-funnel analytics (PostHog): impression on load, "started" once on first touch
   // of the form, completion on lock-in, and a blocked-on-auth signal for signed-out
@@ -159,6 +163,7 @@ export default function TheCall({ market }: { market: Market }) {
   const submit = async () => {
     if (!userId || !pick) return;
     setBusy(true);
+    setError(null);
     const snapshot = myCall;
     setMyCall({ targetOutcome: target, pick, confidence: conf, hidden: false });
     try {
@@ -168,6 +173,7 @@ export default function TheCall({ market }: { market: Market }) {
       void fetchCallDistribution(market.id).then(setDist);
     } catch {
       setMyCall(snapshot); // roll back to server truth on failure
+      setError('Couldn’t save your call — try again.');
     } finally {
       setBusy(false);
     }
@@ -193,6 +199,7 @@ export default function TheCall({ market }: { market: Market }) {
   const postNote = async () => {
     if (!userId || !myCall || note.trim().length === 0) return;
     setNoteBusy(true);
+    setError(null);
     try {
       await postComment(market.id, userId, note, null, {
         callPick: myCall.pick,
@@ -202,6 +209,7 @@ export default function TheCall({ market }: { market: Market }) {
       setNoteDone(true);
     } catch {
       // Keep the draft so the reader can retry; no destructive UI on failure.
+      setError('Couldn’t post your note — try again.');
     } finally {
       setNoteBusy(false);
     }
@@ -230,9 +238,8 @@ export default function TheCall({ market }: { market: Market }) {
               {right ? 'You called it' : 'You read it the other way'}
             </p>
             <p className={styles.result}>
-              You put <b className="tnum">{Math.round(score.prob * 100)}%</b> on{' '}
-              <b>{target}</b> — which {score.won ? 'happened' : 'didn’t'}. Resolved{' '}
-              <b>{market.resolvedOutcome}</b>.
+              You put <b className="tnum">{Math.round(score.prob * 100)}%</b> on <b>{target}</b> —
+              which {score.won ? 'happened' : 'didn’t'}. Resolved <b>{market.resolvedOutcome}</b>.
             </p>
             {score.peer < 0 && (
               <p className={styles.peer}>Sharper than the median reader on this one.</p>
@@ -277,6 +284,7 @@ export default function TheCall({ market }: { market: Market }) {
               aria-pressed={pick === 'yes'}
               onClick={() => {
                 setPick('yes');
+                setError(null);
                 markStarted('pick');
               }}
             >
@@ -289,6 +297,7 @@ export default function TheCall({ market }: { market: Market }) {
               aria-pressed={pick === 'no'}
               onClick={() => {
                 setPick('no');
+                setError(null);
                 markStarted('pick');
               }}
             >
@@ -314,6 +323,7 @@ export default function TheCall({ market }: { market: Market }) {
               value={confIdx}
               onChange={(e) => {
                 setConf(CONFIDENCE_STEPS[Number(e.target.value)]!);
+                setError(null);
                 markStarted('confidence');
               }}
               style={{ '--fill': fillPct } as CSSProperties}
@@ -340,8 +350,9 @@ export default function TheCall({ market }: { market: Market }) {
             </button>
           </div>
           <p className={styles.fine}>
-            Private, and <b>final</b> once you lock it in — you can’t change or retract a call (that’s
-            what keeps your track record honest). You can hide it from view later; it still counts.
+            Private, and <b>final</b> once you lock it in — you can’t change or retract a call
+            (that’s what keeps your track record honest). You can hide it from view later; it still
+            counts.
           </p>
         </>
       ) : myCall.hidden ? (
@@ -446,7 +457,10 @@ export default function TheCall({ market }: { market: Market }) {
                   type="text"
                   className={styles.noteInput}
                   value={note}
-                  onChange={(e) => setNote(e.target.value)}
+                  onChange={(e) => {
+                    setNote(e.target.value);
+                    setError(null);
+                  }}
                   maxLength={2000}
                   placeholder="What’s driving your read?"
                 />
@@ -467,6 +481,10 @@ export default function TheCall({ market }: { market: Market }) {
           </div>
         </>
       )}
+      {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+      <p className={`${styles.fine} ${styles.miss}`} aria-live="polite">
+        {error}
+      </p>
     </section>
   );
 }

@@ -156,27 +156,39 @@
 }
 
 .dot {
+  position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--up);
+}
+
+/* Expanding pulse ring — transform/opacity only (compositor-animated), so the
+   infinite loop never repaints, unlike the old box-shadow pulse. */
+.dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--up);
+  opacity: 0;
   animation: pulse 2.4s infinite;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 55%, transparent);
+    transform: scale(1);
+    opacity: 0.55;
   }
-  70% {
-    box-shadow: 0 0 0 5px transparent;
-  }
+  70%,
   100% {
-    box-shadow: 0 0 0 0 transparent;
+    transform: scale(2.7);
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dot {
+  .dot::after {
     animation: none;
   }
 }

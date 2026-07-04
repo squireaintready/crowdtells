@@ -31,7 +31,11 @@ export default function Facepile({ marketId, count }: { marketId: string; count:
   const others = Math.max(0, count - named.length);
 
   return (
-    <div className={styles.wrap} aria-label={`${count} reader${count === 1 ? '' : 's'} liked this`}>
+    <div
+      className={styles.wrap}
+      role="group"
+      aria-label={`${count} reader${count === 1 ? '' : 's'} liked this`}
+    >
       <div className={styles.stack} aria-hidden="true">
         {people.map((p, i) =>
           p.avatarUrl ? (

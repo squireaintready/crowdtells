@@ -269,11 +269,14 @@
   gap: var(--s-3);
 }
 
-/* A reply: indented under its thread root, with a hairline lead-in rule. */
+/* A reply: indented under its thread root, with a lead-in rule that fades from its
+   vertical center (the house left-highlight treatment, as on the Wall's row rules).
+   The 2px the old border occupied moves into the padding so the text doesn't shift. */
 .replyComment {
   margin-left: var(--s-5);
-  padding-left: var(--s-4);
-  border-left: 2px solid var(--border);
+  padding-left: calc(var(--s-4) + 2px);
+  background: linear-gradient(to bottom, transparent, var(--border), transparent) left / 2px 100%
+    no-repeat;
 }
 
 .replyWrap {
@@ -334,7 +337,7 @@
   background: transparent;
   padding: 0.1rem 0.5rem;
   border: 1px solid var(--accent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   white-space: nowrap;
   transition:
     background var(--t-fast),
@@ -368,7 +371,7 @@
   color: var(--text-mute);
   padding: 0.05rem 0.4rem;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   white-space: nowrap;
 }
 
@@ -465,20 +468,37 @@
   color: var(--down);
 }
 
+/* The composer/sign-in error <p> stays mounted (reliable aria-live announcement);
+   while :empty it sits out of flow so it never eats a grid gap slot. */
+.error:empty {
+  position: absolute;
+}
+
 /* Touch refinements — keep the quiet inline comment affordances reading as text
    (not hollow 44px boxes), the segmented sort compact, and the magic-link field
    level with its button. Mirrors the affordance treatment used across the app
-   (Customize / Unsubscribe / Delete account). The email input keeps its 16px
+   (Customize / Unsubscribe / Delete account). An invisible ::after stretches each
+   compact button's tap area back to ≥44px vertically — vertical only, since the
+   inline gaps between these buttons are small. The email input keeps its 16px
    font so focusing it never triggers iOS zoom — only its height is pinned. */
 @media (pointer: coarse) {
   .linkBtn,
   .like {
+    position: relative;
     min-height: 0;
     padding-block: 6px;
   }
   .sortBtn {
+    position: relative;
     min-height: 0;
     padding-block: 7px;
+  }
+  .linkBtn::after,
+  .like::after,
+  .sortBtn::after {
+    content: '';
+    position: absolute;
+    inset: -7px 0;
   }
   .emailRow input {
     min-height: 44px;

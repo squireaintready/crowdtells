@@ -65,7 +65,7 @@
   color: var(--text-mute);
   background: color-mix(in srgb, var(--bg) 72%, transparent);
   padding: 0 3px;
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   pointer-events: none;
 }
 .yHi {
@@ -86,7 +86,7 @@
   padding: 2px 7px;
   background: var(--text);
   color: var(--bg);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-family: var(--font-sans);
   font-size: 0.72rem;
   font-weight: 700;
@@ -141,28 +141,22 @@
 }
 .lgBelief::before {
   background: var(--accent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   height: 3px;
 }
 .lgOverlay::before {
   height: 3px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: repeating-linear-gradient(to right, var(--text-mute) 0 3px, transparent 3px 6px);
 }
 .lgRev::before {
   background: var(--bg);
   border: 1.8px solid var(--accent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .lgCov::before {
   width: 2px;
   height: 11px;
   background: var(--text-mute);
   border-radius: 1px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .head {
-    transition: none;
-  }
 }

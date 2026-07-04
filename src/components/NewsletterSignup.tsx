@@ -19,12 +19,21 @@ const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 /** Honest two-part success copy per outcome (lead + dimmed continuation). */
 function doneMessage(outcome: Outcome, frequency: EmailPrefs['frequency']): [string, string] {
   if (outcome === 'subscribed') {
-    return ["You're subscribed.", `The ${frequency} brief lands in your inbox — no confirmation needed.`];
+    return [
+      "You're subscribed.",
+      `The ${frequency} brief lands in your inbox — no confirmation needed.`,
+    ];
   }
   if (outcome === 'already') {
-    return ["You're already subscribed.", `The ${frequency} brief is on its way — no need to confirm again.`];
+    return [
+      "You're already subscribed.",
+      `The ${frequency} brief is on its way — no need to confirm again.`,
+    ];
   }
-  return ['Almost there — check your inbox to confirm.', `Once you do, the ${frequency} brief lands in your inbox.`];
+  return [
+    'Almost there — check your inbox to confirm.',
+    `Once you do, the ${frequency} brief lands in your inbox.`,
+  ];
 }
 
 /**
@@ -109,8 +118,8 @@ export function NewsletterSignup({ categories = [] }: { categories?: string[] })
       <div className={styles.copy}>
         <h2 className={styles.head}>The Crowdtells brief</h2>
         <p className={styles.sub}>
-          The biggest market moves and the stories behind them. Pick your cadence and topics — no
-          spam, unsubscribe anytime.
+          The stories the crowd sees coming — and how its read moves. Pick your cadence and topics —
+          no spam, unsubscribe anytime.
         </p>
       </div>
       <form className={styles.formArea} onSubmit={onSubmit} noValidate>
@@ -149,7 +158,9 @@ export function NewsletterSignup({ categories = [] }: { categories?: string[] })
           {customize ? 'Hide options' : 'Customize'}
         </button>
 
-        {customize && <EmailPrefsFields value={prefs} onChange={setPrefs} categories={categories} />}
+        {customize && (
+          <EmailPrefsFields value={prefs} onChange={setPrefs} categories={categories} />
+        )}
 
         {state === 'error' && (
           <p id="newsletter-error" className={styles.error} aria-live="polite">

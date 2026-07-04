@@ -152,6 +152,14 @@
   font-size: 0.84rem;
 }
 
+/* touch devices get the desktop admin layout — keep inputs ≥1rem so iOS doesn't focus-zoom */
+@media (pointer: coarse) {
+  .search,
+  .select {
+    font-size: 1rem;
+  }
+}
+
 .count {
   font-size: 0.78rem;
   color: var(--text-mute);
@@ -360,7 +368,7 @@
 }
 .btnDanger:hover {
   background: var(--down);
-  color: #fff;
+  color: var(--bg);
   border-color: var(--down);
 }
 .btnGhost {
@@ -446,7 +454,7 @@
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--scrim);
   display: flex;
   justify-content: flex-end;
 }

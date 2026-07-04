@@ -6,7 +6,7 @@
   align-items: flex-end;
   justify-content: center;
   padding: var(--s-4);
-  background: color-mix(in srgb, #0b0a08 55%, transparent);
+  background: var(--scrim);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   animation: fade var(--t) ease;
@@ -20,13 +20,14 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 35%);
+  box-shadow: var(--shadow-2);
   animation: rise var(--t) ease;
   /* Cap to the visible viewport (100dvh respects the iOS dynamic toolbar) and
      scroll the sheet itself, so the title/intro/actions are always reachable on
      short or landscape phones instead of clipping above the screen edge. */
   max-height: calc(100dvh - var(--s-6) - env(safe-area-inset-bottom));
   overflow-y: auto;
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -66,6 +67,9 @@
 @media (pointer: coarse) {
   .close {
     min-width: 44px;
+    /* The global 44px min-height floor beats height: 2rem here, so the overlap
+       margin must cancel the full rendered height or the kicker drops 12px. */
+    margin-bottom: calc(-1 * max(2rem, 44px));
   }
 }
 

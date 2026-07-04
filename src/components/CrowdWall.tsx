@@ -19,6 +19,14 @@ function toneClass(cvc: Market['crowdVsCoverage']) {
   return styles.ruleAligned;
 }
 
+/** Screen-reader text for the non-default tones — the rule conveys them by color
+ * alone, so name them for AT (the aligned/quiet default stays unannounced). */
+function toneText(cvc: Market['crowdVsCoverage']) {
+  if (cvc === 'ahead') return 'crowd ahead of coverage';
+  if (cvc === 'contested') return 'contested';
+  return null;
+}
+
 /** A single league-table row. Uniform height, straight columns — readability over
  * money-scaled type. A real <button> so it's keyboard-operable and gets the global
  * focus-visible ring; the whole row is one tap target. */
@@ -30,9 +38,11 @@ const WallRow = memo(function WallRow({
   onOpen: (id: string) => void;
 }) {
   const pct = Math.max(0, Math.min(100, m.oddsPct));
+  const tone = toneText(m.crowdVsCoverage);
   return (
     <button type="button" className={styles.row} onClick={() => onOpen(m.id)}>
       <span className={`${styles.rule} ${toneClass(m.crowdVsCoverage)}`} aria-hidden="true" />
+      {tone && <span className="visually-hidden">{tone} — </span>}
       <span className={`${styles.odds} tnum`}>{formatPct(m.oddsPct)}</span>
       <span className={styles.bar} aria-hidden="true">
         <span className={styles.barFill} style={{ width: `${Math.max(3, pct)}%` }} />
@@ -62,6 +72,7 @@ const WallRowBold = memo(function WallRowBold({
   f: number;
   onOpen: (id: string) => void;
 }) {
+  const tone = toneText(m.crowdVsCoverage);
   return (
     <button
       type="button"
@@ -70,6 +81,7 @@ const WallRowBold = memo(function WallRowBold({
       style={{ '--wall-f': f } as CSSProperties}
     >
       <span className={`${styles.rule} ${toneClass(m.crowdVsCoverage)}`} aria-hidden="true" />
+      {tone && <span className="visually-hidden">{tone} — </span>}
       <span className={styles.headlineBold}>{m.hook || m.title}</span>
       <span className={styles.meta}>
         <span className={`${styles.metaOdds} tnum`}>{formatPct(m.oddsPct)}</span>
@@ -135,7 +147,7 @@ export const CrowdWall = memo(function CrowdWall({ stories, onOpen }: Props) {
             ranked by money · {stories.length} {stories.length === 1 ? 'market' : 'markets'}
           </span>
         </div>
-        <div className={styles.legend} aria-hidden="true">
+        <div className={styles.legend}>
           <span className={`${styles.legendItem} ${styles.legendAhead}`}>
             <span className={styles.legendSwatch} />
             crowd ahead
@@ -148,7 +160,9 @@ export const CrowdWall = memo(function CrowdWall({ stories, onOpen }: Props) {
             <span className={styles.legendSwatch} />
             aligned
           </span>
-          <span className={styles.legendHint}>{bold ? 'type ∝ money' : 'odds · market · money'}</span>
+          <span className={styles.legendHint}>
+            {bold ? 'type ∝ money' : 'odds · market · money'}
+          </span>
         </div>
       </header>
 

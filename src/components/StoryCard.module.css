@@ -593,7 +593,7 @@
   align-items: baseline;
   gap: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.8125rem; /* ~13px */
+  font-size: 0.82rem; /* ~13.1px */
   line-height: 1.4;
   color: var(--text-dim);
 }

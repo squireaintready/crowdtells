@@ -125,9 +125,10 @@ export function NewsletterPrompt({
         </p>
       ) : (
         <>
-          <p className={styles.head}>Enjoying the read?</p>
+          <p className={styles.head}>The crowd tells it first.</p>
           <p className={styles.sub}>
-            Get the Crowdtells brief — the biggest market moves, no spam, unsubscribe anytime.
+            Get the Crowdtells brief — the stories the crowd sees coming, no spam, unsubscribe
+            anytime.
           </p>
           <form className={styles.form} onSubmit={onSubmit} noValidate>
             <label className={styles.srOnly} htmlFor="nl-prompt-email">
@@ -147,6 +148,7 @@ export function NewsletterPrompt({
                 if (state === 'error') setState('idle');
               }}
               aria-invalid={state === 'error'}
+              aria-describedby={state === 'error' ? 'nl-prompt-error' : undefined}
               disabled={state === 'submitting'}
               required
             />
@@ -154,13 +156,13 @@ export function NewsletterPrompt({
               {state === 'submitting' ? 'Subscribing…' : 'Subscribe'}
             </button>
           </form>
-          {state === 'error' && (
-            <p className={styles.error} aria-live="polite">
-              {errKind === 'server'
+          {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+          <p id="nl-prompt-error" className={styles.error} aria-live="polite">
+            {state === 'error' &&
+              (errKind === 'server'
                 ? 'Couldn’t subscribe right now — please try again.'
-                : 'Please enter a valid email.'}
-            </p>
-          )}
+                : 'Please enter a valid email.')}
+          </p>
         </>
       )}
     </div>

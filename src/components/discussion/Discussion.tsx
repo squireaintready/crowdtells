@@ -128,7 +128,10 @@ function Composer({
         maxLength={2000}
         aria-label={parentId ? 'Write a reply' : 'Write a comment'}
       />
-      {err && <p className={styles.error} aria-live="polite">{err}</p>}
+      {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+      <p className={styles.error} aria-live="polite">
+        {err}
+      </p>
       <div className={styles.composerActions}>
         {onCancel ? (
           <button
@@ -270,13 +273,19 @@ function CommentItem({
         {editing ? (
           <div className={styles.editBox}>
             <textarea
+              // "Edit" swaps the body for this box — land focus in it (Composer idiom).
+              autoFocus
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={3}
               maxLength={2000}
               aria-label="Edit comment"
             />
-            {err && <p className={styles.error} aria-live="polite">{err}</p>}
+            {err && (
+              <p className={styles.error} aria-live="polite">
+                {err}
+              </p>
+            )}
             <div className={styles.editActions}>
               <button
                 className={styles.linkBtn}
@@ -308,7 +317,7 @@ function CommentItem({
               onClick={toggleLike}
               disabled={!myId}
               aria-pressed={liked}
-              aria-label={liked ? 'Unlike' : 'Like'}
+              aria-label={`${liked ? 'Unlike' : 'Like'} — ${count} ${count === 1 ? 'like' : 'likes'}`}
             >
               <span className={styles.likeIcon}>
                 <span key={likeKey} className={likeKey ? burst.pop : undefined} aria-hidden="true">
@@ -364,9 +373,12 @@ function CommentItem({
                 <span className={styles.flagged}>Flagged for review</span>
               ) : flagging ? (
                 <span className={styles.flagMenu} role="group" aria-label="Why flag this?">
-                  {REPORT_CATEGORIES.map((cat) => (
+                  {REPORT_CATEGORIES.map((cat, i) => (
                     <button
                       key={cat.key}
+                      // "Report" swaps its button for this group — land focus on the
+                      // first option so keyboard users aren't left on an unmounted node.
+                      autoFocus={i === 0}
                       className={styles.linkBtn}
                       onClick={() => {
                         track('comment_reported', { market_id: marketId, category: cat.key });
@@ -389,7 +401,11 @@ function CommentItem({
               ))}
           </div>
         )}
-        {!editing && err && <p className={styles.error} aria-live="polite">{err}</p>}
+        {!editing && err && (
+          <p className={styles.error} aria-live="polite">
+            {err}
+          </p>
+        )}
       </div>
     </li>
   );
@@ -433,7 +449,8 @@ function buildThreads(comments: UiComment[], sort: Sort): ThreadData[] {
     sort === 'oldest'
       ? (a: UiComment, b: UiComment) => t(a.createdAt) - t(b.createdAt)
       : sort === 'top'
-        ? (a: UiComment, b: UiComment) => b.likeCount - a.likeCount || t(b.createdAt) - t(a.createdAt)
+        ? (a: UiComment, b: UiComment) =>
+            b.likeCount - a.likeCount || t(b.createdAt) - t(a.createdAt)
         : (a: UiComment, b: UiComment) => t(b.createdAt) - t(a.createdAt);
 
   return [...roots].sort(cmp).map((root) => ({
@@ -576,7 +593,7 @@ export default function Discussion({
             </span>
             <Burst trigger={storyLikeKey} tone="rose" />
           </span>{' '}
-          {likes.count > 0 ? likes.count : ''} Like
+          Like{likes.count > 0 ? ` · ${likes.count}` : ''}
         </button>
         {likes.count > 0 && <Facepile marketId={marketId} count={likes.count} />}
         <span className={styles.count}>
@@ -599,13 +616,16 @@ export default function Discussion({
       </div>
 
       {ready &&
-        (myId ? (
-          <Composer marketId={marketId} userId={myId} onPosted={load} />
-        ) : (
-          <SignIn />
-        ))}
+        (myId ? <Composer marketId={marketId} userId={myId} onPosted={load} /> : <SignIn />)}
 
-      {error && <p className={styles.error}>Couldn’t load the discussion.</p>}
+      {error && (
+        <p className={styles.error}>
+          Couldn’t load the discussion.{' '}
+          <button type="button" className={styles.linkBtn} onClick={() => void load()}>
+            Try again
+          </button>
+        </p>
+      )}
       {loading ? (
         <p className={styles.note}>Loading…</p>
       ) : threads.length === 0 ? (
@@ -617,8 +637,7 @@ export default function Discussion({
       ) : (
         <ul className={styles.list}>
           {threads.map(({ root, replies }) => {
-            const replyOpen =
-              replyTo === root.id || replies.some((r) => r.id === replyTo);
+            const replyOpen = replyTo === root.id || replies.some((r) => r.id === replyTo);
             return (
               <li key={root.id} className={styles.thread}>
                 <ul className={styles.threadInner}>

@@ -175,6 +175,22 @@
   outline-offset: 2px;
 }
 
+/* Touch: taller control + a bigger thumb for a comfortable drag; track stays slim. */
+@media (pointer: coarse) {
+  .range {
+    height: 40px;
+  }
+  .range::-webkit-slider-thumb {
+    margin-top: -11px; /* center the 28px thumb on the 6px track */
+    width: 28px;
+    height: 28px;
+  }
+  .range::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Tick labels under the track, aligned to the 5 stops. */
 .ticks {
   display: flex;
@@ -232,6 +248,12 @@
   margin: 2px 0 0;
   font-size: 0.74rem;
   color: var(--text-mute);
+}
+
+/* The save-error line stays mounted (reliable aria-live announcement); out of
+   flow while :empty so it adds no phantom margin below the widget. */
+.fine:empty {
+  position: absolute;
 }
 
 .signin {
@@ -391,7 +413,7 @@
   gap: 6px;
   padding: 4px 9px 4px 4px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-family: var(--font-sans);
   font-size: 0.78rem;
   color: var(--text-dim);
@@ -438,8 +460,8 @@
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--surface-2, var(--accent-tint));
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
   font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 600;

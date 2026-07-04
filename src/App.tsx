@@ -1,4 +1,13 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { Feed, Market } from './lib/types';
 import type { EngagementStat } from './lib/engagement';
 import { categoriesOf, dedupeByEvent, loadFeed, sectionBackLabel, selectStories, type Section } from './lib/feed';
@@ -130,6 +139,10 @@ export function App() {
 
   const [section, setSection] = useState<Section>('top');
   const [query, setQuery] = useState('');
+  // The ranked list (and the <head> rewrite) follow a deferred copy of the query:
+  // the keystroke echoes in the input at high priority, and the Top section's
+  // O(n·k) re-rank runs when React is idle — typing never blocks on it.
+  const deferredQuery = useDeferredValue(query);
   const [category, setCategory] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // The admin console takeover (?admin), read straight from the URL on mount so it
@@ -444,7 +457,7 @@ export function App() {
       return;
     }
     const meta = headMeta(
-      { query, category, expandedId },
+      { query: deferredQuery, category, expandedId },
       {
         origin: window.location.origin,
         story: activeMarket
@@ -487,7 +500,7 @@ export function App() {
     setMeta('name', 'twitter:title', meta.title);
     setMeta('name', 'twitter:description', meta.description);
     setMeta('name', 'twitter:image', meta.image);
-  }, [query, category, expandedId, activeMarket, admin]);
+  }, [deferredQuery, category, expandedId, activeMarket, admin]);
 
   // Single source of truth for the URL: reflect the view state into the
   // querystring (shareable/bookmarkable, clean home URL) and restore it on
@@ -610,12 +623,12 @@ export function App() {
     }
     return selectStories(markets, {
       section,
-      query,
+      query: deferredQuery,
       category,
       topics: interests.topics,
       engagement,
     });
-  }, [markets, section, query, category, interests.topics, savedIds, engagement]);
+  }, [markets, section, deferredQuery, category, interests.topics, savedIds, engagement]);
   // The rendered slice of the active list (the feed window). Memoized so the slice
   // only re-allocates when the list or the window actually changes — not on the
   // many unrelated re-renders (opening a story, engagement ticks, prompts).
@@ -652,7 +665,7 @@ export function App() {
     // previous list: a reset SHRINKS the window, so the grow-only effect below
     // won't speak for the new one and would otherwise leave the old text behind.
     setAnnounce('');
-  }, [section, query, category, topicsKey]);
+  }, [section, deferredQuery, category, topicsKey]);
   // Announce each freshly-revealed batch to assistive tech (the polite live region
   // below), so a screen-reader reader knows the auto-loaded/clicked stories
   // arrived. Fires only when the window GROWS — never on a reset or a realtime

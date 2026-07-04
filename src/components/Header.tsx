@@ -127,14 +127,19 @@ export function Header({
   }, []);
 
   // The inline search field that the top-row icon expands (mobile). Focus on open;
-  // Escape closes it.
+  // Escape closes it. Closing unmounts the focused input, which would drop focus to
+  // <body> — hand it back to the toggle button on both close paths (Escape and ✕).
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const searchBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!searchOpen) return;
     searchRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSearchOpen(false);
+      if (e.key === 'Escape') {
+        setSearchOpen(false);
+        searchBtnRef.current?.focus();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -235,6 +240,7 @@ export function Header({
           {hasSearch && (
             <button
               type="button"
+              ref={searchBtnRef}
               className={styles.searchBtn}
               onClick={() => setSearchOpen((o) => !o)}
               aria-label="Search"
@@ -279,7 +285,10 @@ export function Header({
           <button
             type="button"
             className={styles.searchClose}
-            onClick={() => setSearchOpen(false)}
+            onClick={() => {
+              setSearchOpen(false);
+              searchBtnRef.current?.focus();
+            }}
             aria-label="Close search"
           >
             ✕
@@ -287,7 +296,10 @@ export function Header({
         </div>
       )}
 
-      <div className={`${styles.nameplateRow} ${aggressive ? styles.nameplateRowBold : ''}`} ref={rowRef}>
+      <div
+        className={`${styles.nameplateRow} ${aggressive ? styles.nameplateRowBold : ''}`}
+        ref={rowRef}
+      >
         <h1
           className={styles.nameplate}
           ref={nameRef}

@@ -199,6 +199,12 @@
   color: var(--down);
 }
 
+/* Stays mounted for a reliable aria-live announcement; out of flow while :empty
+   so it never eats the composer's grid gap slot. */
+.err:empty {
+  position: absolute;
+}
+
 /* Mobile: rating buttons grow to comfortable full-width taps. */
 @media (max-width: 560px) {
   .rateBtn {

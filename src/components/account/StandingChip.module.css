@@ -13,7 +13,7 @@
   white-space: nowrap;
 }
 .lv {
-  font-size: 0.56rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -37,7 +37,7 @@
 .steward {
   --chip-bg: var(--accent-tint);
   --chip-fg: var(--accent);
-  --chip-bd: #cda23f;
+  --chip-bd: var(--gold);
 }
 
 /* Level-up: a gold ring expands + fades once, with a brief brighten. */
@@ -46,7 +46,7 @@
   position: absolute;
   inset: -2px;
   border-radius: var(--r-pill);
-  border: 1.5px solid #cda23f;
+  border: 1.5px solid var(--gold);
   opacity: 0;
   pointer-events: none;
   animation: chipFlash 1400ms ease-out 1;
@@ -70,7 +70,7 @@
     box-shadow: 0 0 0 0 transparent;
   }
   35% {
-    box-shadow: 0 0 10px 1px rgba(205, 162, 63, 0.7);
+    box-shadow: 0 0 10px 1px color-mix(in srgb, var(--gold) 70%, transparent);
   }
 }
 
@@ -95,7 +95,7 @@
     min-width: 16px;
     height: 16px;
     justify-content: center;
-    border-radius: 999px;
+    border-radius: var(--r-pill);
     box-shadow: 0 0 0 1.5px var(--bg);
   }
   .lv {

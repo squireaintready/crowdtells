@@ -24,7 +24,11 @@
    page vertically or reveals a scrollbar gutter. */
 .tabs {
   display: flex;
-  gap: var(--s-5);
+  /* The tabs carry 6px inline padding (hit area), so the gap drops to 12px to keep
+     the visible 24px rhythm; the negative start margin keeps the first label flush
+     with the page grid. */
+  gap: var(--s-3);
+  margin-inline-start: -6px;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
@@ -39,7 +43,7 @@
 .tab {
   position: relative;
   white-space: nowrap;
-  padding: var(--s-3) 0;
+  padding: var(--s-3) 6px;
   border: none;
   background: none;
   color: var(--text-mute);
@@ -60,12 +64,13 @@
 }
 
 /* The active section reads in accent with a 2px accent underline flush to the
-   bar's bottom rule — the editorial section marker. */
+   bar's bottom rule — the editorial section marker. Inset past the 6px hit-area
+   padding so it stays exactly the label's width. */
 .tabActive::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 6px;
+  right: 6px;
   bottom: -2px;
   height: 2px;
   background: var(--accent);
@@ -333,5 +338,9 @@
 @media (pointer: coarse) {
   .chip {
     padding-block: 9px;
+  }
+  /* iPads get the desktop bar — keep the field at 16px so focusing it never zooms. */
+  .search input {
+    font-size: 1rem;
   }
 }

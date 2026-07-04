@@ -2,6 +2,8 @@
  * Crowdtells design tokens — an editorial system.
  * Light is the default; dark themes (bordeaux, forest) opt in via [data-theme] on <html>.
  * Ink on paper, hairline rules, generous rhythm, one restrained accent.
+ * NOTE: the theme-picker swatches in ThemeToggle.tsx mirror each theme's
+ * --bg/--accent — retune them together.
  */
 :root {
   /* Paper + ink (light) */
@@ -33,6 +35,21 @@
   /* Brand/source hues (muted, theme-shared) */
   --polymarket: #6a4fb0;
   --kalshi: #1f7d70;
+
+  /* Merit gold — the standing/Calls reward hue (chips, medallions, toasts).
+   * Deliberately yellower than the dark themes' brass accent so "earned"
+   * never reads as "brand". --gold-deep is the text-grade ink of the family. */
+  --gold: #cda23f;
+  --gold-deep: #8f6a22;
+  --gold-tint: rgba(205, 162, 63, 0.12);
+
+  /* Event-kind pips (Breaking widget) without a semantic token of their own. */
+  --kind-esports: #7c5cff;
+  --kind-econ: #b8860b;
+
+  /* One modal scrim recipe for every overlay (admin dialogs, account sheet,
+   * onboarding). */
+  --scrim: rgba(20, 18, 14, 0.52);
 
   /* Type */
   --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
@@ -99,6 +116,14 @@
   --polymarket: #c3b0f5;
   --kalshi: #6fcabd;
 
+  /* Gold brightens (and yellows away from the brass accent) so merit stays
+   * legible and distinct on the near-black surfaces. */
+  --gold: #e7c257;
+  --gold-deep: #d9ad4a;
+  --gold-tint: rgba(231, 194, 87, 0.14);
+  --kind-esports: #9d8bf7;
+  --kind-econ: #d2a13c;
+
   --shadow-1: 0 1px 0 var(--border);
   --shadow-2: 0 20px 48px rgba(0, 0, 0, 0.6);
 
@@ -133,6 +158,13 @@
 
   --polymarket: #b9a6f0;
   --kalshi: #74d0c0;
+
+  /* Same rationale as bordeaux: merit gold lifts clear of the brass accent. */
+  --gold: #e7c257;
+  --gold-deep: #d9ad4a;
+  --gold-tint: rgba(231, 194, 87, 0.14);
+  --kind-esports: #9d8bf7;
+  --kind-econ: #d2a13c;
 
   --shadow-1: 0 1px 0 var(--border);
   --shadow-2: 0 20px 48px rgba(0, 0, 0, 0.55);

@@ -1,48 +1,52 @@
-.grid {
+/* The loading skeleton previews the feed as it actually renders — StoryCard's
+   unboxed editorial list (hairline separators, no cards) with each row shaped
+   like the real anatomy: uppercase eyebrow → two serif headline lines → teaser
+   → byline. Bar heights approximate the real line boxes. */
+.list {
   display: grid;
-  gap: var(--s-3);
 }
 
 .skeleton {
   display: grid;
-  gap: 12px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  background: var(--surface);
+  gap: var(--s-3);
+  padding: var(--s-6) 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .skelHead {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.skelLines {
   display: grid;
-  gap: 8px;
-  flex: 1;
+  gap: var(--s-1);
 }
 
-.skelIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+.skelBody {
+  display: grid;
+  gap: var(--s-2);
 }
 
-.skelBar {
-  height: 6px;
-  border-radius: var(--r-pill);
+.skelEyebrow {
+  height: 10px;
+  width: 8.5rem;
+  max-width: 45%;
+}
+
+.skelHeadline {
+  height: 1.35rem;
 }
 
 .skelLine {
-  height: 12px;
-  border-radius: 4px;
+  height: 0.9rem;
 }
 
-.skelIcon,
-.skelBar,
-.skelLine {
+.skelMeta {
+  height: 10px;
+  width: 34%;
+}
+
+.skelEyebrow,
+.skelHeadline,
+.skelLine,
+.skelMeta {
+  border-radius: var(--r-sm);
   background: linear-gradient(
     90deg,
     var(--surface-2) 25%,
@@ -63,9 +67,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skelIcon,
-  .skelBar,
-  .skelLine {
+  .skelEyebrow,
+  .skelHeadline,
+  .skelLine,
+  .skelMeta {
     animation: none;
   }
 }
@@ -73,8 +78,8 @@
 .empty {
   display: grid;
   justify-items: center;
-  gap: 12px;
-  padding: 72px 24px;
+  gap: var(--s-3);
+  padding: var(--s-8) var(--s-5);
   text-align: center;
   color: var(--text-dim);
 }

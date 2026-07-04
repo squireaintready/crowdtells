@@ -10,7 +10,7 @@
   left: 50%;
   width: 4px;
   height: 4px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--spark);
   opacity: 0;
   animation: sparkFly 540ms cubic-bezier(0.22, 0.7, 0.3, 1) both;
@@ -30,7 +30,7 @@
   --spark: var(--accent);
 }
 .gold {
-  --spark: #cda23f;
+  --spark: var(--gold);
 }
 .rose {
   --spark: var(--down);
@@ -62,4 +62,3 @@
     animation: none;
   }
 }
-

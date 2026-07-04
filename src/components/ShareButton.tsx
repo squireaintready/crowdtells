@@ -23,7 +23,9 @@ export function ShareButton({ marketId, title }: { marketId: string; title: stri
         }
       }}
     >
-      <span aria-hidden="true">↗</span> {copied ? 'Link copied' : 'Share'}
+      {/* role="status": the Share → "Link copied" swap is announced, not just shown. */}
+      <span aria-hidden="true">↗</span>{' '}
+      <span role="status">{copied ? 'Link copied' : 'Share'}</span>
     </button>
   );
 }

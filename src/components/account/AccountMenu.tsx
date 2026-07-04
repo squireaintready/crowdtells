@@ -116,7 +116,9 @@ export default function AccountMenu({ onClose }: { onClose: () => void }) {
     setErr(null);
     const { error } = await supabase.rpc('delete_my_account');
     if (error) {
-      setErr('Could not delete your account right now. Email hello@crowdtells.com and we’ll remove it.');
+      setErr(
+        'Could not delete your account right now. Email hello@crowdtells.com and we’ll remove it.',
+      );
       setBusy(null);
       return;
     }
@@ -225,7 +227,10 @@ export default function AccountMenu({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {err && <p className={styles.error} aria-live="polite">{err}</p>}
+        {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+        <p className={styles.error} aria-live="polite">
+          {err}
+        </p>
       </div>
     </div>
   );

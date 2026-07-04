@@ -68,39 +68,48 @@ export function TrendChart({
   const wrapRef = useRef<HTMLDivElement>(null);
   const [hoverFx, setHoverFx] = useState<number | null>(null);
 
+  // The full static model — data points AND drawn geometry — memoized together, so the
+  // pointermove-driven hover scrub only recomputes the crosshair, never the path strings
+  // over the whole series.
   const model = useMemo(() => {
     const points = trendPoints(history);
     const over = overlay ? trendPoints(overlay) : [];
     const revs = buildRevisions(revisions, points);
     const cov = buildCoverage(coverage);
     // Domain spans BOTH belief lines (plus the marks) so neither overlay nor primary clips.
-    const dom = trendDomain([...history, ...(overlay ?? [])], [
-      ...revs.map((r) => r.tMs),
-      ...cov.map((c) => c.tMs),
-    ]);
-    return { points, over, revs, cov, dom };
+    const dom = trendDomain(
+      [...history, ...(overlay ?? [])],
+      [...revs.map((r) => r.tMs), ...cov.map((c) => c.tMs)],
+    );
+
+    // A lone observation draws as a flat level line across the (padded) domain.
+    const series = points.length === 1 ? [points[0]!, points[0]!] : points;
+    const xy = series.map((d, i) => {
+      const fx = points.length === 1 ? i : projectX(d.tMs, dom);
+      return [px(fx), py(projectY(d.p, dom))] as const;
+    });
+    const linePts = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+    const areaPts = `${px(0)},${py(1)} ${linePts} ${px(1)},${py(1)}`;
+
+    // The overlay (the other crowd) projected on the same domain — no area, no head dot.
+    const overlaySeries = over.length === 1 ? [over[0]!, over[0]!] : over;
+    const overlayPts = overlaySeries
+      .map((d, i) => {
+        const fx = over.length === 1 ? i : projectX(d.tMs, dom);
+        return `${px(fx).toFixed(1)},${py(projectY(d.p, dom)).toFixed(1)}`;
+      })
+      .join(' ');
+
+    // Each point's x-fraction, computed ONCE (single-point series sit at 0.5) so the
+    // nearest-point search uses one consistent formula for every candidate — and so the
+    // readout reuses the same fraction instead of re-projecting.
+    const fxs = series.map((d) => (points.length === 1 ? 0.5 : projectX(d.tMs, dom)));
+
+    return { points, over, revs, cov, dom, series, xy, linePts, areaPts, overlayPts, fxs };
   }, [history, overlay, revisions, coverage]);
 
-  const { points, over, revs, cov, dom } = model;
+  const { points, over, revs, cov, dom, series, xy, linePts, areaPts, overlayPts, fxs } = model;
   if (points.length === 0) return null;
-
-  // A lone observation draws as a flat level line across the (padded) domain.
-  const series = points.length === 1 ? [points[0]!, points[0]!] : points;
-  const xy = series.map((d, i) => {
-    const fx = points.length === 1 ? i : projectX(d.tMs, dom);
-    return [px(fx), py(projectY(d.p, dom))] as const;
-  });
-  const linePts = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
-  const areaPts = `${px(0)},${py(1)} ${linePts} ${px(1)},${py(1)}`;
-
-  // The overlay (the other crowd) projected on the same domain — no area, no head dot.
-  const overlaySeries = over.length === 1 ? [over[0]!, over[0]!] : over;
-  const overlayPts = overlaySeries
-    .map((d, i) => {
-      const fx = over.length === 1 ? i : projectX(d.tMs, dom);
-      return `${px(fx).toFixed(1)},${py(projectY(d.p, dom)).toFixed(1)}`;
-    })
-    .join(' ');
 
   const first = series[0]!.p;
   const last = series[series.length - 1]!.p;
@@ -110,14 +119,13 @@ export function TrendChart({
   const showMid = dom.lo < 50 && dom.hi > 50;
   const midY = py(projectY(50, dom));
 
-  // Each point's x-fraction, computed ONCE (single-point series sit at 0.5) so the
-  // nearest-point search uses one consistent formula for every candidate — and so the
-  // readout reuses the same fraction instead of re-projecting.
-  const fxs = series.map((d) => (points.length === 1 ? 0.5 : projectX(d.tMs, dom)));
   const hoverIdx =
     hoverFx == null
       ? -1
-      : fxs.reduce((bi, fx, i) => (Math.abs(fx - hoverFx) < Math.abs(fxs[bi]! - hoverFx) ? i : bi), 0);
+      : fxs.reduce(
+          (bi, fx, i) => (Math.abs(fx - hoverFx) < Math.abs(fxs[bi]! - hoverFx) ? i : bi),
+          0,
+        );
   const hover = hoverIdx >= 0 ? series[hoverIdx]! : null;
   const hoverX = hover ? px(fxs[hoverIdx]!) : 0;
   const hoverY = hover ? py(projectY(hover.p, dom)) : 0;
@@ -260,7 +268,13 @@ export function TrendChart({
                 y2={py(1)}
                 vectorEffect="non-scaling-stroke"
               />
-              <circle className={styles.crossDot} cx={hoverX} cy={hoverY} r="3.4" fill={lineColor} />
+              <circle
+                className={styles.crossDot}
+                cx={hoverX}
+                cy={hoverY}
+                r="3.4"
+                fill={lineColor}
+              />
             </g>
           )}
         </svg>
@@ -277,7 +291,9 @@ export function TrendChart({
             aria-hidden="true"
           >
             <b className="tnum">{formatPct(hover.p)}</b>
-            <span className={styles.tipDate}>{formatDateShort(new Date(hover.tMs).toISOString())}</span>
+            <span className={styles.tipDate}>
+              {formatDateShort(new Date(hover.tMs).toISOString())}
+            </span>
           </div>
         )}
       </div>

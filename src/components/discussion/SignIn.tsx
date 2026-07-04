@@ -73,7 +73,10 @@ export function SignIn({ lead = 'Sign in to join the discussion' }: { lead?: str
           {sending ? 'Sending…' : 'Email link'}
         </button>
       </form>
-      {err && <p className={styles.error} aria-live="polite">{err}</p>}
+      {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+      <p className={styles.error} aria-live="polite">
+        {err}
+      </p>
     </div>
   );
 }

@@ -183,7 +183,10 @@ export function ClaimNotes({
             aria-label="Add context to this claim"
             autoFocus
           />
-          {err && <p className={styles.err} aria-live="polite">{err}</p>}
+          {/* Always mounted (empty until a failure) so the swap-in is reliably announced. */}
+          <p className={styles.err} aria-live="polite">
+            {err}
+          </p>
           <div className={styles.composerActions}>
             <button
               type="button"

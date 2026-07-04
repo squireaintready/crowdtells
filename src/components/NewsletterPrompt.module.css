@@ -13,7 +13,7 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: 0 18px 50px -18px rgb(0 0 0 / 35%);
+  box-shadow: var(--shadow-2);
   /* Hidden: slid below the viewport, and visibility:hidden (delayed to the end of
      the slide) so it's not focusable while away. */
   transform: translateX(-50%) translateY(calc(100% + var(--s-6)));
@@ -95,7 +95,7 @@
 .sub {
   margin: var(--s-2) 0 var(--s-3);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -150,6 +150,12 @@
   margin: var(--s-2) 0 0;
   font-size: 0.8rem;
   color: var(--down);
+}
+
+/* Stays mounted for a reliable aria-live announcement; out of flow while :empty
+   so the idle prompt keeps its rhythm. */
+.error:empty {
+  position: absolute;
 }
 
 .thanks {

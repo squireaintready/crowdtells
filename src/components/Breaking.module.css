@@ -363,7 +363,7 @@
 .tabBtn[data-active='true'] {
   background: var(--surface);
   color: var(--text);
-  box-shadow: var(--shadow-1, 0 1px 2px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--shadow-1);
 }
 
 .tabCount {
@@ -447,7 +447,7 @@
   align-items: center;
   gap: 5px;
   font-family: var(--font-sans);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -462,16 +462,16 @@
   background: var(--accent);
 }
 .kindDot[data-kind='sports'] {
-  background: var(--up, #2e9e6b);
+  background: var(--up);
 }
 .kindDot[data-kind='esports'] {
-  background: #7c5cff;
+  background: var(--kind-esports);
 }
 .kindDot[data-kind='disaster'] {
   background: var(--down);
 }
 .kindDot[data-kind='economic'] {
-  background: #b8860b;
+  background: var(--kind-econ);
 }
 .kindDot[data-kind='weather'] {
   background: var(--accent);
@@ -529,12 +529,16 @@
   .minBtn,
   .toastClose,
   .gear {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
   }
   .filterChip,
   .filterToggleChip {
     min-height: 32px;
+  }
+  /* Roomier chip spacing so the compact 32px chips don't share taps. */
+  .filterBar {
+    gap: 8px;
   }
 }
 
