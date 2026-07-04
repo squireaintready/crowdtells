@@ -27,7 +27,7 @@
 
 .unit {
   margin-top: 2px;
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -48,18 +48,15 @@
 }
 
 .lead {
+  composes: kicker from global;
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
+  font-weight: 700; /* heavier than the utility's 650 — it leads the panel */
   color: var(--text-mute);
 }
 
 .sub {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   line-height: 1.4;
   color: var(--text-dim);
 }
@@ -105,7 +102,7 @@
     font-size: 1.7rem;
   }
   .sub {
-    font-size: 0.86rem;
+    font-size: var(--fs-7);
   }
 
   /* Aggressive on a phone: the figure becomes a full-width row so the accuracy

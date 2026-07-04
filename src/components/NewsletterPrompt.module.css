@@ -95,7 +95,7 @@
 .sub {
   margin: var(--s-2) 0 var(--s-3);
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: var(--fs-9);
   line-height: 1.5;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -131,7 +131,7 @@
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 650;
-  font-size: 0.9rem;
+  font-size: var(--fs-8);
   white-space: nowrap;
   cursor: pointer;
   transition: background var(--t-fast);
@@ -148,7 +148,7 @@
 
 .error {
   margin: var(--s-2) 0 0;
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   color: var(--down);
 }
 
@@ -161,7 +161,7 @@
 .thanks {
   margin: 0 var(--s-5) 0 0;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fs-10);
   line-height: 1.5;
   font-weight: 500;
   color: var(--text);

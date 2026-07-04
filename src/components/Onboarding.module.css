@@ -83,7 +83,7 @@
 .kicker {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: var(--fs-3);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -105,7 +105,7 @@
 .sub {
   margin-top: var(--s-3);
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fs-10);
   line-height: 1.55;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -135,7 +135,7 @@
   background: none;
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-weight: 650;
   cursor: pointer;
 }
@@ -163,7 +163,7 @@
   border: none;
   background: none;
   color: var(--text-mute);
-  font-size: 0.88rem;
+  font-size: var(--fs-8);
   font-weight: 600;
   border-bottom: 1px solid transparent;
 }

@@ -25,7 +25,7 @@
 }
 .back {
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   font-weight: 600;
   color: var(--accent);
   text-decoration: none;
@@ -40,7 +40,7 @@
   padding: var(--s-6) var(--s-4);
 }
 .note {
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   color: var(--text-dim);
 }
 .empty {
@@ -109,7 +109,7 @@
 }
 .sub {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   color: var(--text-mute);
 }
 
@@ -148,14 +148,14 @@
 }
 .levelOf {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-mute);
 }
 .streak {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-weight: 600;
   color: var(--text-dim);
 }
@@ -181,12 +181,12 @@
 }
 .verdict {
   font-family: var(--font-serif);
-  font-size: 1.1rem;
+  font-size: var(--fs-11);
   font-weight: 540;
   color: var(--text);
 }
 .calSub {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   color: var(--text-mute);
 }
 
@@ -204,7 +204,7 @@
 }
 .badgeCap {
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: var(--fs-3);
   font-weight: 600;
   line-height: 1.2;
   color: var(--text-dim);
@@ -215,12 +215,12 @@
   padding-top: var(--s-4);
   border-top: 1px solid var(--border);
   font-family: var(--font-serif);
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-style: italic;
   color: var(--text-mute);
 }
 
-@media (max-width: 30rem) {
+@media (max-width: 480px) {
   .card {
     padding: var(--s-5);
   }

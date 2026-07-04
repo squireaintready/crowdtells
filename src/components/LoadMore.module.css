@@ -31,7 +31,7 @@
 }
 
 .count {
-  font-size: 0.74rem;
+  font-size: var(--fs-4);
   font-weight: 500;
   color: var(--text-mute);
 }

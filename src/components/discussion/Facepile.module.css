@@ -28,11 +28,11 @@
   color: var(--accent);
   font-family: var(--font-sans);
   font-weight: 750;
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
 }
 
 .label {
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   color: var(--text-mute);
   font-weight: 600;
 }

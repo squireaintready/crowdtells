@@ -37,7 +37,7 @@
   background: transparent;
   color: var(--text);
   font-weight: 600;
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   transition:
     border-color var(--t-fast),
     color var(--t-fast);
@@ -54,7 +54,7 @@
 }
 
 .count {
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   color: var(--text-mute);
   font-weight: 600;
 }
@@ -76,7 +76,7 @@
   background: none;
   border-radius: var(--r-pill);
   color: var(--text-mute);
-  font-size: 0.76rem;
+  font-size: var(--fs-5);
   font-weight: 650;
 }
 
@@ -123,7 +123,7 @@
   background: var(--surface);
   color: var(--text);
   font-weight: 650;
-  font-size: 0.9rem;
+  font-size: var(--fs-8);
 }
 
 .google:hover {
@@ -170,7 +170,7 @@
   background: transparent;
   color: var(--text);
   font-weight: 650;
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   white-space: nowrap;
 }
 
@@ -234,7 +234,7 @@
   background: none;
   border: none;
   color: var(--text-mute);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 600;
   padding: 4px;
 }
@@ -298,7 +298,7 @@
   background: var(--accent-tint);
   color: var(--accent);
   font-weight: 750;
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
 }
 
 .commentBody {
@@ -319,18 +319,18 @@
 .author {
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: var(--fs-8);
   color: var(--text);
 }
 
 .time {
-  font-size: 0.74rem;
+  font-size: var(--fs-4);
   color: var(--text-mute);
 }
 
 /* Follow toggle beside another reader's name in the thread. */
 .follow {
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--accent);
@@ -365,7 +365,7 @@
 
 /* Quiet inline badge when a comment was posted as a note on the author's call. */
 .callTag {
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-mute);
@@ -390,7 +390,7 @@
   border-top-left-radius: var(--r-sm);
   background: var(--surface);
   font-family: var(--font-serif);
-  font-size: 0.95rem;
+  font-size: var(--fs-9);
   line-height: 1.55;
   color: var(--text);
   white-space: pre-wrap;
@@ -420,7 +420,7 @@
   gap: var(--s-3);
 }
 .flagged {
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   color: var(--text-mute);
 }
 
@@ -431,7 +431,7 @@
   background: none;
   border: none;
   color: var(--text-mute);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -441,8 +441,9 @@
   color: var(--accent);
 }
 
-/* Anchors the one-shot spark burst + glyph pop to the like icon (▲ / ♥), so the
-   flourish radiates from the glyph rather than the whole button. */
+/* Anchors the one-shot spark burst + glyph pop to the like icon (♥ on both the
+   story and comment buttons), so the flourish radiates from the glyph rather
+   than the whole button. */
 .likeIcon {
   position: relative;
   display: inline-flex;
@@ -455,12 +456,12 @@
    empty box. */
 .note {
   padding: var(--s-3) 0 var(--s-2);
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   color: var(--text-mute);
   text-align: center;
 }
 .error {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   color: var(--text-mute);
 }
 

@@ -19,7 +19,7 @@
 
 .kicker {
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: var(--fs-3);
   font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.11em;
@@ -29,7 +29,7 @@
 .date {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   color: var(--text-dim);
   /* Keep the date on one line so the chevron stays baseline-aligned; if a long
      weekday+month date would overrun a narrow phone, truncate it rather than
@@ -43,7 +43,7 @@
 .chev {
   margin-left: auto;
   color: var(--text-mute);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
 }
 
 .list {
@@ -81,7 +81,7 @@
   background: none;
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.74rem;
+  font-size: var(--fs-4);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-align: center;
@@ -109,11 +109,11 @@
   padding: var(--s-1) var(--s-2);
 }
 .compact .hook {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
 }
 .compact .showAll {
   padding: var(--s-2) var(--s-3);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
 }
 
 @media (hover: hover) {
@@ -132,20 +132,20 @@
 .num {
   font-variant-numeric: tabular-nums;
   font-weight: 750;
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   color: var(--text-mute);
   min-width: 1ch;
 }
 
 .hook {
   font-family: var(--font-serif);
-  font-size: 0.98rem;
+  font-size: var(--fs-10);
   line-height: 1.35;
   color: var(--text);
 }
 
 .cat {
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -163,6 +163,6 @@
     grid-template-columns: auto 1fr;
   }
   .hook {
-    font-size: 0.94rem;
+    font-size: var(--fs-9);
   }
 }

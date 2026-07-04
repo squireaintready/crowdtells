@@ -8,7 +8,7 @@
   align-items: center;
   gap: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -57,7 +57,7 @@
   display: block;
   margin-top: 2px;
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   color: var(--text-mute);
 }
 
@@ -81,7 +81,7 @@
 
 .link {
   font-family: var(--font-serif);
-  font-size: 0.95rem;
+  font-size: var(--fs-9);
   line-height: 1.35;
   color: var(--text);
   text-decoration: none;
@@ -213,14 +213,14 @@
 
 .count {
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   font-weight: 750;
   color: var(--down);
 }
 
 .caret {
   color: var(--text-mute);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   line-height: 1;
 }
 
@@ -290,7 +290,7 @@
    into the chip flow at the end of row two. */
 .filterToggleChip {
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 650;
   line-height: 1;
   padding: 5px 6px;
@@ -306,7 +306,7 @@
 
 .filterChip {
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 600;
   line-height: 1;
   padding: 5px 9px;
@@ -328,7 +328,7 @@
   margin: 0;
   padding: var(--s-4) var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   color: var(--text-mute);
   text-align: center;
 }
@@ -353,7 +353,7 @@
   border-radius: var(--r-pill);
   padding: 3px var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 650;
   color: var(--text-mute);
   cursor: pointer;
@@ -367,7 +367,7 @@
 }
 
 .tabCount {
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   color: var(--text-mute);
 }
@@ -436,7 +436,7 @@
 .readUs {
   margin-top: 3px;
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: var(--fs-2);
   font-weight: 650;
   color: var(--accent);
   opacity: 0.85;
@@ -447,7 +447,7 @@
   align-items: center;
   gap: 5px;
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -482,7 +482,7 @@
 
 .itemTitle {
   font-family: var(--font-serif);
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   line-height: 1.3;
   color: var(--text);
   display: -webkit-box;
@@ -496,7 +496,7 @@
   margin: 0;
   flex: none;
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   color: var(--text-mute);
 }
 
@@ -516,7 +516,7 @@
     padding: var(--s-2) var(--s-3);
   }
   .itemTitle {
-    font-size: 0.88rem;
+    font-size: var(--fs-8);
   }
 }
 

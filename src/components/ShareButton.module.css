@@ -7,7 +7,7 @@
   border: 1px solid var(--border-strong);
   background: transparent;
   color: var(--text-dim);
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   font-weight: 650;
   transition:
     border-color var(--t-fast),

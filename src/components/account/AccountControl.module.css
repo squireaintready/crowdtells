@@ -8,7 +8,7 @@
   border: 1px solid var(--border-strong);
   background: transparent;
   color: var(--text-dim);
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   font-weight: 650;
   max-width: 180px;
   transition:
@@ -41,7 +41,7 @@
   border-radius: 50%;
   background: var(--accent-tint);
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: var(--fs-4);
   font-weight: 750;
 }
 
@@ -68,6 +68,6 @@
     height: 28px;
   }
   .signedIn .dot {
-    font-size: 0.9rem;
+    font-size: var(--fs-8);
   }
 }

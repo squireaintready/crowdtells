@@ -23,8 +23,19 @@ export function ShareButton({ marketId, title }: { marketId: string; title: stri
         }
       }}
     >
+      {/* SVG arrow matches the SaveButton bookmark's 14px/1.5-stroke drawing, so the
+          two icons in the action row read as one set. */}
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M4.5 11.5 11.5 4.5 M6 4.5h5.5V10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
       {/* role="status": the Share → "Link copied" swap is announced, not just shown. */}
-      <span aria-hidden="true">↗</span>{' '}
       <span role="status">{copied ? 'Link copied' : 'Share'}</span>
     </button>
   );

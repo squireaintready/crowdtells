@@ -13,7 +13,7 @@
 
 .kicker {
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -22,7 +22,7 @@
 }
 
 .blindspot {
-  font-size: 0.74rem;
+  font-size: var(--fs-4);
   font-weight: 650;
   color: var(--down);
 }
@@ -64,7 +64,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-3);
-  font-size: 0.74rem;
+  font-size: var(--fs-4);
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
 }

@@ -5,7 +5,7 @@
   background: var(--accent-tint);
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;

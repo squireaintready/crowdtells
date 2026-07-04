@@ -30,7 +30,7 @@
 .sub {
   margin: var(--s-2) 0 0;
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: var(--fs-9);
   line-height: 1.5;
   color: var(--text-dim);
   text-wrap: pretty;
@@ -57,7 +57,7 @@
   background: none;
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 650;
   cursor: pointer;
 }
@@ -101,7 +101,7 @@
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 650;
-  font-size: 0.9rem;
+  font-size: var(--fs-8);
   line-height: 1;
   cursor: pointer;
   transition: background var(--t-fast);
@@ -119,14 +119,14 @@
 .error {
   flex-basis: 100%;
   margin: 0;
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   color: var(--down);
 }
 
 .thanks {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fs-10);
   line-height: 1.5;
   font-weight: 500;
   color: var(--text);

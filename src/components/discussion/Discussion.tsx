@@ -187,6 +187,7 @@ function CommentItem({
   const [err, setErr] = useState<string | null>(null);
   const [flagging, setFlagging] = useState(false);
   const [flagged, setFlagged] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const mine = myId === c.userId;
   // True while a like write is in flight — so an unrelated reload (someone else
   // posts) can't push a not-yet-committed, stale aggregate count back over the
@@ -319,11 +320,12 @@ function CommentItem({
               aria-pressed={liked}
               aria-label={`${liked ? 'Unlike' : 'Like'} — ${count} ${count === 1 ? 'like' : 'likes'}`}
             >
+              {/* Same glyph + burst as the story's Like — one metaphor for one verb. */}
               <span className={styles.likeIcon}>
                 <span key={likeKey} className={likeKey ? burst.pop : undefined} aria-hidden="true">
-                  ▲
+                  ♥
                 </span>
-                <Burst trigger={likeKey} tone="accent" />
+                <Burst trigger={likeKey} tone="rose" />
               </span>{' '}
               {count > 0 ? count : ''}
             </button>
@@ -340,32 +342,52 @@ function CommentItem({
               </button>
             )}
 
-            {mine && (
-              <>
-                <button className={styles.linkBtn} onClick={() => setEditing(true)}>
-                  Edit
-                </button>
-                <button
-                  className={styles.linkBtn}
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!window.confirm('Delete this comment? This can’t be undone.')) return;
-                    setErr(null);
-                    setBusy(true);
-                    try {
-                      await deleteComment(c.id);
-                      onChange();
-                    } catch (e) {
-                      setErr((e as Error).message);
-                    } finally {
-                      setBusy(false);
-                    }
-                  }}
-                >
-                  Delete
-                </button>
-              </>
-            )}
+            {mine &&
+              (confirmingDelete ? (
+                /* Inline two-step confirm (the Report idiom) — no browser chrome,
+                   no modal; the warning and the choice live where the tap happened. */
+                <span className={styles.flagMenu} role="group" aria-label="Delete this comment?">
+                  <span>Delete permanently?</span>
+                  <button
+                    // "Delete" swaps to this confirm — land focus here so keyboard
+                    // users aren't left on an unmounted node.
+                    autoFocus
+                    className={styles.linkBtn}
+                    disabled={busy}
+                    onClick={async () => {
+                      setErr(null);
+                      setBusy(true);
+                      try {
+                        await deleteComment(c.id);
+                        onChange();
+                      } catch (e) {
+                        setErr((e as Error).message);
+                        setConfirmingDelete(false);
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    {busy ? 'Deleting…' : 'Yes, delete'}
+                  </button>
+                  <button className={styles.linkBtn} onClick={() => setConfirmingDelete(false)}>
+                    Cancel
+                  </button>
+                </span>
+              ) : (
+                <>
+                  <button className={styles.linkBtn} onClick={() => setEditing(true)}>
+                    Edit
+                  </button>
+                  <button
+                    className={styles.linkBtn}
+                    disabled={busy}
+                    onClick={() => setConfirmingDelete(true)}
+                  >
+                    Delete
+                  </button>
+                </>
+              ))}
 
             {!mine &&
               myId &&

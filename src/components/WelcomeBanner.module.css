@@ -28,7 +28,7 @@
 
 .lead {
   font-family: var(--font-sans);
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-weight: 650;
   letter-spacing: -0.005em;
   color: var(--text);
@@ -40,7 +40,7 @@
 
 .sub {
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
@@ -63,7 +63,7 @@
   background: transparent;
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 650;
   white-space: nowrap;
   cursor: pointer;

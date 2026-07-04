@@ -35,7 +35,7 @@
   border: 1px solid var(--border);
   border-radius: var(--r);
   background: var(--surface-2);
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   line-height: 1.3;
   color: var(--text-dim);
 }
@@ -67,7 +67,7 @@
   margin-top: var(--s-6);
   padding: var(--s-5) 0;
   border-top: 2px solid var(--rule);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   color: var(--text-mute);
 }
 

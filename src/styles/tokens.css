@@ -57,6 +57,23 @@
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
   --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
 
+  /* Type scale — the UI ramp, chosen from the cluster centers the design already
+   * uses. Everything at or below 1rem sizes through these; the exceptions that
+   * stay literal are display/headline sizes above 1rem (incl. serif optical
+   * tweaks like 1.02/1.05), clamp() expressions, px-sized SVG chart/medal art,
+   * and the 1rem on inputs (an iOS no-zoom guard, not a scale choice). */
+  --fs-1: 0.62rem; /* ~10px — pill/badge floor */
+  --fs-2: 0.66rem; /* ~10.5px — eyebrows, small chips */
+  --fs-3: 0.7rem; /* ~11px — kickers, datelines */
+  --fs-4: 0.74rem; /* ~12px — secondary meta, fine print */
+  --fs-5: 0.78rem; /* ~12.5px — standard meta + labels */
+  --fs-6: 0.82rem; /* ~13px — compact body, bylines */
+  --fs-7: 0.86rem; /* ~14px — UI body, buttons, comments */
+  --fs-8: 0.9rem; /* ~14.5px — emphasized UI body */
+  --fs-9: 0.95rem; /* ~15px — lead-ins, display subheads */
+  --fs-10: 1rem; /* 16px — base */
+  --fs-11: 1.1rem; /* ~17.6px — article prose */
+
   /* Spacing scale (4px base) */
   --s-1: 0.25rem;
   --s-2: 0.5rem;

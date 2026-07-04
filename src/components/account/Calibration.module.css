@@ -21,7 +21,7 @@
 }
 .kicker {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: var(--fs-4);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -29,7 +29,7 @@
 }
 .titleNote {
   font-family: var(--font-serif);
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   font-weight: 500;
   font-style: italic;
   color: var(--text-mute);
@@ -38,7 +38,7 @@
 .fullLink {
   margin-left: auto;
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   font-weight: 650;
   color: var(--accent);
   text-decoration: none;
@@ -50,7 +50,7 @@
 
 .building {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: var(--fs-8);
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -87,7 +87,7 @@
 }
 .levelOf {
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 600;
   color: var(--text-mute);
 }
@@ -133,19 +133,19 @@
   }
 }
 .toNext {
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   font-weight: 600;
   color: var(--text-dim);
 }
 .unlock {
   margin: 0;
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   line-height: 1.45;
   color: var(--text-dim);
 }
 .unlockKey {
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -156,7 +156,7 @@
 /* Claim-verification activity line, ruled in with the rest of the record. */
 .verify {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -205,7 +205,7 @@
   color: var(--text);
 }
 .sub {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   line-height: 1.5;
   color: var(--text-mute);
 }
@@ -219,14 +219,14 @@
 }
 .curveLabel {
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: var(--fs-3);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-mute);
 }
 .curveFoot {
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   color: var(--text-mute);
 }
 .row {
@@ -236,7 +236,7 @@
   gap: var(--s-3);
 }
 .conf {
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   font-weight: 700;
   color: var(--text-dim);
   text-align: right;
@@ -265,7 +265,7 @@
   transform: translateX(-1px);
 }
 .hit {
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   font-weight: 700;
   color: var(--text-dim);
 }
@@ -293,7 +293,7 @@
   background: var(--accent-tint);
   color: var(--accent);
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: var(--fs-4);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -303,7 +303,7 @@
   color: var(--on-accent);
 }
 .streak {
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-weight: 600;
   color: var(--text-dim);
 }
@@ -328,7 +328,7 @@
 }
 .medalCap {
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 600;
   line-height: 1.2;
   color: var(--text-dim);
@@ -338,7 +338,7 @@
 }
 
 /* Phone — tighten the desk card and let the figure stack above its read. */
-@media (max-width: 30rem) {
+@media (max-width: 480px) {
   .desk {
     padding: var(--s-4);
   }

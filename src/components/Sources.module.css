@@ -9,7 +9,7 @@
 .label {
   flex: none;
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -99,7 +99,7 @@
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   font-weight: 600;
   white-space: nowrap;
   transition:
@@ -132,7 +132,7 @@
     min-height: 44px;
     box-sizing: border-box;
     align-items: center;
-    font-size: 0.8rem;
+    font-size: var(--fs-6);
   }
   .list {
     gap: 8px;

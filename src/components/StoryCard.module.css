@@ -69,7 +69,7 @@
 .boardLabel {
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.625rem; /* 10px — matches the .decided chip scale */
+  font-size: var(--fs-1); /* ~10px — matches the .decided chip scale */
   font-weight: 750;
   color: var(--text-mute);
 }
@@ -97,7 +97,7 @@
   align-items: center;
   gap: var(--s-2) var(--s-3);
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
 }
 
 .boardFavored {
@@ -142,7 +142,7 @@
   border-radius: var(--r-pill);
   background: var(--surface-2);
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   line-height: 1.5;
   color: var(--text-dim);
   max-width: 100%;
@@ -168,7 +168,7 @@
     padding: var(--s-3) 0;
   }
   .boardTitle {
-    font-size: 0.98rem;
+    font-size: var(--fs-10);
   }
   /* On a phone let the bar yield so the favored name + odds keep their line. */
   .boardRead > div {
@@ -289,7 +289,7 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   color: var(--text-mute);
   white-space: nowrap;
@@ -379,7 +379,7 @@
   flex-wrap: wrap;
   gap: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 650;
   line-height: 1.4;
 }
@@ -398,7 +398,7 @@
   border-radius: var(--r-sm);
   background: var(--text-dim);
   color: var(--bg);
-  font-size: 0.625rem; /* 10px */
+  font-size: var(--fs-1); /* ~10px */
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 750;
@@ -465,7 +465,7 @@
   padding: 0 6px;
   border: 1px solid currentColor;
   border-radius: var(--r-pill);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   line-height: 1.5;
 }
 .pressAhead {
@@ -522,7 +522,7 @@
 
 .analysis {
   font-family: var(--font-serif);
-  font-size: 1.1rem;
+  font-size: var(--fs-11);
   line-height: 1.56;
   color: var(--text);
 }
@@ -572,7 +572,7 @@
 
 .takeKicker {
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: var(--fs-2);
   font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.11em;
@@ -593,7 +593,7 @@
   align-items: baseline;
   gap: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.82rem; /* ~13.1px */
+  font-size: var(--fs-6); /* ~13.1px */
   line-height: 1.4;
   color: var(--text-dim);
 }
@@ -629,7 +629,7 @@
   align-items: baseline;
   gap: 5px;
   min-width: 0;
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   line-height: 1.45;
   color: var(--text-mute);
   font-weight: 500;
@@ -690,11 +690,8 @@
 }
 
 .readHead {
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
+  composes: kicker from global;
+  font-weight: 700; /* heavier than the utility's 650 — it leads the read row */
   color: var(--text-mute);
 }
 
@@ -702,7 +699,7 @@
 .marketLens {
   position: relative;
   font-family: var(--font-serif);
-  font-size: 0.96rem;
+  font-size: var(--fs-9);
   line-height: 1.5;
   color: var(--text);
   padding: var(--s-3);
@@ -717,7 +714,7 @@
   display: inline-block;
   margin-right: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.6rem;
+  font-size: var(--fs-1);
   font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -741,7 +738,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-4);
-  font-size: 0.82rem;
+  font-size: var(--fs-6);
   color: var(--text-dim);
 }
 
@@ -765,7 +762,7 @@
  * story's receipts rather than a dashboard. */
 .facts {
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   line-height: 1.5;
   color: var(--text-mute);
 }
@@ -778,7 +775,7 @@
 .context {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: var(--fs-8);
   line-height: 1.55;
   color: var(--text-dim);
   border-top: 1px solid var(--border);
@@ -791,7 +788,7 @@
 .aiNote {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: var(--fs-4);
   line-height: 1.5;
   color: var(--text-mute);
 }
@@ -804,13 +801,13 @@
   gap: var(--s-2) var(--s-3);
   border-top: 1px solid var(--border);
   padding-top: var(--s-3);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
 }
 
 .provLabel {
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   color: var(--text-mute);
 }
@@ -874,7 +871,7 @@ a.provLink:hover {
   background: var(--accent);
   color: var(--bg);
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: var(--fs-7);
   font-weight: 650;
   cursor: pointer;
   transition:
@@ -938,17 +935,17 @@ a.provLink:hover {
   }
   /* Denser type on small screens — we surface a lot of copy per card. */
   .analysis {
-    font-size: 0.98rem;
+    font-size: var(--fs-10);
     line-height: 1.45;
   }
   .lead .analysis {
     font-size: 1.06rem;
   }
   .takeText {
-    font-size: 0.96rem;
+    font-size: var(--fs-9);
   }
   .context {
-    font-size: 0.84rem;
+    font-size: var(--fs-7);
   }
   /* One fewer line in the collapsed brief keeps the feed scannable on a phone. */
   .preview {
@@ -959,14 +956,8 @@ a.provLink:hover {
      and give it symmetric breathing room so it sits level with the dotted
      source/eyebrow tokens on the same meta line. */
   .pressFlag {
-    font-size: 0.7rem;
+    font-size: var(--fs-3);
     padding: 2px 8px;
     line-height: 1.2;
-  }
-  /* Let the odds sparkline yield width so a long "Crowd: <name> NN%" label keeps
-     its line in the numbers panel instead of wrapping against the chart. */
-  .readTop svg {
-    flex: 0 1 96px;
-    max-width: 96px;
   }
 }

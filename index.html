@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <!-- Render-critical brand fonts: preload so they're fetched before CSS parses. -->
+    <!-- Render-critical brand fonts: preload so they're fetched before CSS parses.
+         All three are above-the-fold — Inter is the UI, Fraunces the headlines, and
+         Source Serif 4 is the masthead nameplate — so none is safe to drop. -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/fraunces-latin.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/source-serif-4-latin.woff2" crossorigin />

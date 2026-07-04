@@ -17,7 +17,7 @@
   align-items: center;
   gap: var(--s-2);
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -31,7 +31,7 @@
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 800;
 }
 
@@ -53,7 +53,7 @@
 .note {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: var(--fs-6);
   line-height: 1.45;
   color: var(--text-mute);
 }
@@ -66,7 +66,7 @@
 }
 
 .list li {
-  font-size: 0.94rem;
+  font-size: var(--fs-9);
   color: var(--text);
   line-height: 1.5;
 }
@@ -89,7 +89,7 @@
 }
 
 .outlet {
-  font-size: 0.76rem;
+  font-size: var(--fs-5);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -116,7 +116,7 @@
 }
 
 .view {
-  font-size: 0.94rem;
+  font-size: var(--fs-9);
   color: var(--text-dim);
   line-height: 1.45;
 }
@@ -128,7 +128,7 @@
   }
   .list li,
   .view {
-    font-size: 0.9rem;
+    font-size: var(--fs-8);
   }
   /* Proportion the disc hang to the panel's own 12px padding (was 24px, twice
      the padding) so claim text keeps its measure on a phone. */

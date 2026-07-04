@@ -13,14 +13,14 @@
   white-space: nowrap;
 }
 .lv {
-  font-size: 0.62rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   opacity: 0.8;
 }
 .n {
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   font-weight: 700;
 }
 
@@ -102,6 +102,6 @@
     display: none;
   }
   .n {
-    font-size: 0.6rem;
+    font-size: var(--fs-1);
   }
 }

@@ -17,7 +17,7 @@
   background: transparent;
   color: var(--text-dim);
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: var(--fs-5);
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -32,7 +32,7 @@
 /* Larger variant for the onboarding-modal grid. */
 .chipToggleLg {
   padding: 8px 14px;
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
 }
 /* Selected state — identical accent fill across all three callers. */
 .chipToggleOn {
@@ -55,7 +55,7 @@
   background: var(--accent);
   color: var(--on-accent);
   font-family: var(--font-sans);
-  font-size: 0.86rem;
+  font-size: var(--fs-7);
   font-weight: 700;
   cursor: pointer;
   transition: background var(--t-fast);

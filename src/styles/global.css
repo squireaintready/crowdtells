@@ -93,10 +93,13 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-/* Small-caps kicker / label utility */
+/* Small-caps kicker / label utility. The tracking axis is deliberate: 0.09em here
+   for meta kickers; standalone display labels (TheCall/Calibration/ClaimNotes tags)
+   run wider at 0.12–0.16em. Modules that need this idiom should compose it
+   (`composes: kicker from global`) rather than re-type it. */
 .kicker {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: var(--fs-3);
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.09em;

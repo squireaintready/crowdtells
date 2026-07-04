@@ -9,7 +9,7 @@
   width: min(340px, calc(100vw - 32px));
   pointer-events: none;
 }
-@media (max-width: 30rem) {
+@media (max-width: 480px) {
   .stack {
     left: 12px;
     right: 12px;
@@ -94,7 +94,7 @@
 }
 .lead {
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;

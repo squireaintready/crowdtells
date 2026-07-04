@@ -27,16 +27,6 @@ export function formatPct(pct: number): string {
   return `${Math.round(pct)}%`;
 }
 
-/** Compact integer, e.g. 1312 → "1.3k", 12000 → "12k". */
-export function formatCount(n: number): string {
-  if (!Number.isFinite(n) || n <= 0) return '0';
-  if (n >= 1000) {
-    const v = n / 1000;
-    return `${v >= 10 ? Math.round(v) : v.toFixed(1).replace(/\.0$/, '')}k`;
-  }
-  return String(Math.round(n));
-}
-
 /** Signed percentage-point movement, e.g. 4.2 → "+4.2", -1 → "-1.0". */
 export function formatMovement(points: number): string {
   const sign = points > 0 ? '+' : '';
