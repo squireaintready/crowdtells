@@ -62,6 +62,8 @@ const CANON: Record<string, string> = {
   primaries: 'Politics', primary: 'Politics', mayor: 'Politics', governor: 'Politics',
   senate: 'Politics', congress: 'Politics', parliament: 'Politics', 'prime minister': 'Politics',
   biden: 'Politics', harris: 'Politics', newsom: 'Politics', desantis: 'Politics',
+  'united states': 'Politics', 'french election': 'Politics', 'south carolina': 'Politics',
+  mamdani: 'Politics',
   // Geopolitics (incl. the foreign country / region / leader tags the sources emit
   // as their own categories — all one international-affairs beat)
   geopolitics: 'Geopolitics', 'macro geopolitics': 'Geopolitics', 'foreign policy': 'Geopolitics',
@@ -74,6 +76,7 @@ const CANON: Record<string, string> = {
   netanyahu: 'Geopolitics', zelensky: 'Geopolitics', 'foreign affairs': 'Geopolitics',
   colombia: 'Geopolitics', ships: 'Geopolitics', mojtaba: 'Geopolitics',
   'trump-machado': 'Geopolitics', machado: 'Geopolitics', nato: 'Geopolitics',
+  'military strikes': 'Geopolitics', 'u.s. x iran': 'Geopolitics',
   // Markets (finance + economy + business)
   markets: 'Markets', financials: 'Markets', economics: 'Markets', business: 'Markets',
   companies: 'Markets', fomc: 'Markets', 'economic policy': 'Markets', economy: 'Markets',
@@ -82,21 +85,24 @@ const CANON: Record<string, string> = {
   // Commodities
   commodities: 'Commodities', oil: 'Commodities', gold: 'Commodities', silver: 'Commodities',
   'comex silver futures': 'Commodities', 'silver futures': 'Commodities', copper: 'Commodities',
-  'natural gas': 'Commodities',
+  'natural gas': 'Commodities', 'comex gold futures': 'Commodities', 'gold futures': 'Commodities',
   // Crypto
   crypto: 'Crypto', bitcoin: 'Crypto', ethereum: 'Crypto', satoshi: 'Crypto', solana: 'Crypto',
-  xrp: 'Crypto', dogecoin: 'Crypto', 'crypto prices': 'Crypto',
+  xrp: 'Crypto', dogecoin: 'Crypto', 'crypto prices': 'Crypto', fdv: 'Crypto',
   // Sports (explicit live labels — long tail handled by SPORTS_PATTERN)
   sports: 'Sports', soccer: 'Sports', 'fifa world cup': 'Sports', 'world cup': 'Sports',
   mlb: 'Sports', nba: 'Sports', nfl: 'Sports', nhl: 'Sports', 'u.s. open 2026': 'Sports',
-  'lebron james': 'Sports', tennis: 'Sports', golf: 'Sports',
+  'lebron james': 'Sports', tennis: 'Sports', golf: 'Sports', 'continental futures': 'Sports',
+  'team props': 'Sports', 'group futures': 'Sports',
   // Esports
   esports: 'Esports', games: 'Esports', 'iem cologne': 'Esports', lol: 'Esports', msi: 'Esports',
+  'counter strike 2': 'Esports',
   // Climate
   'climate and weather': 'Climate and Weather', weather: 'Climate and Weather',
   climate: 'Climate and Weather',
   // Culture
-  culture: 'Culture', mentions: 'Culture', 'tweet markets': 'Culture',
+  culture: 'Culture', mentions: 'Culture', 'tweet markets': 'Culture', youtube: 'Culture',
+  views: 'Culture',
   // Entertainment
   entertainment: 'Entertainment', 'box office': 'Entertainment', netflix: 'Entertainment',
   movies: 'Entertainment', music: 'Entertainment', awards: 'Entertainment', oscars: 'Entertainment',
@@ -108,7 +114,7 @@ const CANON: Record<string, string> = {
   openai: 'Science and Technology', chatgpt: 'Science and Technology', nvidia: 'Science and Technology',
   'large language models': 'Science and Technology',
   // Health
-  health: 'Health',
+  health: 'Health', pandemics: 'Health',
 };
 
 /**
@@ -125,6 +131,18 @@ export function canonicalCategory(category: string | undefined | null): string {
   if (ESPORTS.has(c)) return 'Esports';
   if (isSportsFamily(c)) return 'Sports';
   return trimmed; // unknown → keep as-is (already cased upstream by normalizeCategory)
+}
+
+/**
+ * True when a raw source tag maps into the canonical taxonomy (every ~12 bucket name
+ * is itself a CANON key, so canonical labels also pass). The Polymarket shaper uses
+ * this to pick the first RECOGNIZED tag as a market's category instead of trusting
+ * tags[0], which is sometimes an internal/ops label ("Hide From New", "Rewards …")
+ * or a one-off micro-tag that would leak into chips, /topic hubs, and leveling.
+ */
+export function isKnownCategory(category: string | undefined | null): boolean {
+  const c = (category ?? '').trim().toLowerCase();
+  return c !== '' && (CANON[c] !== undefined || ESPORTS.has(c) || isSportsFamily(c));
 }
 
 /**

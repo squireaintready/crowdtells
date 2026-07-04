@@ -8,6 +8,7 @@ import {
   newsScore,
   rankAndSelect,
   stalenessDecay,
+  tenureFatigue,
 } from './ranking';
 
 const NOW = Date.parse('2026-06-15T00:00:00Z');
@@ -57,8 +58,13 @@ function sm(over: Partial<RankInput>): RankInput {
 }
 
 describe('isNewsworthy', () => {
-  it('rejects illiquid markets', () => {
-    expect(isNewsworthy(sm({ volume: 500 }), cfg(), NOW)).toBe(false);
+  it('rejects illiquid markets (no lifetime volume AND no real 24h flow)', () => {
+    expect(isNewsworthy(sm({ volume: 500, volume24h: 500 }), cfg(), NOW)).toBe(false);
+  });
+  it('keeps a just-listed market on real 24h flow despite a thin lifetime total', () => {
+    // Half the lifetime floor traded in a single day is proof of life — the lane by
+    // which a newly-listed trending market clears the gate before its total catches up.
+    expect(isNewsworthy(sm({ volume: 500, volume24h: 6_000 }), cfg(), NOW)).toBe(true);
   });
   it('rejects a settled, quiet binary market', () => {
     expect(isNewsworthy(sm({ oddsPct: 99, volume24h: 100, movement24h: 0 }), cfg(), NOW)).toBe(
@@ -434,6 +440,34 @@ describe('stalenessDecay', () => {
     const h72 = stalenessDecay(new Date(NOW - 72 * 3_600_000).toISOString(), NOW);
     expect(h72).toBeGreaterThanOrEqual(0.4); // never zeroed
     expect(h72).toBeCloseTo(0.4, 5); // fully decayed past 48h
+  });
+});
+
+describe('tenureFatigue — calm, uncovered evergreens rotate out', () => {
+  const daysAgo = (d: number) => new Date(NOW - d * 86_400_000).toISOString();
+
+  it('does not fatigue a story that never led (or just started leading)', () => {
+    expect(tenureFatigue(sm({}), NOW)).toBe(1);
+    expect(tenureFatigue(sm({ firstLedAt: daysAgo(1) }), NOW)).toBe(1); // inside grace
+  });
+  it('decays a calm, uncovered story past the grace period, monotonically, to a floor', () => {
+    const d5 = tenureFatigue(sm({ firstLedAt: daysAgo(5) }), NOW);
+    const d8 = tenureFatigue(sm({ firstLedAt: daysAgo(8) }), NOW);
+    expect(d5).toBeCloseTo(0.5, 5); // grace 2d + one 3d half-life
+    expect(d8).toBeLessThan(d5); // older tenure = more demoted
+    expect(tenureFatigue(sm({ firstLedAt: daysAgo(60) }), NOW)).toBeCloseTo(0.35, 5); // floor
+  });
+  it('exempts a story with live signs: press corroboration or genuinely moving odds', () => {
+    expect(tenureFatigue(sm({ firstLedAt: daysAgo(10), newsFootprint: 2 }), NOW)).toBe(1);
+    expect(tenureFatigue(sm({ firstLedAt: daysAgo(10), movement24h: 9 }), NOW)).toBe(1);
+    expect(tenureFatigue(sm({ firstLedAt: daysAgo(10), movement24h: -9 }), NOW)).toBe(1);
+  });
+  it('ranks a fresh story above an identical evergreen that has led for a week', () => {
+    const evergreen = sm({ id: 'evergreen', firstLedAt: daysAgo(7) });
+    const fresh = sm({ id: 'fresh' });
+    const out = rankAndSelect([evergreen, fresh], cfg({ feedSize: 2, diversity: 0 }), NOW);
+    expect(out[0]?.id).toBe('fresh');
+    expect(out[0]!.score).toBeGreaterThan(out[1]!.score);
   });
 });
 

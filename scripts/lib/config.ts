@@ -77,11 +77,21 @@ export const config = {
    * for the ranker + category diversity, not a third. (Newsworthy runs out ~rank 230,
    * so a third page isn't worth the noise.) */
   polymarketDiscoveryLimit: num('POLYMARKET_DISCOVERY_LIMIT', 60),
-  /** Overall safety cap on Kalshi candidates passed to ranking (0 disables Kalshi). */
-  kalshiLimit: num('KALSHI_LIMIT', 80),
+  /** Extra Polymarket candidates from the NEWEST-listings axis (order=startDate):
+   * just-listed standing markets with real early 24h flow (≥ minVolume/2 in a day)
+   * that the volume-ranked pages can't surface yet. This is the "trending bet we
+   * never covered" discovery lane; 0 disables it. The old newest-only experiment
+   * failed on ephemeral intraday ladders — the standing-kind filter + flow floor
+   * are what make this axis signal instead of noise. */
+  polymarketFreshLimit: num('POLYMARKET_FRESH_LIMIT', 40),
+  /** Overall safety cap on Kalshi candidates passed to ranking (0 disables Kalshi).
+   * 80→100: pure candidate headroom for variety — the ranker still decides slots. */
+  kalshiLimit: num('KALSHI_LIMIT', 100),
   /** Top candidates kept PER category from Kalshi, so every category gets fair
-   * representation (comprehensive coverage) before ranking's diversity pass. */
-  kalshiPerCategory: num('KALSHI_PER_CATEGORY', 3),
+   * representation (comprehensive coverage) before ranking's diversity pass.
+   * 3→4: one more per category so a busy beat can field a fresh question without
+   * dropping an established one. */
+  kalshiPerCategory: num('KALSHI_PER_CATEGORY', 4),
   /** Max pages (200 events each) to page through Kalshi's open-events feed. The
    * feed is NOT volume-sorted, so we paginate and globally sort by real volume;
    * this caps the worst case (~20-40 pages covers all open events). */

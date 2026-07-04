@@ -352,6 +352,11 @@ export interface Market {
    * recency dip so which open stories lead rotates day to day instead of the same few
    * standing markets. Absent until it first leads; server-only (stripped from client). */
   lastLedAt?: string;
+  /** When this story's CURRENT continuous run in the live feed began (ISO) — the tenure
+   * clock behind ranking's evergreen-fatigue decay (a calm, uncovered story that has
+   * held a slot for days sinks so the front page rotates). Resets when a story drops
+   * out and later returns; server-only (stripped from client). */
+  firstLedAt?: string;
 
   /** When the market opened (ISO), or null. */
   startDate: string | null;

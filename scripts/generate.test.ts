@@ -791,6 +791,20 @@ describe('footprintFor — distinct corroborating outlets (per article)', () => 
     expect(footprintFor(m, [])).toBe(0);
     expect(footprintFor(m, pool)).toBe(0); // espn shares 'chiefs' alone → 1 token, excluded
   });
+
+  it('counts coverage of the FAVORED entity when the title is generic (a race by its frontrunner)', () => {
+    // "Next UK Prime Minister…" is all stoplisted process vocabulary — the press writes
+    // about the person, so the favored side's name is what earns the footprint.
+    const m = shapedM({ title: 'Next UK Prime Minister in 2026?', favored: 'Kemi Badenoch' });
+    const badenochPool = [
+      art('bbc.com', ['kemi', 'badenoch', 'tory']),
+      art('theguardian.com', ['badenoch', 'kemi', 'leadership']),
+    ];
+    expect(footprintFor(m, badenochPool)).toBe(2);
+    // A binary market's "Yes"/"No" favored side adds no tokens — behavior unchanged.
+    const yn = shapedM({ title: 'US-Iran final nuclear deal by August 31?', favored: 'Yes' });
+    expect(footprintFor(yn, pool)).toBe(3);
+  });
 });
 
 describe('assembleStoryLeads — one lead per story, sub-markets suppressed', () => {

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { appendFileSync } from 'node:fs';
 import { config, llmConfigured } from './lib/config';
 import { sleep, resetFetchErrors, getFetchErrors } from './lib/http';
-import { fetchTopMarkets as fetchPolymarket } from './lib/polymarket';
+import { fetchTopMarkets as fetchPolymarket, isJunkTag } from './lib/polymarket';
 import { fetchTopMarkets as fetchKalshi } from './lib/kalshi';
 import type { ShapedMarket } from './lib/shaped';
 import { canonicalToken, quantKey, quantMatch, thresholdYesProb } from './lib/canonical';
@@ -1372,7 +1372,11 @@ async function generateResult(
  * betting line. Pure → unit-tested. Exported.
  */
 export function footprintFor(m: ShapedMarket, articles: NormArticle[]): number {
-  const dt = distinctive(m.title);
+  // Token base = title + favored side: a race's title is often generic ("Next UK Prime
+  // Minister…" is all stoplisted process vocabulary) while the favored outcome carries
+  // the name the press actually prints ("Kemi Badenoch"). Same title+favored idiom
+  // events.ts uses to pin events to markets; a binary "Yes"/"No" adds no tokens.
+  const dt = distinctive(`${m.title} ${m.favored}`);
   if (dt.size === 0) return 0;
   const outlets = new Set<string>();
   for (const a of articles) {
@@ -1520,12 +1524,16 @@ async function main(): Promise<void> {
   //    the coverage-bridge in clusterMarkets only.
   for (const m of survivors) m.newsFootprint = footprintFor(m, rssPool);
 
-  // 4. Hydrate prior churn state (when each survivor last LED) so ranking can dip a
-  //    recently-led story — the feed rotates day to day instead of pinning the same lead.
+  // 4. Hydrate prior churn state (when each survivor last LED, and when its current
+  //    continuous feed run began) so ranking can dip a recently-led story and fatigue a
+  //    calm evergreen — the feed rotates day to day instead of pinning the same leads.
   const priorById = new Map(prior.map((p) => [p.id, p]));
   for (const m of survivors) {
     const p = priorById.get(m.id);
     if (p?.lastLedAt) m.lastLedAt = p.lastLedAt;
+    // The tenure clock continues only through an UNBROKEN active run — a story that
+    // fell out of the feed and returns is news again, not a stale holdover.
+    if (p?.status === 'active' && p.firstLedAt) m.firstLedAt = p.firstLedAt;
   }
 
   // 5. Cluster survivors into stories. The conservative entity rule runs deterministically;
@@ -1556,8 +1564,13 @@ async function main(): Promise<void> {
   // 7. Rank the LEADS (one item per story) — replaces ranking the raw candidate list.
   const shaped = rankAndSelect(leadInputs, config, nowMs);
 
-  // 8. Stamp churn: every selected lead is leading NOW (consumed next run by ranking's dip).
-  for (const s of shaped) s.lastLedAt = nowIso;
+  // 8. Stamp churn: every selected lead is leading NOW (consumed next run by ranking's
+  //    dip), and starts its tenure clock if this is the first run of an unbroken stay
+  //    (consumed by ranking's evergreen fatigue).
+  for (const s of shaped) {
+    s.lastLedAt = nowIso;
+    s.firstLedAt ??= nowIso;
+  }
 
   console.log(
     `Polymarket: ${poly.length} | Kalshi: ${kalshi.length} | ` +
@@ -1594,7 +1607,11 @@ async function main(): Promise<void> {
   // New candidates already arrive canonical from the source adapters; this upgrades
   // the carried-forward ARCHIVE in place each run (no re-brief needed), so the stored
   // feed, /topic hubs, filters, and category leveling all speak one clean vocabulary.
-  for (const m of markets) m.category = canonicalCategory(m.category);
+  // Records shaped before the tag-picking filter may still carry a Polymarket ops
+  // label ("Hide From New") as their category — scrub those to the default bucket
+  // rather than rendering an internal label as a beat.
+  for (const m of markets)
+    m.category = isJunkTag(m.category) ? 'Markets' : canonicalCategory(m.category);
 
   // Cross-link live markets that share a salient entity but are different questions
   // (e.g. two same-city teams) as "related on the board" — computed on canonical

@@ -203,6 +203,20 @@ describe('mergeMarkets — story-field propagation (shaped → Market)', () => {
     ).find((m) => m.id === 'E')!;
     expect(out.lastLedAt).toBe('2026-06-15T11:00:00Z');
   });
+
+  it("persists the run's firstLedAt tenure stamp the same way (evergreen-fatigue clock)", () => {
+    // The generator hydrates a continuing story's firstLedAt onto this run's shaped
+    // market before stamping, so carrying s.firstLedAt IS the continuation path — and
+    // an absent prior stamp must not resurrect via the `...prev` spread.
+    const prior = priorMarket({ id: 'E', firstLedAt: '2026-06-01T00:00:00Z' });
+    const out = mergeMarkets(
+      [prior],
+      [shaped({ id: 'E', firstLedAt: '2026-06-10T00:00:00Z' })],
+      NOW,
+      config,
+    ).find((m) => m.id === 'E')!;
+    expect(out.firstLedAt).toBe('2026-06-10T00:00:00Z');
+  });
 });
 
 describe('oddsDaily — durable daily belief series', () => {

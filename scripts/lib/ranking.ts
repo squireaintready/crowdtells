@@ -56,6 +56,9 @@ type Scorable = Pick<
   newsFootprint?: number;
   /** ISO time this story last held a feed slot, for the churn dip (absent until it leads). */
   lastLedAt?: string;
+  /** ISO time this story's current continuous feed run began, for the evergreen-fatigue
+   * decay (absent until it first leads; reset when it drops out and returns). */
+  firstLedAt?: string;
 };
 
 // ── News-led score weights ───────────────────────────────────────────────────
@@ -207,7 +210,11 @@ function liquidityGate(m: Scorable): number {
 /** Reject ephemeral price ticks, illiquid, already-settled, or far-dated markets. */
 export function isNewsworthy(m: ShapedMarket, config: Config, nowMs: number): boolean {
   if (m.kind === 'ephemeral') return false; // recurring/intraday price ladder — never news
-  if (m.volume < config.minVolume) return false;
+  // Lifetime volume alone blackballs a JUST-LISTED market that's already trading real
+  // money today (its lifetime total hasn't caught up yet) — the exact "trending bet we
+  // never covered" gap. Genuine 24h flow (half the lifetime floor in a single day) is
+  // at least as strong an activity signal, so either clears the gate.
+  if (m.volume < config.minVolume && m.volume24h < config.minVolume / 2) return false;
 
   // "Settled" only applies to binary Yes/No markets — a 5% leader in a 20-way
   // race is not settled, it's just a wide field.
@@ -288,6 +295,35 @@ function ledDip(m: Scorable, nowMs: number): number {
   return LED_DIP * Math.exp(-ageHours / LED_HALFLIFE_H);
 }
 
+// ── Evergreen fatigue ────────────────────────────────────────────────────────
+// A standing question that holds a feed slot for DAYS with no press corroboration and
+// calm odds ("Bitcoin at the end of 2026", a 2028 nominee) reads as the same report
+// over and over — the money never stopped flagging it, but there is no story TODAY.
+// After a grace period, decay a calm-and-uncovered tenured story toward a floor so the
+// front page rotates. Any sign of life exempts it entirely: outlets on the story or
+// odds genuinely moving means it IS developing — that's the living record, not fatigue.
+// Distinct from ledDip (a tiny next-run churn nudge) and stalenessDecay (post-endDate):
+// this is the only lever that ages out a still-open story nothing is happening to.
+const FATIGUE_GRACE_DAYS = Number(process.env.RANK_FATIGUE_GRACE_DAYS ?? 2);
+const FATIGUE_HALFLIFE_DAYS = Number(process.env.RANK_FATIGUE_HALFLIFE_DAYS ?? 3);
+const FATIGUE_FLOOR = Number(process.env.RANK_FATIGUE_FLOOR ?? 0.35); // demoted, never buried
+const FATIGUE_EXEMPT_FOOTPRINT = 2; // ≥2 distinct outlets = actively corroborated
+const FATIGUE_EXEMPT_MOVE = 8; // pts/24h — mirrors the SWING_PTS re-brief trigger
+
+/** Tenure decay for a calm, uncovered story by how long its current feed run has
+ *  lasted (1 = no decay). Consumes firstLedAt, stamped by the generator after
+ *  selection and reset when a story drops out of the feed. */
+export function tenureFatigue(m: Scorable, nowMs: number): number {
+  if (!m.firstLedAt) return 1; // never led (or first run this pass) → fresh
+  if ((m.newsFootprint ?? 0) >= FATIGUE_EXEMPT_FOOTPRINT) return 1;
+  if (Math.abs(m.movement24h ?? 0) >= FATIGUE_EXEMPT_MOVE) return 1;
+  const t = Date.parse(m.firstLedAt);
+  if (!Number.isFinite(t)) return 1;
+  const days = (nowMs - t) / DAY_MS;
+  if (days <= FATIGUE_GRACE_DAYS) return 1;
+  return Math.max(FATIGUE_FLOOR, Math.pow(0.5, (days - FATIGUE_GRACE_DAYS) / FATIGUE_HALFLIFE_DAYS));
+}
+
 // Post-event freshness decay. Once a market's resolution window has CLOSED (its end
 // date has passed) the story's news value is spent even before the platform officially
 // settles it — a decided-but-unsettled market shouldn't keep sitting in Top. We sink it
@@ -355,7 +391,11 @@ export function rankAndSelect(
   // slot cap below handles them. (Trending/Movers/Breaking order on their own axes.)
   const factors = categoryFactors(eligible);
   for (const m of eligible)
-    m.score = newsScore(m, nowMs) * (factors.get(m.category) ?? 1) * stalenessDecay(m.endDate, nowMs);
+    m.score =
+      newsScore(m, nowMs) *
+      (factors.get(m.category) ?? 1) *
+      stalenessDecay(m.endDate, nowMs) *
+      tenureFatigue(m, nowMs);
   const maxScore = Math.max(1, ...eligible.map((m) => m.score));
 
   const remaining = [...eligible].sort((a, b) => b.score - a.score || cmpId(a, b));

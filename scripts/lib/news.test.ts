@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { extractSnippet, parseRss, plainText } from './news';
+import { describe, expect, it, vi } from 'vitest';
+import { extractSnippet, fetchHeadlines, parseRss, plainText } from './news';
+import * as http from './http';
+import type { Config } from './config';
 
 const rss = `<?xml version="1.0"?><rss><channel>
 <item>
@@ -19,6 +21,21 @@ const rss = `<?xml version="1.0"?><rss><channel>
   <source url="https://www.reuters.com">Reuters</source>
 </item>
 </channel></rss>`;
+
+describe('fetchHeadlines', () => {
+  it('bounds the Google News query to recent coverage (when:14d)', async () => {
+    const spy = vi.spyOn(http, 'getText').mockResolvedValue('<rss></rss>');
+    const cfg = { userAgent: 'x', newsPerMarket: 8 } as Config;
+    await fetchHeadlines('iran nuclear deal', cfg);
+    // Stale citations read as "news from last week" in a fresh briefing — the recency
+    // operator must ride inside the encoded q= param on every headline fetch.
+    expect(spy).toHaveBeenCalledWith(
+      expect.stringContaining(encodeURIComponent('iran nuclear deal when:14d')),
+      expect.anything(),
+    );
+    vi.restoreAllMocks();
+  });
+});
 
 describe('parseRss', () => {
   it('parses outlet, domain, and cleans titles', () => {

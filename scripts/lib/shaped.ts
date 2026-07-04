@@ -55,6 +55,9 @@ export interface ShapedMarket {
   /** ISO timestamp this market last LED a story's slot (persisted across runs), so
    * ranking can dip a recently-led story and the feed rotates day to day. */
   lastLedAt?: string;
+  /** ISO timestamp this market's current continuous feed run began (persisted across
+   * runs while it stays active), so ranking can fatigue a calm, uncovered tenured story. */
+  firstLedAt?: string;
   /** The story this facet belongs to (stable, derived from shared tokens). Set on the
    * lead AND on every absorbed sub-market (which all share the lead's storyId). */
   storyId?: string;

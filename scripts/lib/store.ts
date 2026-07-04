@@ -117,10 +117,11 @@ function liveFields(s: ShapedMarket) {
     subSignals: s.subSignals,
     format: s.format,
     newsFootprint: s.newsFootprint,
-    // lastLedAt is a PERSISTED stamp the generator sets AFTER selection on this run's
-    // ShapedMarket; carrying s.lastLedAt (not prev's) lets liveFields win the
-    // `...prev, ...liveFields(s)` spread so the fresh stamp is never clobbered.
+    // lastLedAt/firstLedAt are PERSISTED stamps the generator sets AFTER selection on
+    // this run's ShapedMarket; carrying s.* (not prev's) lets liveFields win the
+    // `...prev, ...liveFields(s)` spread so the fresh stamps are never clobbered.
     lastLedAt: s.lastLedAt,
+    firstLedAt: s.firstLedAt,
   };
 }
 
@@ -322,6 +323,7 @@ export function writeOutputs(
         firstBriefedOddsPct: _fo,
         firstBriefedFavored: _ff,
         lastLedAt: _ll,
+        firstLedAt: _fl,
         ...m
       }) => m,
     );

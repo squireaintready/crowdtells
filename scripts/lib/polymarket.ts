@@ -2,7 +2,7 @@ import { getJson } from './http';
 import type { Config } from './config';
 import type { ShapedMarket } from './shaped';
 import { normalizeCategory } from './category';
-import { canonicalCategory } from '../../src/lib/categories';
+import { canonicalCategory, isKnownCategory } from '../../src/lib/categories';
 import { classifyKind } from './classify';
 import { clampText } from './news';
 
@@ -178,6 +178,26 @@ export function fillTemplateBlank(title: string, favored: string): string {
     .trim();
 }
 
+// Polymarket internal/ops tags that must never become a display category (surfacing
+// tags[0] verbatim leaked "Hide From New" and "Rewards 20, 4.5, 50" into the feed).
+const OPS_TAG = /^(hide from new|recurring|breaking news)$/i;
+const REWARDS_TAG = /^rewards\b/i; // "Rewards 20, 4.5, 50" — market-maker incentive labels
+const NUMERIC_TAG = /^[\d\s.,%$]+$/; // bare numbers/amounts carry no beat
+
+/** True for an internal/ops tag that carries no beat. Exported so the generator's
+ * archive-canonicalization pass can also scrub records shaped before this filter. */
+export function isJunkTag(tag: string | undefined | null): boolean {
+  const t = (tag ?? '').trim();
+  return t === '' || OPS_TAG.test(t) || REWARDS_TAG.test(t) || NUMERIC_TAG.test(t);
+}
+
+/** An event's best category tag: the first tag the canonical taxonomy RECOGNIZES, else
+ * the first non-junk tag (a genuinely new beat passes through), else undefined. */
+export function pickCategoryTag(tags: string[]): string | undefined {
+  const clean = tags.filter((t) => !isJunkTag(t));
+  return clean.find((t) => isKnownCategory(t)) ?? clean[0];
+}
+
 export function shapeEvent(event: RawEvent): ShapedMarket | null {
   if (!event.id || !event.title || !event.markets?.length) return null;
   const fav = resolveFavored(priced(event.markets));
@@ -194,7 +214,7 @@ export function shapeEvent(event: RawEvent): ShapedMarket | null {
     title,
     marketUrl: `https://polymarket.com/event/${event.slug ?? ''}`,
     image: event.image ?? '',
-    category: canonicalCategory(normalizeCategory(tags[0])),
+    category: canonicalCategory(normalizeCategory(pickCategoryTag(tags))),
     tags,
     kind: classifyKind({ title, tags, startDate, endDate }),
     description: clampText(event.description ?? '', 700),
@@ -265,11 +285,16 @@ export async function fetchResolution(eventId: string, config: Config): Promise<
   }
 }
 
-/** Fetch one page of active events by 24h volume at a given offset; []-on-failure. */
-async function fetchVolumePage(config: Config, limit: number, offset = 0): Promise<RawEvent[]> {
+/** Fetch one page of active events ordered by `order` at a given offset; []-on-failure. */
+async function fetchEventPage(
+  config: Config,
+  order: string,
+  limit: number,
+  offset = 0,
+): Promise<RawEvent[]> {
   const url =
     `${GAMMA}/events?limit=${limit}&offset=${offset}&active=true&closed=false&archived=false` +
-    `&order=volume24hr&ascending=false`;
+    `&order=${order}&ascending=false`;
   try {
     const data = await getJson<RawEvent[]>(url, {
       headers: { 'User-Agent': config.userAgent, Accept: 'application/json' },
@@ -278,34 +303,43 @@ async function fetchVolumePage(config: Config, limit: number, offset = 0): Promi
     return data;
   } catch (err) {
     // Degrade gracefully (like Kalshi) so one upstream outage doesn't freeze the site.
-    console.warn(`  ! Polymarket fetch failed (offset=${offset}): ${(err as Error).message}`);
+    console.warn(`  ! Polymarket fetch failed (${order}, offset=${offset}): ${(err as Error).message}`);
     return [];
   }
 }
 
 /**
- * Fetch Polymarket candidates by 24h volume — the top page PLUS a second page
- * (ranks ~100-200). A single top-100 fetch silently drops the long tail of real
- * standing markets (elections, World Cup matches, majors) that sit just below the
- * giants; pulling the second page hands those to the ranker as candidates so newer
- * stories can earn a feed slot. (Newest-by-startDate was tried and rejected:
- * Polymarket's freshest events are almost all ephemeral intraday price ladders.)
+ * Fetch Polymarket candidates on TWO discovery axes:
+ * - By 24h volume — the top page PLUS a second page (ranks ~100-200). A single
+ *   top-100 fetch silently drops the long tail of real standing markets (elections,
+ *   World Cup matches, majors) that sit just below the giants; pulling the second
+ *   page hands those to the ranker as candidates so newer stories can earn a slot.
+ * - By listing date — the newest events that already show REAL early flow. The
+ *   volume pages are a top-N snapshot, so a just-listed market (hours-days old)
+ *   can't crack them until its 24h volume beats rank ~200 — exactly the "trending
+ *   bet we never covered" gap. A raw newest feed is mostly ephemeral intraday
+ *   ladders (why newest-only was once rejected), but the standing-kind filter drops
+ *   those, and a 24h-flow floor proves the remainder are genuinely being traded.
  */
 export async function fetchTopMarkets(config: Config): Promise<ShapedMarket[]> {
   const volLimit = Math.min(Math.max(config.polymarketLimit * 2, 20), 100);
-  const [page1, page2] = await Promise.all([
-    fetchVolumePage(config, volLimit, 0),
+  const [page1, page2, newest] = await Promise.all([
+    fetchEventPage(config, 'volume24hr', volLimit, 0),
     config.polymarketDiscoveryLimit > 0
-      ? fetchVolumePage(config, 100, volLimit)
+      ? fetchEventPage(config, 'volume24hr', 100, volLimit)
+      : Promise.resolve<RawEvent[]>([]),
+    config.polymarketFreshLimit > 0
+      ? fetchEventPage(config, 'startDate', 100, 0)
       : Promise.resolve<RawEvent[]>([]),
   ]);
 
   const shaped: ShapedMarket[] = [];
   const seen = new Set<string>();
-  const take = (event: RawEvent): boolean => {
+  const take = (event: RawEvent, min24h = 0): boolean => {
     const m = shapeEvent(event);
     // Skip ephemeral recurring/intraday price ladders — they're not news.
     if (!m || m.kind !== 'standing' || seen.has(m.id)) return false;
+    if (m.volume24h < min24h) return false;
     seen.add(m.id);
     shaped.push(m);
     return true;
@@ -321,6 +355,13 @@ export async function fetchTopMarkets(config: Config): Promise<ShapedMarket[]> {
   for (const event of page2) {
     if (added >= config.polymarketDiscoveryLimit) break;
     if (take(event)) added++;
+  }
+  // Then the newest listings with real early flow (half the lifetime-volume floor in a
+  // single day — the same bar ranking's newsworthiness gate accepts as proof of life).
+  let fresh = 0;
+  for (const event of newest) {
+    if (fresh >= config.polymarketFreshLimit) break;
+    if (take(event, config.minVolume / 2)) fresh++;
   }
   return shaped;
 }

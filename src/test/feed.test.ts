@@ -8,7 +8,7 @@ import {
   scoreboard,
   selectStories,
 } from '../lib/feed';
-import { canonicalCategory, isSportsFamily, topicRedirects } from '../lib/categories';
+import { canonicalCategory, isKnownCategory, isSportsFamily, topicRedirects } from '../lib/categories';
 import { topicSlug } from '../lib/topicPath';
 import type { EngagementStat } from '../lib/engagement';
 import { makeMarket } from './factory';
@@ -169,6 +169,27 @@ describe('canonicalCategory', () => {
     expect(canonicalCategory('Trump')).toBe('Politics');
     expect(canonicalCategory('Bitcoin')).toBe('Crypto');
     expect(canonicalCategory('Box Office')).toBe('Entertainment');
+  });
+  it('merges the live-feed strays the sources emit as one-off tags', () => {
+    expect(canonicalCategory('French Election')).toBe('Politics');
+    expect(canonicalCategory('United States')).toBe('Politics');
+    expect(canonicalCategory('Military Strikes')).toBe('Geopolitics');
+    expect(canonicalCategory('U.S. x Iran')).toBe('Geopolitics');
+    expect(canonicalCategory('COMEX Gold Futures')).toBe('Commodities');
+    expect(canonicalCategory('FDV')).toBe('Crypto');
+    expect(canonicalCategory('Continental Futures')).toBe('Sports');
+    expect(canonicalCategory('Team Props')).toBe('Sports');
+    expect(canonicalCategory('Counter Strike 2')).toBe('Esports');
+    expect(canonicalCategory('YouTube')).toBe('Culture');
+    expect(canonicalCategory('Pandemics')).toBe('Health');
+  });
+  it('recognizes taxonomy members via isKnownCategory (the shaper tag-picking gate)', () => {
+    expect(isKnownCategory('Geopolitics')).toBe(true); // a bucket name is its own key
+    expect(isKnownCategory('Pandemics')).toBe(true); // CANON-mapped stray
+    expect(isKnownCategory('Soccer')).toBe(true); // sports family
+    expect(isKnownCategory('Hide From New')).toBe(false); // ops label
+    expect(isKnownCategory('Quantum Computing')).toBe(false); // genuinely new beat
+    expect(isKnownCategory('')).toBe(false);
   });
   it('passes an unknown category through unchanged (never mis-buckets a new beat)', () => {
     expect(canonicalCategory('Quantum Computing')).toBe('Quantum Computing');

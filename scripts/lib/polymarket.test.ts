@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { shapeEvent, fillTemplateBlank, fetchTopMarkets } from './polymarket';
+import { shapeEvent, fillTemplateBlank, fetchTopMarkets, pickCategoryTag } from './polymarket';
 import * as http from './http';
 import type { Config } from './config';
 
@@ -220,6 +220,27 @@ describe('shapeEvent — ladder blank', () => {
   });
 });
 
+describe('pickCategoryTag — the display category never trusts tags[0] blindly', () => {
+  it('skips internal/ops tags and picks the first RECOGNIZED tag', () => {
+    expect(pickCategoryTag(['Rewards 20, 4.5, 50', 'Hide From New', 'Geopolitics'])).toBe(
+      'Geopolitics',
+    );
+    expect(pickCategoryTag(['Mamdani', 'NYC Mayor', 'Politics'])).toBe('Mamdani'); // CANON-mapped micro-tag
+  });
+  it('prefers a recognized tag over an unknown one-off first tag', () => {
+    expect(pickCategoryTag(['Warner Discovery Saga', 'Companies'])).toBe('Companies');
+  });
+  it('falls back to the first non-junk tag when nothing is recognized (a new beat survives)', () => {
+    expect(pickCategoryTag(['Quantum Computing', 'Qubits'])).toBe('Quantum Computing');
+    expect(pickCategoryTag(['Hide From New'])).toBeUndefined();
+    expect(pickCategoryTag([])).toBeUndefined();
+  });
+  it('shapeEvent routes the picked tag through the canonical taxonomy', () => {
+    const ev = { ...binaryEvent, tags: [{ label: 'Rewards 20, 4.5, 50' }, { label: 'Pandemics' }] };
+    expect(shapeEvent(ev)?.category).toBe('Health');
+  });
+});
+
 describe('fetchTopMarkets — two-page volume fetch (discovery)', () => {
   const ev = (id: string) => ({ ...binaryEvent, id });
   const idOf = (id: string) => shapeEvent(ev(id))!.id;
@@ -245,6 +266,27 @@ describe('fetchTopMarkets — two-page volume fetch (discovery)', () => {
     const shaped = await fetchTopMarkets(cfg);
     expect(shaped).toHaveLength(2);
     expect(spy).toHaveBeenCalledTimes(1); // only the top page is fetched
+    vi.restoreAllMocks();
+  });
+
+  it('adds NEWEST listings only when they show real 24h flow (the trending-discovery lane)', async () => {
+    const hot = { ...ev('hot'), volume24hr: 6_000 }; // just listed, already trading
+    const cold = { ...ev('cold'), volume24hr: 40 }; // just listed, no real action
+    vi.spyOn(http, 'getJson').mockImplementation((url: string) =>
+      Promise.resolve(
+        /order=startDate/.test(url) ? [cold, hot] : /offset=0&/.test(url) ? [ev('a')] : [],
+      ),
+    );
+    const cfg = {
+      polymarketLimit: 5,
+      polymarketDiscoveryLimit: 5,
+      polymarketFreshLimit: 5,
+      minVolume: 10_000, // fresh floor = minVolume/2 = 5k of 24h flow
+      userAgent: 'x',
+    } as Config;
+    const shaped = await fetchTopMarkets(cfg);
+    // 'hot' clears the flow floor and joins the pool; 'cold' does not.
+    expect(shaped.map((m) => m.id)).toEqual([idOf('a'), idOf('hot')]);
     vi.restoreAllMocks();
   });
 });

@@ -220,11 +220,18 @@ export function parseRss(xml: string, limit: number): Headline[] {
   return out;
 }
 
+// Bound results to RECENT coverage via Google News's `when:` operator. Without a
+// window it happily returns months-old evergreen pieces for a standing question, and
+// those stale citations read as "news from last week" inside a fresh briefing. 14d
+// keeps slow-burn stories citable while capping staleness; the 12h newsCheck loop
+// swaps in newer pieces as they land.
+const NEWS_MAX_AGE = 'when:14d';
+
 /** Retrieve recent real headlines for a market. Returns [] on any failure. */
 export async function fetchHeadlines(query: string, config: Config): Promise<Headline[]> {
   const url =
     'https://news.google.com/rss/search?q=' +
-    encodeURIComponent(query) +
+    encodeURIComponent(`${query} ${NEWS_MAX_AGE}`) +
     '&hl=en-US&gl=US&ceid=US:en';
   try {
     const xml = await getText(url, {
