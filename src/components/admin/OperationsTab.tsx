@@ -1,19 +1,15 @@
 import { useMemo } from 'react';
 import s from './AdminPanel.module.css';
 import { useAdminQuery } from './useAdminQuery';
-import { Banner, Empty, Loading } from './ui';
+import { Banner, Empty, Loading, ProviderPill, Stat, Trend } from './ui';
 import { listPipelineRuns, type PipelineRunRow } from '../../lib/admin';
+import { fmtCompact as tokens } from './format';
 import type { LlmModelUsage } from '../../lib/types';
 
 const LOAD = 100; // runs to pull (server caps at 500); ~2-3 days at peak cadence
 
 // ───────── formatting ─────────
 const int = (n: number | null | undefined): string => (n ?? 0).toLocaleString();
-function tokens(n: number): string {
-  if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M`;
-  if (n >= 1e3) return `${(n / 1e3).toFixed(n >= 1e4 ? 0 : 1)}k`;
-  return `${n}`;
-}
 function duration(ms: number | null | undefined): string {
   if (ms == null || ms < 0) return '—';
   const sec = Math.round(ms / 1000);
@@ -66,63 +62,6 @@ export function aggregateLlm(runs: PipelineRunRow[]): LlmModelUsage[] {
 
 const sumTokens = (r: PipelineRunRow): number => (r.detail?.llm ?? []).reduce((n, u) => n + u.tokens, 0);
 const sumReq = (r: PipelineRunRow): number => (r.detail?.llm ?? []).reduce((n, u) => n + u.requests, 0);
-
-// ───────── sparkline ─────────
-function Sparkline({ values, label }: { values: number[]; label: string }) {
-  const w = 132;
-  const h = 30;
-  const pad = 3;
-  if (values.length < 2) {
-    return <svg className={s.spark} width={w} height={h} role="img" aria-label={`${label}: no trend yet`} />;
-  }
-  const max = Math.max(...values, 1);
-  const x = (i: number): number => pad + (i / (values.length - 1)) * (w - 2 * pad);
-  const y = (v: number): number => h - pad - (v / max) * (h - 2 * pad);
-  const pts = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-  return (
-    <svg
-      className={s.spark}
-      width={w}
-      height={h}
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      role="img"
-      aria-label={`${label}: trend over ${values.length} runs, latest ${int(values[values.length - 1])}`}
-    >
-      <polyline
-        points={pts}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <circle cx={x(values.length - 1).toFixed(1)} cy={y(values[values.length - 1]!).toFixed(1)} r="2.2" fill="currentColor" />
-    </svg>
-  );
-}
-
-function Stat({ label, value, sub, warn }: { label: string; value: string; sub?: string; warn?: boolean }) {
-  return (
-    <div className={s.statCard}>
-      <div className={s.statLabel}>{label}</div>
-      <div className={`${s.statValue} ${warn ? s.warnNum : ''}`}>{value}</div>
-      {sub ? <div className={s.statSub}>{sub}</div> : null}
-    </div>
-  );
-}
-
-function Trend({ label, values, fmt }: { label: string; values: number[]; fmt: (n: number) => string }) {
-  return (
-    <div className={s.trendItem}>
-      <div className={s.trendHead}>
-        <span className={s.statLabel}>{label}</span>
-        <span className={s.trendNow}>{fmt(values[values.length - 1] ?? 0)}</span>
-      </div>
-      <Sparkline values={values} label={label} />
-    </div>
-  );
-}
 
 export interface OperationsViewProps {
   rows: PipelineRunRow[];
@@ -249,10 +188,7 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
                 {agg.map((u) => (
                   <tr key={`${u.provider}:${u.model}`}>
                     <td data-label="Model">
-                      <span className={`${s.pill} ${u.provider === 'gemini' ? s.provGem : s.provGroq}`}>
-                        {u.provider}
-                      </span>{' '}
-                      <span className={s.mono}>{u.model}</span>
+                      <ProviderPill provider={u.provider} /> <span className={s.mono}>{u.model}</span>
                     </td>
                     <td className={s.num} data-label="Calls">
                       {int(u.requests)}

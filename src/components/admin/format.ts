@@ -46,6 +46,20 @@ export function fmtRel(iso: string | null | undefined): string {
   return past ? `${n}${label} ago` : `in ${n}${label}`;
 }
 
+/** Compact magnitude for big counts, e.g. 4500 → "4.5k", 12_000_000 → "12M".
+ * One decimal below 10× a unit, whole above it. The thresholds are rounding-aware so a
+ * value that would render as "1000k"/"1000M" promotes to the next unit ("1.0M"/"1.0B")
+ * instead. Used for token/call figures across the admin ops consoles. */
+export function fmtCompact(n: number): string {
+  if (!Number.isFinite(n)) return '—';
+  const unit = (v: number, suffix: string): string => `${v.toFixed(Math.abs(v) < 10 ? 1 : 0)}${suffix}`;
+  const abs = Math.abs(n);
+  if (abs >= 999_500_000) return unit(n / 1e9, 'B');
+  if (abs >= 999_500) return unit(n / 1e6, 'M');
+  if (abs >= 1000) return unit(n / 1e3, 'k');
+  return `${n}`;
+}
+
 /** A user is banned only while banned_until is in the future. */
 export function isBanned(bannedUntil: string | null | undefined): boolean {
   if (!bannedUntil) return false;

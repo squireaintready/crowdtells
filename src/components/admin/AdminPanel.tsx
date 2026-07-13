@@ -10,10 +10,12 @@ import { ModerationTab } from './ModerationTab';
 import { AdminsTab } from './AdminsTab';
 import { AuditTab } from './AuditTab';
 import { OperationsTab } from './OperationsTab';
+import { AiUsageTab } from './AiUsageTab';
 
-type TabKey = 'operations' | 'users' | 'subscribers' | 'comments' | 'moderation' | 'admins' | 'audit';
+type TabKey = 'operations' | 'aiusage' | 'users' | 'subscribers' | 'comments' | 'moderation' | 'admins' | 'audit';
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'operations', label: 'Operations' },
+  { key: 'aiusage', label: 'AI usage' },
   { key: 'users', label: 'Users' },
   { key: 'subscribers', label: 'Subscribers' },
   { key: 'comments', label: 'Comments' },
@@ -160,6 +162,7 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 
       <main className={s.main} id="admin-tabpanel" role="tabpanel" aria-labelledby={`admintab-${tab}`}>
         {tab === 'operations' && <OperationsTab />}
+        {tab === 'aiusage' && <AiUsageTab />}
         {tab === 'users' && <UsersTab />}
         {tab === 'subscribers' && <SubscribersTab />}
         {tab === 'comments' && <CommentsTab />}

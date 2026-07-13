@@ -103,6 +103,75 @@ export function Pager({
   );
 }
 
+/** A provider badge (Gemini / NVIDIA / Groq), styled per provider. Shared by the
+ * Operations + AI-usage consoles so a new provider is coloured consistently in both. */
+export function ProviderPill({ provider }: { provider: string }) {
+  const tone = provider === 'gemini' ? s.provGem : provider === 'nvidia' ? s.provNvidia : s.provGroq;
+  return <span className={`${s.pill} ${tone}`}>{provider}</span>;
+}
+
+/** A tiny inline trend line (oldest → newest, left → right). Pure SVG, theme-aware
+ * via `currentColor`. Renders an empty frame until there are ≥2 points to connect. */
+export function Sparkline({ values, label }: { values: number[]; label: string }) {
+  const w = 132;
+  const h = 30;
+  const pad = 3;
+  if (values.length < 2) {
+    return <svg className={s.spark} width={w} height={h} role="img" aria-label={`${label}: no trend yet`} />;
+  }
+  const max = Math.max(...values, 1);
+  const x = (i: number): number => pad + (i / (values.length - 1)) * (w - 2 * pad);
+  const y = (v: number): number => h - pad - (v / max) * (h - 2 * pad);
+  const pts = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const lastValue = values[values.length - 1] ?? 0;
+  return (
+    <svg
+      className={s.spark}
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="none"
+      role="img"
+      aria-label={`${label}: trend over ${values.length} runs, latest ${lastValue.toLocaleString()}`}
+    >
+      <polyline
+        points={pts}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <circle cx={x(values.length - 1).toFixed(1)} cy={y(lastValue).toFixed(1)} r="2.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** A labelled sparkline card: the metric name, its latest value, and the trend. */
+export function Trend({ label, values, fmt }: { label: string; values: number[]; fmt: (n: number) => string }) {
+  return (
+    <div className={s.trendItem}>
+      <div className={s.trendHead}>
+        <span className={s.statLabel}>{label}</span>
+        <span className={s.trendNow}>{fmt(values[values.length - 1] ?? 0)}</span>
+      </div>
+      <Sparkline values={values} label={label} />
+    </div>
+  );
+}
+
+/** A single stat card: a small label, a big mono value (red when `warn`), and an optional sub-line.
+ * Shared by the Operations + AI-usage consoles. */
+export function Stat({ label, value, sub, warn }: { label: string; value: string; sub?: string; warn?: boolean }) {
+  return (
+    <div className={s.statCard}>
+      <div className={s.statLabel}>{label}</div>
+      <div className={`${s.statValue} ${warn ? s.warnNum : ''}`}>{value}</div>
+      {sub ? <div className={s.statSub}>{sub}</div> : null}
+    </div>
+  );
+}
+
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
