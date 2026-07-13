@@ -1462,10 +1462,10 @@ async function main(): Promise<void> {
 
   console.log(`Crowdtells — ${nowIso}${config.dryRun ? ' (dry-run)' : ''}`);
   const llmPool = [
+    config.nvidiaKeys.length && `NVIDIA ${config.nvidiaKeys.length}×${config.nvidiaModels.length}`,
     config.geminiKeys.length &&
       `Gemini ${config.geminiKeys.length}×${config.geminiModels.length}` +
         (config.geminiReasoningEffort ? ` (think:${config.geminiReasoningEffort})` : ''),
-    config.nvidiaKeys.length && `NVIDIA ${config.nvidiaKeys.length}×${config.nvidiaModels.length}`,
     config.groqKeys.length && `Groq ${config.groqKeys.length}×${config.groqModels.length}`,
   ].filter(Boolean);
   console.log(

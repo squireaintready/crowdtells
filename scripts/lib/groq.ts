@@ -567,11 +567,12 @@ export interface Slot {
   reasoningEffort?: string;
 }
 
-// Canonical pool order when nothing is preferred: Gemini leads (best grounded prose, generous
-// free tier), then NVIDIA — its flagship GLM-5.2 is a genuine prose UPGRADE, so it takes the #2
-// QUALITY slot for briefings — then Groq (fast, tuned) as the deep fallback. Groq still leads
-// for the CLASSIFIERS via prefer='groq' (cheap, tuned clustering); there NVIDIA trails last.
-const PROVIDER_ORDER: Provider[] = ['gemini', 'nvidia', 'groq'];
+// Canonical pool order when nothing is preferred — this is the BRIEFING order. NVIDIA leads:
+// its flagship GLM-5.2 is the strongest grounded writer we have and NVIDIA's free tier is just a
+// ~40 RPM rate cap (no credit pool to exhaust), so it earns the PRIMARY briefer slot. Gemini is
+// the fast #2 fallback (it absorbs any NVIDIA 429 instantly), Groq the deep #3. Groq still leads
+// for the CLASSIFIERS via prefer='groq' (cheap, tuned clustering); there NVIDIA trails.
+const PROVIDER_ORDER: Provider[] = ['nvidia', 'gemini', 'groq'];
 
 /**
  * The ordered provider/model pool for a run; within each provider we expand model × key.
@@ -579,17 +580,16 @@ const PROVIDER_ORDER: Provider[] = ['gemini', 'nvidia', 'groq'];
  * — combining ALL providers' quotas rather than being capped by one. A caller tries slots
  * top-down every call, so the PREFERRED provider answers and we degrade only under pressure.
  *
- * `prefer` is TASK-AWARE (measured, not arbitrary): briefings want 'gemini' first — its prose
- * is richer and stays grounded (it never fabricates figures), which is the whole product. The
- * cheap CLASSIFIERS (collision + story grouping) want 'groq' first — Groq's llama matches the
- * story-clustering behavior the pipeline was tuned against (Gemini is a touch too conservative
- * and under-merges some related facets), and a non-thinking model leaves room for the tiny
- * JSON answer that a reasoning model's hidden thinking would otherwise eat. For BRIEFINGS the
- * canonical order slots NVIDIA (flagship GLM-5.2) at #2, above Groq, as the quality fallback.
- * The `prefer` provider leads; the rest trail in canonical order, so any provider alone keeps
- * every path working.
+ * `prefer` is TASK-AWARE (measured, not arbitrary). With NO `prefer` the pool uses the canonical
+ * BRIEFING order (NVIDIA/GLM-5.2 first — the strongest grounded writer — then Gemini, then Groq),
+ * so briefings get the best prose and degrade only under pressure. The cheap CLASSIFIERS (collision
+ * + story grouping) pass prefer='groq' — Groq's llama matches the story-clustering behavior the
+ * pipeline was tuned against (Gemini is a touch too conservative and under-merges some related
+ * facets), and a non-thinking model leaves room for the tiny JSON answer that a reasoning model's
+ * hidden thinking would otherwise eat. A `prefer` provider is hoisted to the front; the rest trail
+ * in canonical order, so any provider alone keeps every path working.
  */
-export function buildSlots(config: Config, prefer: Provider = 'gemini'): Slot[] {
+export function buildSlots(config: Config, prefer?: Provider): Slot[] {
   const blocks: Record<Provider, Slot[]> = { gemini: [], groq: [], nvidia: [] };
   for (const model of config.geminiModels)
     for (const key of config.geminiKeys)
@@ -606,8 +606,8 @@ export function buildSlots(config: Config, prefer: Provider = 'gemini'): Slot[] 
   for (const model of config.nvidiaModels)
     for (const key of config.nvidiaKeys)
       blocks.nvidia.push({ provider: 'nvidia', base: config.nvidiaBase, key, model });
-  // `prefer` first, then the remaining providers in canonical order.
-  const order = [prefer, ...PROVIDER_ORDER.filter((p) => p !== prefer)];
+  // No prefer → canonical (briefing) order. With prefer, hoist it, rest trail in canonical order.
+  const order = prefer ? [prefer, ...PROVIDER_ORDER.filter((p) => p !== prefer)] : PROVIDER_ORDER;
   return order.flatMap((p) => blocks[p]);
 }
 

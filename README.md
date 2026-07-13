@@ -70,12 +70,12 @@ ranks them on **newsworthiness** — corroborated real-world coverage, not betti
 - **News** — Google News per story, **one citation per outlet** for perspective diversity, social /
   video / aggregator / trading-platform domains filtered out, capped at a handful of reputable
   outlets. (`scripts/lib/news.ts`)
-- **Briefings** — pooled free LLMs ([Gemini](https://ai.google.dev) preferred, then
-  [NVIDIA NIM](https://build.nvidia.com)'s flagship GLM-5.2, then [Groq](https://groq.com); all
-  OpenAI-compatible, JSON mode), grounded **strictly** in the retrieved headlines + the market's
-  resolution rules. The model never sees or types live numbers — odds, volume, and gaps are hydrated at
-  render time, so prose can't disagree with the market or hallucinate a figure. Rotates across every
-  provider's keys **and** models on rate limits. (`scripts/lib/groq.ts`)
+- **Briefings** — pooled free LLMs ([NVIDIA NIM](https://build.nvidia.com)'s flagship GLM-5.2 primary,
+  then [Gemini](https://ai.google.dev), then [Groq](https://groq.com); all OpenAI-compatible, JSON mode),
+  grounded **strictly** in the retrieved headlines + the market's resolution rules. The model never sees
+  or types live numbers — odds, volume, and gaps are hydrated at render time, so prose can't disagree with
+  the market or hallucinate a figure. Rotates across every provider's keys **and** models on rate limits.
+  (`scripts/lib/groq.ts`)
 
 > The cross-source analysis works at the multi-outlet **headline/framing** level (article bodies
 > aren't reliably fetchable through news aggregators); it surfaces consensus and differing emphasis
@@ -112,7 +112,7 @@ ranks them on **newsworthiness** — corroborated real-world coverage, not betti
 | ----------- | ----------------------------------------------------------------- |
 | Frontend    | React 19 + TypeScript (strict), Vite, CSS Modules                 |
 | Pipeline    | TypeScript (run with `tsx`) in GitHub Actions                     |
-| AI          | Pooled free LLMs — Gemini + NVIDIA NIM (GLM-5.2) + Groq (OpenAI-compatible, JSON mode), provider × model pool |
+| AI          | Pooled free LLMs — NVIDIA NIM (GLM-5.2, primary) + Gemini + Groq (OpenAI-compatible, JSON mode), provider × model pool |
 | Data        | Polymarket Gamma API · Kalshi API · Google News RSS · ~10 event sources |
 | Backend     | Supabase (Postgres + RLS + Auth + Realtime + Edge Functions), optional |
 | Email       | Mailgun (digests + alerts in CI; auth + confirm via Supabase Edge Functions) |
@@ -145,15 +145,15 @@ build on PRs), **`digest.yml`** (daily + weekly newsletter cron), and **`breakin
 alerts, gated on `BREAKING_ALERTS_ENABLED`).
 
 Minimal setup is just one LLM key — without it the feed still ships real markets + real news links, and
-briefings turn on once set. The pipeline pools three free providers (**Gemini** preferred, then
-**NVIDIA NIM**'s flagship GLM-5.2, then **Groq**), so any one alone works and adding more stacks free
-capacity. Grab a free [Gemini](https://aistudio.google.com/apikey), [NVIDIA](https://build.nvidia.com),
+briefings turn on once set. The pipeline pools three free providers (**NVIDIA NIM**'s flagship GLM-5.2
+as the primary briefer, then **Gemini**, then **Groq**), so any one alone works and adding more stacks
+free capacity. Grab a free [NVIDIA](https://build.nvidia.com), [Gemini](https://aistudio.google.com/apikey),
 or [Groq](https://console.groq.com) key:
 
 ```bash
-gh secret set GEMINI_API_KEYS  # Gemini (Google AI Studio); preferred for briefing prose
-gh secret set NVIDIA_API_KEYS  # NVIDIA NIM "nvapi-…"; flagship GLM-5.2 quality tier (build.nvidia.com; one key = whole catalog)
-gh secret set GROQ_API_KEYS    # Groq "gsk_…"; fast deep fallback + tuned classifiers (comma-separate to rotate)
+gh secret set NVIDIA_API_KEYS  # NVIDIA NIM "nvapi-…"; primary briefer, flagship GLM-5.2 (build.nvidia.com; one key = whole catalog)
+gh secret set GEMINI_API_KEYS  # Gemini (Google AI Studio); fast #2 fallback for briefing prose
+gh secret set GROQ_API_KEYS    # Groq "gsk_…"; deep fallback + tuned classifiers (comma-separate to rotate)
 ```
 
 Deploying to Cloudflare Pages additionally needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
@@ -164,9 +164,9 @@ The workflow files are the source of truth; the common ones:
 
 | Kind     | Name                                          | Purpose                                        |
 | -------- | --------------------------------------------- | ---------------------------------------------- |
-| secret   | `GEMINI_API_KEYS` / `GEMINI_API_KEY`          | Gemini key(s); preferred briefing provider     |
-| secret   | `NVIDIA_API_KEYS` / `NVIDIA_API_KEY`          | NVIDIA NIM key(s) ("nvapi-…"); #2 quality tier (GLM-5.2) |
-| secret   | `GROQ_API_KEYS` / `GROQ_API_KEY`              | Groq key(s); fast deep fallback + tuned classifiers |
+| secret   | `NVIDIA_API_KEYS` / `NVIDIA_API_KEY`          | NVIDIA NIM key(s) ("nvapi-…"); primary briefer (GLM-5.2) |
+| secret   | `GEMINI_API_KEYS` / `GEMINI_API_KEY`          | Gemini key(s); fast #2 briefing fallback        |
+| secret   | `GROQ_API_KEYS` / `GROQ_API_KEY`              | Groq key(s); deep fallback + tuned classifiers  |
 | secret   | `CLOUDFLARE_API_TOKEN` · `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Pages deploy                      |
 | secret   | `SUPABASE_SERVICE_KEY`                         | Server-side writes (scoring, sync, digests)    |
 | secret   | `MAILGUN_API_KEY`                             | Sending digests + breaking alerts + confirmations |

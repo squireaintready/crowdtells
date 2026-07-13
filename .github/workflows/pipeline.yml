@@ -103,7 +103,7 @@ jobs:
         run: npm run generate
         env:
           # LLM briefing providers (all free-tier, OpenAI-compatible). The generator POOLS them
-          # for briefings — Gemini preferred, then NVIDIA (flagship GLM-5.2), then Groq — and
+          # for briefings — NVIDIA (flagship GLM-5.2) primary, then Gemini, then Groq — and
           # rotates across keys × models on limits. Comma-separate keys; any one alone can brief.
           GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

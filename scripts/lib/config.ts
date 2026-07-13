@@ -64,22 +64,19 @@ export const config = {
         // mid-run, so this was graceful regardless; removing it just avoids the wasted call.)
       ],
 
-  /** NVIDIA NIM (build.nvidia.com "API Catalog", OpenAI-compatible) key(s) — a THIRD free
-   * provider, pooled as the #2 QUALITY tier BETWEEN Gemini and Groq so its flagship model
-   * (GLM-5.2) actually writes briefings when Gemini is busy, rather than just soaking up
-   * overflow behind Groq's smaller llama. One "nvapi-…" key calls any catalog model. Free tier
-   * is credit-metered (~40 RPM, 1k–5k credits); when it's spent a 429 falls straight through to
-   * Groq, so the pool self-heals. Comma/space/newline-separated to rotate keys. */
+  /** NVIDIA NIM (build.nvidia.com "API Catalog", OpenAI-compatible) key(s) — the PRIMARY briefer.
+   * Its flagship GLM-5.2 is the strongest grounded writer in the pool, and the free tier is just a
+   * ~40 RPM per-key rate cap (the old 1k–5k "credit" quota was retired in 2025 — there is no pool
+   * to exhaust), so it leads the briefing order; a 429 falls straight through to Gemini, then Groq.
+   * One "nvapi-…" key calls any catalog model. Comma/space/newline-separated to rotate keys. */
   nvidiaKeys: parseKeyList(process.env.NVIDIA_API_KEYS || process.env.NVIDIA_API_KEY),
   nvidiaBase: str('NVIDIA_BASE', 'https://integrate.api.nvidia.com/v1'),
   /** NVIDIA model pool (evidence-based — smoke-tested live against the JSON-mode briefing path):
-   * `z-ai/glm-5.2` is a flagship model that answers fast (~1.7s) with clean json_object output —
-   * a genuine prose UPGRADE over the fallback llamas, which is why NVIDIA earns the #2 slot.
-   * `meta/llama-3.1-8b-instruct` is a sub-second non-reasoning backstop for cheap classifier
-   * duty + fast overflow. (meta/llama-3.3-70b-instruct was dropped: it has no live free endpoint
-   * — it timed out on every probe.) Free-tier limits are per-model, so cycling them adds
-   * capacity. Override with NVIDIA_MODELS to try others (e.g. mistralai/mistral-medium-3.5-128b,
-   * though it smoke-tested much slower). */
+   * `z-ai/glm-5.2` leads — a flagship model that answers with clean json_object output and the
+   * richest grounded prose in the pool (the whole reason it's the primary briefer).
+   * `meta/llama-3.1-8b-instruct` is a sub-second non-reasoning backstop for cheap classifier duty.
+   * (meta/llama-3.3-70b-instruct was dropped: no live free endpoint — it timed out on every probe.)
+   * Free-tier limits are per-model, so cycling them adds capacity. Override with NVIDIA_MODELS. */
   nvidiaModels: parseKeyList(process.env.NVIDIA_MODELS).length
     ? parseKeyList(process.env.NVIDIA_MODELS)
     : ['z-ai/glm-5.2', 'meta/llama-3.1-8b-instruct'],
@@ -151,8 +148,10 @@ export const config = {
    * mostly bites only when genuinely new borderline pairs appear. */
   collisionAdjudicateMax: num('COLLISION_ADJUDICATE_MAX', 8),
 
-  /** Pause between Groq calls (ms) to stay under free-tier RPM. */
-  requestDelayMs: num('REQUEST_DELAY_MS', 1200),
+  /** Pause between LLM calls (ms) to stay under free-tier RPM. 1600ms ≈ 37/min keeps us under
+   * NVIDIA's ~40 RPM per-key cap now that GLM-5.2 is the primary briefer (briefings are ~33s
+   * each so they never approach it, but this guards bursty classifier/fallback traffic too). */
+  requestDelayMs: num('REQUEST_DELAY_MS', 1600),
   /** Cap on stored odds observations per market (sparkline window). */
   historyMax: num('HISTORY_MAX', 96),
   /** Cap on the durable daily crowd-belief series (one point per UTC day) — the

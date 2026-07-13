@@ -263,19 +263,19 @@ describe('buildSlots — multi-provider pool', () => {
     expect(buildSlots(cfg())).toEqual([]); // no keys at all → no slots (briefings disabled)
   });
 
-  it('pools NVIDIA at #2 as the quality tier between Gemini and Groq (default order)', () => {
+  it('leads with NVIDIA (GLM-5.2) as the primary briefer, then Gemini, then Groq (default order)', () => {
     const slots = buildSlots(cfg({ geminiKeys: ['g1'], groqKeys: ['q1'], nvidiaKeys: ['n1'] }));
     expect(slots.map((s) => s.provider)).toEqual([
-      'gemini',
-      'gemini',
       'nvidia',
       'nvidia',
+      'gemini',
+      'gemini',
       'groq',
       'groq',
     ]);
   });
 
-  it('keeps Groq first but NVIDIA last for the classifiers (prefer="groq")', () => {
+  it('keeps Groq first for the classifiers, NVIDIA then Gemini behind it (prefer="groq")', () => {
     const slots = buildSlots(
       cfg({ geminiKeys: ['g1'], groqKeys: ['q1'], nvidiaKeys: ['n1'] }),
       'groq',
@@ -283,10 +283,10 @@ describe('buildSlots — multi-provider pool', () => {
     expect(slots.map((s) => s.provider)).toEqual([
       'groq',
       'groq',
-      'gemini',
-      'gemini',
       'nvidia',
       'nvidia',
+      'gemini',
+      'gemini',
     ]);
   });
 
