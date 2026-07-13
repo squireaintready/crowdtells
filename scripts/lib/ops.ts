@@ -95,11 +95,11 @@ async function maybeAlertGeminiHealth(summary: PipelineRunSummary, prevDown: boo
     const limited = gemini.reduce((n, u) => n + u.rateLimited, 0);
     const overloaded = gemini.reduce((n, u) => n + u.overloaded, 0);
     await sendOpsAlert({
-      subject: '⚠️ Crowdtells: Gemini unavailable — briefings fell back to Groq',
+      subject: '⚠️ Crowdtells: Gemini unavailable — briefings fell back to Groq/NVIDIA',
       text:
         `Gemini produced 0 successful briefings this run (${limited} rate-limited, ` +
-        `${overloaded} overloaded); every briefing used Groq. Quality may dip until ` +
-        `Gemini recovers — you'll get an all-clear when it does.${link}`,
+        `${overloaded} overloaded); every briefing used the Groq/NVIDIA fallback. Quality may ` +
+        `dip until Gemini recovers — you'll get an all-clear when it does.${link}`,
     });
   } else {
     await sendOpsAlert({

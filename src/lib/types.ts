@@ -490,7 +490,7 @@ export interface Feed {
  * Operations console show where briefings actually ran, the tokens spent, and when a
  * provider hit its limits. Shared so the pipeline writes the exact shape the SPA reads. */
 export interface LlmModelUsage {
-  /** "gemini" | "groq". */
+  /** "gemini" | "groq" | "nvidia". */
   provider: string;
   /** e.g. "gemini-2.5-flash". */
   model: string;
@@ -534,7 +534,7 @@ export interface PipelineRunSummary {
   /** Per-provider×model LLM usage for the run. */
   llm: LlmModelUsage[];
   /** True when Gemini was configured but produced ZERO successful calls this run —
-   * i.e. every briefing fell back to Groq. The proactive "you should know" signal. */
+   * i.e. every briefing fell back to Groq/NVIDIA. The proactive "you should know" signal. */
   geminiDown: boolean;
   /** Source-fetch health — feeds/outlets that errored, aggregated by source. */
   sourceErrors: { source: string; count: number }[];

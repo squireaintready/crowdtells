@@ -64,6 +64,26 @@ export const config = {
         // mid-run, so this was graceful regardless; removing it just avoids the wasted call.)
       ],
 
+  /** NVIDIA NIM (build.nvidia.com "API Catalog", OpenAI-compatible) key(s) — a THIRD free
+   * provider, pooled as the #2 QUALITY tier BETWEEN Gemini and Groq so its flagship model
+   * (GLM-5.2) actually writes briefings when Gemini is busy, rather than just soaking up
+   * overflow behind Groq's smaller llama. One "nvapi-…" key calls any catalog model. Free tier
+   * is credit-metered (~40 RPM, 1k–5k credits); when it's spent a 429 falls straight through to
+   * Groq, so the pool self-heals. Comma/space/newline-separated to rotate keys. */
+  nvidiaKeys: parseKeyList(process.env.NVIDIA_API_KEYS || process.env.NVIDIA_API_KEY),
+  nvidiaBase: str('NVIDIA_BASE', 'https://integrate.api.nvidia.com/v1'),
+  /** NVIDIA model pool (evidence-based — smoke-tested live against the JSON-mode briefing path):
+   * `z-ai/glm-5.2` is a flagship model that answers fast (~1.7s) with clean json_object output —
+   * a genuine prose UPGRADE over the fallback llamas, which is why NVIDIA earns the #2 slot.
+   * `meta/llama-3.1-8b-instruct` is a sub-second non-reasoning backstop for cheap classifier
+   * duty + fast overflow. (meta/llama-3.3-70b-instruct was dropped: it has no live free endpoint
+   * — it timed out on every probe.) Free-tier limits are per-model, so cycling them adds
+   * capacity. Override with NVIDIA_MODELS to try others (e.g. mistralai/mistral-medium-3.5-128b,
+   * though it smoke-tested much slower). */
+  nvidiaModels: parseKeyList(process.env.NVIDIA_MODELS).length
+    ? parseKeyList(process.env.NVIDIA_MODELS)
+    : ['z-ai/glm-5.2', 'meta/llama-3.1-8b-instruct'],
+
   /** Polymarket candidates kept from the top volume page before ranking. Raised
    * 80→100 to keep ALL of page 1's newsworthy standing markets (measured: ranks
    * 0-100 are ~98 standing markets, every one ≥$25k/24h) instead of dropping ~18. */
@@ -212,8 +232,8 @@ export const config = {
 
 export type Config = typeof config;
 
-/** True when at least one LLM provider (Gemini or Groq) has a key, so the pipeline can
- * brief. Both speak the same OpenAI-compatible API; every AI step gates on this. */
+/** True when at least one LLM provider (Gemini, Groq, or NVIDIA) has a key, so the pipeline
+ * can brief. All three speak the same OpenAI-compatible API; every AI step gates on this. */
 export function llmConfigured(): boolean {
-  return config.geminiKeys.length > 0 || config.groqKeys.length > 0;
+  return config.geminiKeys.length > 0 || config.groqKeys.length > 0 || config.nvidiaKeys.length > 0;
 }

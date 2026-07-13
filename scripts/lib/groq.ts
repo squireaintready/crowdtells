@@ -556,9 +556,10 @@ export function toBriefing(content: string): Briefing {
   };
 }
 
-// --- The LLM provider pool: Gemini (preferred) + Groq (fallback), one Slot per model × key. ---
+// --- The LLM provider pool: Gemini (preferred) + Groq + NVIDIA, one Slot per model × key. ---
+export type Provider = 'gemini' | 'groq' | 'nvidia';
 export interface Slot {
-  provider: 'gemini' | 'groq';
+  provider: Provider;
   base: string;
   key: string;
   model: string;
@@ -566,10 +567,16 @@ export interface Slot {
   reasoningEffort?: string;
 }
 
+// Canonical pool order when nothing is preferred: Gemini leads (best grounded prose, generous
+// free tier), then NVIDIA — its flagship GLM-5.2 is a genuine prose UPGRADE, so it takes the #2
+// QUALITY slot for briefings — then Groq (fast, tuned) as the deep fallback. Groq still leads
+// for the CLASSIFIERS via prefer='groq' (cheap, tuned clustering); there NVIDIA trails last.
+const PROVIDER_ORDER: Provider[] = ['gemini', 'nvidia', 'groq'];
+
 /**
  * The ordered provider/model pool for a run; within each provider we expand model × key.
  * Free-tier limits are per-key AND per-model, so a slot that 429s falls straight to the next
- * — combining BOTH providers' quotas rather than being capped by one. A caller tries slots
+ * — combining ALL providers' quotas rather than being capped by one. A caller tries slots
  * top-down every call, so the PREFERRED provider answers and we degrade only under pressure.
  *
  * `prefer` is TASK-AWARE (measured, not arbitrary): briefings want 'gemini' first — its prose
@@ -577,25 +584,31 @@ export interface Slot {
  * cheap CLASSIFIERS (collision + story grouping) want 'groq' first — Groq's llama matches the
  * story-clustering behavior the pipeline was tuned against (Gemini is a touch too conservative
  * and under-merges some related facets), and a non-thinking model leaves room for the tiny
- * JSON answer that a reasoning model's hidden thinking would otherwise eat. The non-preferred
- * provider still trails as a fallback, so either provider alone keeps every path working.
+ * JSON answer that a reasoning model's hidden thinking would otherwise eat. For BRIEFINGS the
+ * canonical order slots NVIDIA (flagship GLM-5.2) at #2, above Groq, as the quality fallback.
+ * The `prefer` provider leads; the rest trail in canonical order, so any provider alone keeps
+ * every path working.
  */
-export function buildSlots(config: Config, prefer: 'gemini' | 'groq' = 'gemini'): Slot[] {
-  const gemini: Slot[] = [];
+export function buildSlots(config: Config, prefer: Provider = 'gemini'): Slot[] {
+  const blocks: Record<Provider, Slot[]> = { gemini: [], groq: [], nvidia: [] };
   for (const model of config.geminiModels)
     for (const key of config.geminiKeys)
-      gemini.push({
+      blocks.gemini.push({
         provider: 'gemini',
         base: config.geminiBase,
         key,
         model,
         reasoningEffort: config.geminiReasoningEffort,
       });
-  const groq: Slot[] = [];
   for (const model of config.groqModels)
     for (const key of config.groqKeys)
-      groq.push({ provider: 'groq', base: config.groqBase, key, model });
-  return prefer === 'groq' ? [...groq, ...gemini] : [...gemini, ...groq];
+      blocks.groq.push({ provider: 'groq', base: config.groqBase, key, model });
+  for (const model of config.nvidiaModels)
+    for (const key of config.nvidiaKeys)
+      blocks.nvidia.push({ provider: 'nvidia', base: config.nvidiaBase, key, model });
+  // `prefer` first, then the remaining providers in canonical order.
+  const order = [prefer, ...PROVIDER_ORDER.filter((p) => p !== prefer)];
+  return order.flatMap((p) => blocks[p]);
 }
 
 /**
@@ -701,7 +714,7 @@ export function getLlmStats(): LlmModelUsage[] {
 async function runBriefing(system: string, user: string, config: Config): Promise<Briefing> {
   const slots = buildSlots(config);
   if (slots.length === 0)
-    throw new Error('No LLM API key configured (set GEMINI_API_KEYS or GROQ_API_KEYS)');
+    throw new Error('No LLM API key configured (set GEMINI_API_KEYS, GROQ_API_KEYS, or NVIDIA_API_KEYS)');
   // Start from the permanently-dead set; 429s add to `spent` for THIS call only.
   const spent = new Set<number>(dead);
   const killSlots = (pred: (s: Slot) => boolean) =>
@@ -882,7 +895,8 @@ export async function adjudicateSame(
   b: { source: string; title: string; favored: string; endDate: string | null; category: string },
   config: Config,
 ): Promise<{ same: boolean; confidence: 'high' | 'low' } | null> {
-  if (config.geminiKeys.length === 0 && config.groqKeys.length === 0) return null;
+  if (config.geminiKeys.length === 0 && config.groqKeys.length === 0 && config.nvidiaKeys.length === 0)
+    return null;
   const system =
     'You judge whether two prediction-market questions from DIFFERENT platforms are the SAME real-world question — the same event, the same outcome, resolving in the same window — such that one real-world result settles BOTH. Be STRICT: if they could resolve differently, or you are unsure, they are NOT the same. Two markets about DIFFERENT teams, players, or sports are NOT the same question even when they share a city or league (e.g. "Miami Heat" [NBA] and "Miami Marlins" [MLB] are different). Respond with strict JSON only: {"same": boolean, "confidence": "high" | "low"}.';
   const user =
@@ -918,7 +932,8 @@ export async function adjudicateStory(
   b: { title: string; category: string },
   config: Config,
 ): Promise<boolean | null> {
-  if (config.geminiKeys.length === 0 && config.groqKeys.length === 0) return null;
+  if (config.geminiKeys.length === 0 && config.groqKeys.length === 0 && config.nvidiaKeys.length === 0)
+    return null;
   const system =
     'You decide whether two prediction-market questions are facets of the SAME developing real-world STORY — the same event or situation a single news article would cover — even if they are different questions resolving at different times. Answer true ONLY when a reader would see them as one story (different angles of the same negotiation, conflict, election, ruling, or launch). Two markets that merely share a country, league, or person but are about UNRELATED events are NOT one story. If unsure, answer false. Respond with strict JSON only: {"same": boolean}.';
   const user =

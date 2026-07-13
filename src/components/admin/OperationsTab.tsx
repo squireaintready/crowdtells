@@ -185,7 +185,7 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
             <div>
               <strong>
                 {down
-                  ? 'Gemini unavailable — briefings fell back to Groq'
+                  ? 'Gemini unavailable — briefings fell back to Groq/NVIDIA'
                   : `Gemini healthy — ${int(latestGeminiOk)} briefing${latestGeminiOk === 1 ? '' : 's'} last run`}
               </strong>
               <div className={s.opsBannerSub}>

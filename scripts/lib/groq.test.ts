@@ -219,6 +219,9 @@ describe('buildSlots — multi-provider pool', () => {
       groqKeys: [],
       groqBase: 'https://groq.test/v1',
       groqModels: ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b'],
+      nvidiaKeys: [],
+      nvidiaBase: 'https://nv.test/v1',
+      nvidiaModels: ['z-ai/glm-5.2', 'meta/llama-3.1-8b-instruct'],
       ...over,
     }) as unknown as Config;
 
@@ -255,8 +258,62 @@ describe('buildSlots — multi-provider pool', () => {
     expect(slots.map((s) => s.key)).toEqual(['g1', 'g2']);
   });
 
-  it('drops a keyless provider, and is empty when neither is configured', () => {
+  it('drops a keyless provider, and is empty when none is configured', () => {
     expect(buildSlots(cfg({ groqKeys: ['q1'] })).every((s) => s.provider === 'groq')).toBe(true);
     expect(buildSlots(cfg())).toEqual([]); // no keys at all → no slots (briefings disabled)
+  });
+
+  it('pools NVIDIA at #2 as the quality tier between Gemini and Groq (default order)', () => {
+    const slots = buildSlots(cfg({ geminiKeys: ['g1'], groqKeys: ['q1'], nvidiaKeys: ['n1'] }));
+    expect(slots.map((s) => s.provider)).toEqual([
+      'gemini',
+      'gemini',
+      'nvidia',
+      'nvidia',
+      'groq',
+      'groq',
+    ]);
+  });
+
+  it('keeps Groq first but NVIDIA last for the classifiers (prefer="groq")', () => {
+    const slots = buildSlots(
+      cfg({ geminiKeys: ['g1'], groqKeys: ['q1'], nvidiaKeys: ['n1'] }),
+      'groq',
+    );
+    expect(slots.map((s) => s.provider)).toEqual([
+      'groq',
+      'groq',
+      'gemini',
+      'gemini',
+      'nvidia',
+      'nvidia',
+    ]);
+  });
+
+  it('hoists the preferred provider to the front, rest in canonical order', () => {
+    const slots = buildSlots(
+      cfg({ geminiKeys: ['g1'], groqKeys: ['q1'], nvidiaKeys: ['n1'] }),
+      'nvidia',
+    );
+    expect(slots.map((s) => s.provider)).toEqual([
+      'nvidia',
+      'nvidia',
+      'gemini',
+      'gemini',
+      'groq',
+      'groq',
+    ]);
+  });
+
+  it('carries NVIDIA its own base + key and never sends the thinking knob', () => {
+    const slots = buildSlots(cfg({ nvidiaKeys: ['n1'] }));
+    expect(slots).toHaveLength(2);
+    expect(slots[0]).toMatchObject({
+      provider: 'nvidia',
+      base: 'https://nv.test/v1',
+      key: 'n1',
+      model: 'z-ai/glm-5.2',
+    });
+    expect(slots[0]!.reasoningEffort).toBeUndefined(); // thinking knob is Gemini-only
   });
 });

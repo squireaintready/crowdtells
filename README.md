@@ -70,11 +70,12 @@ ranks them on **newsworthiness** — corroborated real-world coverage, not betti
 - **News** — Google News per story, **one citation per outlet** for perspective diversity, social /
   video / aggregator / trading-platform domains filtered out, capped at a handful of reputable
   outlets. (`scripts/lib/news.ts`)
-- **Briefings** — pooled free LLMs ([Gemini](https://ai.google.dev) preferred, [Groq](https://groq.com)
-  fallback; both OpenAI-compatible, JSON mode), grounded **strictly** in the retrieved headlines + the
-  market's resolution rules. The model never sees or types live numbers — odds, volume, and gaps are
-  hydrated at render time, so prose can't disagree with the market or hallucinate a figure. Rotates
-  across both providers' keys **and** models on rate limits. (`scripts/lib/groq.ts`)
+- **Briefings** — pooled free LLMs ([Gemini](https://ai.google.dev) preferred, then
+  [NVIDIA NIM](https://build.nvidia.com)'s flagship GLM-5.2, then [Groq](https://groq.com); all
+  OpenAI-compatible, JSON mode), grounded **strictly** in the retrieved headlines + the market's
+  resolution rules. The model never sees or types live numbers — odds, volume, and gaps are hydrated at
+  render time, so prose can't disagree with the market or hallucinate a figure. Rotates across every
+  provider's keys **and** models on rate limits. (`scripts/lib/groq.ts`)
 
 > The cross-source analysis works at the multi-outlet **headline/framing** level (article bodies
 > aren't reliably fetchable through news aggregators); it surfaces consensus and differing emphasis
@@ -111,7 +112,7 @@ ranks them on **newsworthiness** — corroborated real-world coverage, not betti
 | ----------- | ----------------------------------------------------------------- |
 | Frontend    | React 19 + TypeScript (strict), Vite, CSS Modules                 |
 | Pipeline    | TypeScript (run with `tsx`) in GitHub Actions                     |
-| AI          | Pooled free LLMs — Gemini + Groq (OpenAI-compatible, JSON mode), provider × model pool |
+| AI          | Pooled free LLMs — Gemini + NVIDIA NIM (GLM-5.2) + Groq (OpenAI-compatible, JSON mode), provider × model pool |
 | Data        | Polymarket Gamma API · Kalshi API · Google News RSS · ~10 event sources |
 | Backend     | Supabase (Postgres + RLS + Auth + Realtime + Edge Functions), optional |
 | Email       | Mailgun (digests + alerts in CI; auth + confirm via Supabase Edge Functions) |
@@ -144,13 +145,15 @@ build on PRs), **`digest.yml`** (daily + weekly newsletter cron), and **`breakin
 alerts, gated on `BREAKING_ALERTS_ENABLED`).
 
 Minimal setup is just one LLM key — without it the feed still ships real markets + real news links, and
-briefings turn on once set. The pipeline pools two free providers (**Gemini** preferred, **Groq**
-fallback), so either alone works and setting both adds capacity. Grab a free
-[Gemini](https://aistudio.google.com/apikey) or [Groq](https://console.groq.com) key:
+briefings turn on once set. The pipeline pools three free providers (**Gemini** preferred, then
+**NVIDIA NIM**'s flagship GLM-5.2, then **Groq**), so any one alone works and adding more stacks free
+capacity. Grab a free [Gemini](https://aistudio.google.com/apikey), [NVIDIA](https://build.nvidia.com),
+or [Groq](https://console.groq.com) key:
 
 ```bash
 gh secret set GEMINI_API_KEYS  # Gemini (Google AI Studio); preferred for briefing prose
-gh secret set GROQ_API_KEYS    # Groq "gsk_…"; fallback + extra free capacity (comma-separate to rotate)
+gh secret set NVIDIA_API_KEYS  # NVIDIA NIM "nvapi-…"; flagship GLM-5.2 quality tier (build.nvidia.com; one key = whole catalog)
+gh secret set GROQ_API_KEYS    # Groq "gsk_…"; fast deep fallback + tuned classifiers (comma-separate to rotate)
 ```
 
 Deploying to Cloudflare Pages additionally needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
@@ -162,13 +165,14 @@ The workflow files are the source of truth; the common ones:
 | Kind     | Name                                          | Purpose                                        |
 | -------- | --------------------------------------------- | ---------------------------------------------- |
 | secret   | `GEMINI_API_KEYS` / `GEMINI_API_KEY`          | Gemini key(s); preferred briefing provider     |
-| secret   | `GROQ_API_KEYS` / `GROQ_API_KEY`              | Groq key(s); fallback + extra free capacity     |
+| secret   | `NVIDIA_API_KEYS` / `NVIDIA_API_KEY`          | NVIDIA NIM key(s) ("nvapi-…"); #2 quality tier (GLM-5.2) |
+| secret   | `GROQ_API_KEYS` / `GROQ_API_KEY`              | Groq key(s); fast deep fallback + tuned classifiers |
 | secret   | `CLOUDFLARE_API_TOKEN` · `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Pages deploy                      |
 | secret   | `SUPABASE_SERVICE_KEY`                         | Server-side writes (scoring, sync, digests)    |
 | secret   | `MAILGUN_API_KEY`                             | Sending digests + breaking alerts + confirmations |
 | secret   | `MAILGUN_DOMAIN`                              | Mailgun sending domain (digests, alerts, auth)    |
 | secret   | `FINNHUB_API_KEY` · `PANDASCORE_TOKEN`        | Optional event sources (financial, esports)    |
-| secret   | `ALERT_WEBHOOK`                               | Optional webhook alert — feed-sync failure + Gemini falling back to Groq |
+| secret   | `ALERT_WEBHOOK`                               | Optional webhook alert — feed-sync failure + Gemini falling back to Groq/NVIDIA |
 | secret   | `OPS_ALERT_EMAIL`                             | Optional — email alert (via Mailgun) when Gemini hits its limit |
 | variable | `BASE_PATH`                                   | `/` for the custom domain                       |
 | variable | `VITE_SUPABASE_URL` · `VITE_SUPABASE_ANON_KEY` | Client Supabase (anon key is public; RLS protects data) |
@@ -187,6 +191,8 @@ useful:
 | `GEMINI_MODELS`        | `2.5-flash`, `flash-lite` | Comma-separated Gemini models to cycle     |
 | `GEMINI_REASONING_EFFORT` | `none`                 | Gemini thinking: `none`/`low`/`medium`/`high` |
 | `GROQ_MODELS`          | 3-model pool              | Comma-separated Groq models to cycle      |
+| `NVIDIA_MODELS`        | `z-ai/glm-5.2`, `meta/llama-3.1-8b-instruct` | Comma-separated NVIDIA NIM models to cycle |
+| `NVIDIA_BASE`          | `integrate.api.nvidia.com/v1` | NVIDIA OpenAI-compatible base URL      |
 | `POLYMARKET_LIMIT`     | `100`                     | Polymarket candidates before ranking      |
 | `KALSHI_LIMIT`         | `80`                      | Kalshi candidates before ranking (0 off)  |
 | `KALSHI_PER_CATEGORY`  | `3`                       | Kalshi candidates kept per category       |

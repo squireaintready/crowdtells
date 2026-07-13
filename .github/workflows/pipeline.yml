@@ -102,13 +102,15 @@ jobs:
         id: generate
         run: npm run generate
         env:
-          # LLM briefing providers (both free-tier, OpenAI-compatible). The generator POOLS
-          # them — Gemini preferred, Groq fallback — and rotates across keys × models on limits.
-          # Comma-separate for multiple keys; either provider alone is enough to brief.
+          # LLM briefing providers (all free-tier, OpenAI-compatible). The generator POOLS them
+          # for briefings — Gemini preferred, then NVIDIA (flagship GLM-5.2), then Groq — and
+          # rotates across keys × models on limits. Comma-separate keys; any one alone can brief.
           GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NVIDIA_API_KEYS: ${{ secrets.NVIDIA_API_KEYS }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
           # Operations console + alerts (best-effort; each half inert until its creds exist):
           # the run persists LLM-usage/health telemetry to Supabase (pipeline_runs) for the
           # admin Operations tab, and on a Gemini availability FLIP posts ALERT_WEBHOOK + emails
