@@ -38,6 +38,7 @@ const runAt = (id: string, atMs: number, llm: LlmModelUsage[], over: Partial<Pip
     llm,
     primaryProvider: 'nvidia',
     primaryDown: false,
+    briefingsServed: [],
     sourceErrors: [],
     commit: 'abc1234',
     runId: '9001',

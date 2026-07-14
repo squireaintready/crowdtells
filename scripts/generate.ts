@@ -25,6 +25,7 @@ import {
   adjudicateStory,
   resetLlmStats,
   getLlmStats,
+  getBriefingsServed,
   primaryBriefer,
   type Briefing,
 } from './lib/groq';
@@ -1828,6 +1829,7 @@ async function main(): Promise<void> {
       llm,
       primaryProvider: primary,
       primaryDown: primary !== '' && primaryTried > 0 && primaryOk === 0,
+      briefingsServed: getBriefingsServed(),
       sourceErrors: getFetchErrors(),
       commit: (process.env.GITHUB_SHA || '').slice(0, 7),
       runId: process.env.GITHUB_RUN_ID || '',

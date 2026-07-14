@@ -37,6 +37,7 @@ const run = (i: number, over: Partial<PipelineRunRow> = {}, llm?: LlmModelUsage[
     ],
     primaryProvider: 'nvidia',
     primaryDown: false,
+    briefingsServed: [{ provider: 'nvidia', model: 'z-ai/glm-5.2', count: 3 }],
     sourceErrors: [],
     commit: 'abc1234',
     runId: '123',
@@ -77,19 +78,22 @@ describe('OperationsView', () => {
     view([run(2), run(1)]);
     expect(screen.getByText(/NVIDIA healthy/i)).toBeInTheDocument();
     expect(screen.getByText('z-ai/glm-5.2')).toBeInTheDocument();
+    // the per-run "who wrote the articles" breakdown renders
+    expect(screen.getByText(/Briefers · last run/i)).toBeInTheDocument();
     expect(screen.getByRole('log', { name: /recent pipeline runs/i })).toBeInTheDocument();
   });
 
-  it('shows the DOWN banner + fallback badge when the latest run lost the primary briefer', () => {
+  it('shows the DOWN banner + fallback breakdown when the latest run lost the primary briefer', () => {
     const down = run(3, { primary_down: true }, [
       usage({ provider: 'nvidia', model: 'z-ai/glm-5.2', requests: 4, ok: 0, rateLimited: 4 }),
       usage({ provider: 'gemini', model: 'gemini-2.5-flash', requests: 4, ok: 4, tokens: 3000 }),
     ]);
+    down.detail!.briefingsServed = [{ provider: 'gemini', model: 'gemini-2.5-flash', count: 4 }];
     view([down]);
     expect(screen.getByText(/NVIDIA unavailable/i)).toBeInTheDocument();
     expect(screen.getByText(/NVIDIA DOWN/i)).toBeInTheDocument();
-    // the fallback provider appears in the usage table
-    expect(screen.getByText('gemini-2.5-flash')).toBeInTheDocument();
+    // the fallback is quantified in the briefer breakdown
+    expect(screen.getByText(/4 fell back/i)).toBeInTheDocument();
   });
 
   it('renders the empty state when there are no runs', () => {

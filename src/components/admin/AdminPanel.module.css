@@ -944,6 +944,42 @@
 }
 
 /* Source-fetch error chips (latest run). */
+/* Per-run "who wrote the articles" breakdown — primary briefer + any fallbacks. */
+.opsBriefers {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+.opsBriefLabel {
+  font-size: var(--fs-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-mute);
+}
+.opsBriefChip {
+  font-size: var(--fs-5);
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-dim);
+}
+.opsBriefPrimary {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.opsBriefTag {
+  color: var(--text-mute);
+  font-style: italic;
+}
+.opsBriefFb {
+  font-size: var(--fs-5);
+  color: var(--down);
+}
+
 .opsChips {
   display: flex;
   flex-wrap: wrap;

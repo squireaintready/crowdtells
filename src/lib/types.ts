@@ -539,6 +539,10 @@ export interface PipelineRunSummary {
   /** True when the primary briefer was configured + tried but produced ZERO successful calls —
    * i.e. every briefing fell back to a lower-priority provider. The proactive alert signal. */
   primaryDown: boolean;
+  /** Per provider:model count of BRIEFINGS actually served this run (classifier calls excluded),
+   * so the console can show who wrote the articles and how many fell back off the primary
+   * briefer. Rides in `detail`; no promoted column. */
+  briefingsServed: { provider: string; model: string; count: number }[];
   /** Source-fetch health — feeds/outlets that errored, aggregated by source. */
   sourceErrors: { source: string; count: number }[];
   /** Short git commit the pipeline ran from (GITHUB_SHA), '' when unknown. */

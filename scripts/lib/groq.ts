@@ -702,13 +702,30 @@ function recordLlm(slot: Slot, outcome: LlmOutcome, ms: number): void {
 function addTokens(slot: Slot, n: number): void {
   if (n > 0) statFor(slot).tokens += n;
 }
+// Per-run count of BRIEFINGS actually served, keyed by provider:model. This is the PRECISE
+// article-writer tally — classifier calls (collision/story adjudication) are excluded because
+// they never go through runBriefing. Powers the admin's per-run "who wrote the articles / how
+// many fell back off the primary briefer" breakdown, which the mixed llmStats can't give.
+const briefingsServed = new Map<string, { provider: string; model: string; count: number }>();
+function noteBriefingServed(slot: Slot): void {
+  const k = `${slot.provider}:${slot.model}`;
+  const e = briefingsServed.get(k);
+  if (e) e.count += 1;
+  else briefingsServed.set(k, { provider: slot.provider, model: slot.model, count: 1 });
+}
+
 /** Clear the per-run LLM counters — call once at the start of a pipeline run. */
 export function resetLlmStats(): void {
   llmStats.clear();
+  briefingsServed.clear();
 }
 /** Snapshot the per-run LLM usage — call at the end of a run for the Operations summary. */
 export function getLlmStats(): LlmModelUsage[] {
   return [...llmStats.values()];
+}
+/** Snapshot the per-run briefings-served tally (provider:model → count) for the run summary. */
+export function getBriefingsServed(): { provider: string; model: string; count: number }[] {
+  return [...briefingsServed.values()];
 }
 
 /**
@@ -800,7 +817,9 @@ async function runBriefing(system: string, user: string, config: Config): Promis
         lastError = 'empty content';
         continue;
       }
-      return toBriefing(content);
+      const briefing = toBriefing(content); // throws on thin content → caught, NOT counted
+      noteBriefingServed(slot); // count only a briefing this slot actually produced
+      return briefing;
     } catch (err) {
       // A SyntaxError means a truncated/non-JSON body (a slot fault → counts).
       // A plain Error from toBriefing ("missing hook/analysis") is valid JSON

@@ -14,6 +14,8 @@ const PROVIDER_LABEL: Record<string, string> = { nvidia: 'NVIDIA', gemini: 'Gemi
 /** Human label for a provider id (the primary briefer), used in the health banner + run log. */
 const providerLabel = (p: string): string =>
   PROVIDER_LABEL[p] ?? (p ? p[0]!.toUpperCase() + p.slice(1) : 'Primary briefer');
+/** Model id without its provider prefix, e.g. "z-ai/glm-5.2" → "glm-5.2". */
+const shortModel = (m: string): string => m.split('/').pop() ?? m;
 function duration(ms: number | null | undefined): string {
   if (ms == null || ms < 0) return '—';
   const sec = Math.round(ms / 1000);
@@ -97,6 +99,15 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
     .reduce((n, u) => n + u.ok, 0);
   const down = latest?.primary_down ?? false;
   const lastRel = latest ? relTime(latest.run_at) : '';
+  // Who actually wrote the articles last run (primary first, then fallbacks by volume).
+  const briefers = (latest?.detail?.briefingsServed ?? [])
+    .filter((b) => b.count > 0)
+    .sort(
+      (a, b) => Number(b.provider === primary) - Number(a.provider === primary) || b.count - a.count,
+    );
+  const fallbackBriefings = briefers
+    .filter((b) => b.provider !== primary)
+    .reduce((n, b) => n + b.count, 0);
 
   return (
     <section aria-label="Operations">
@@ -152,6 +163,25 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
               </div>
             </div>
           </div>
+
+          {briefers.length > 0 && (
+            <div className={s.opsBriefers}>
+              <span className={s.opsBriefLabel}>Briefers · last run</span>
+              {briefers.map((b) => (
+                <span
+                  key={`${b.provider}:${b.model}`}
+                  className={`${s.opsBriefChip} ${b.provider === primary ? s.opsBriefPrimary : ''}`}
+                  title={`${b.provider} · ${b.model}`}
+                >
+                  {shortModel(b.model)} <b>{int(b.count)}</b>
+                  {b.provider === primary ? <span className={s.opsBriefTag}> primary</span> : null}
+                </span>
+              ))}
+              {fallbackBriefings > 0 ? (
+                <span className={s.opsBriefFb}>{int(fallbackBriefings)} fell back</span>
+              ) : null}
+            </div>
+          )}
 
           <div className={s.opsGrid}>
             <Stat label="Generated" value={int(latest!.generated)} sub="last run" />
