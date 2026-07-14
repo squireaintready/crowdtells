@@ -70,7 +70,10 @@
 @media (min-width: 1060px) {
   .article {
     max-width: none;
-    grid-template-columns: minmax(0, 1fr) minmax(19rem, 21rem);
+    /* A slightly wider rail keeps its boxes (the market read, the lens, the figure
+       matchups) roomy rather than cramped, and — being wider — shorter, so it sits
+       closer in height to the reading spine. */
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 22.5rem);
     column-gap: 0; /* the gutter is the rail's padding, so the hairline sits centered */
     row-gap: var(--s-5); /* a touch more air between the cover band and the columns */
     align-items: start;
@@ -94,6 +97,15 @@
     grid-column: 2;
     border-left: 1px solid var(--border); /* the column rule (hairline, per house style) */
     padding-left: clamp(var(--s-5), 2.5vw, 2.25rem);
+  }
+  /* The Market Lens odds figure is sized for the WIDE reading column by default
+     (clamp up to 11.5rem); in the narrower rail the un-fitted (calm-mode / pre-fit)
+     number would overflow the card, so scope it down to fit. In aggressive mode
+     FitText measures and overrides this inline to fill the rail exactly — this is
+     only the fallback size, so it just has to stay inside the card. */
+  .evidenceCol .lensOdds {
+    font-size: clamp(3.5rem, 6.5vw, 5.5rem);
+    max-width: 100%;
   }
   /* The rail's sections carry their own top hairlines in the single column; beside
      the column rule that doubles up — the rule + spacing is enough. */
