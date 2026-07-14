@@ -10,6 +10,10 @@ const LOAD = 100; // runs to pull (server caps at 500); ~2-3 days at peak cadenc
 
 // ───────── formatting ─────────
 const int = (n: number | null | undefined): string => (n ?? 0).toLocaleString();
+const PROVIDER_LABEL: Record<string, string> = { nvidia: 'NVIDIA', gemini: 'Gemini', groq: 'Groq' };
+/** Human label for a provider id (the primary briefer), used in the health banner + run log. */
+const providerLabel = (p: string): string =>
+  PROVIDER_LABEL[p] ?? (p ? p[0]!.toUpperCase() + p.slice(1) : 'Primary briefer');
 function duration(ms: number | null | undefined): string {
   if (ms == null || ms < 0) return '—';
   const sec = Math.round(ms / 1000);
@@ -86,10 +90,12 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
   );
 
   const latest = rows[0];
-  const latestGeminiOk = (latest?.detail?.llm ?? [])
-    .filter((u) => u.provider === 'gemini')
+  const primary = latest?.primary_provider || '';
+  const primaryLabel = providerLabel(primary);
+  const latestPrimaryOk = (latest?.detail?.llm ?? [])
+    .filter((u) => u.provider === primary)
     .reduce((n, u) => n + u.ok, 0);
-  const down = latest?.gemini_down ?? false;
+  const down = latest?.primary_down ?? false;
   const lastRel = latest ? relTime(latest.run_at) : '';
 
   return (
@@ -124,8 +130,8 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
             <div>
               <strong>
                 {down
-                  ? 'Gemini unavailable — briefings fell back to Groq/NVIDIA'
-                  : `Gemini healthy — ${int(latestGeminiOk)} briefing${latestGeminiOk === 1 ? '' : 's'} last run`}
+                  ? `${primaryLabel} unavailable — briefings fell back`
+                  : `${primaryLabel} healthy — ${int(latestPrimaryOk)} briefing${latestPrimaryOk === 1 ? '' : 's'} last run`}
               </strong>
               <div className={s.opsBannerSub}>
                 Last run {clockTime(latest!.run_at)}
@@ -233,9 +239,10 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
           <h3 className={s.opsH3}>Run log</h3>
           <div className={s.terminal} role="log" aria-label="Recent pipeline runs">
             {rows.map((r) => {
-              const gemOk = (r.detail?.llm ?? [])
-                .filter((u) => u.provider === 'gemini')
+              const primaryOk = (r.detail?.llm ?? [])
+                .filter((u) => u.provider === r.primary_provider)
                 .reduce((n, u) => n + u.ok, 0);
+              const label = providerLabel(r.primary_provider);
               return (
                 <div key={r.id} className={s.termLine}>
                   <span className={s.termTime}>{clockTime(r.run_at)}</span>
@@ -244,8 +251,8 @@ export function OperationsView({ rows, total, loading, error, onReload }: Operat
                     gen <b>{int(r.generated)}</b> · skip {int(r.skipped)}
                     {r.results ? <> · res {int(r.results)}</> : null}
                   </span>
-                  <span className={`${s.termBadge} ${r.gemini_down ? s.termBadgeBad : s.termBadgeOk}`}>
-                    {r.gemini_down ? 'Gemini DOWN → Groq' : `Gemini ${int(gemOk)}`}
+                  <span className={`${s.termBadge} ${r.primary_down ? s.termBadgeBad : s.termBadgeOk}`}>
+                    {r.primary_down ? `${label} DOWN → fallback` : `${label} ${int(primaryOk)}`}
                   </span>
                   {r.commit_sha ? <span className={s.termCommit}>{r.commit_sha}</span> : null}
                 </div>

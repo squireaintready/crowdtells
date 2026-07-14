@@ -611,6 +611,12 @@ export function buildSlots(config: Config, prefer?: Provider): Slot[] {
   return order.flatMap((p) => blocks[p]);
 }
 
+/** The provider that LEADS the briefing pool for this config ('' when no LLM key is set), so
+ * run telemetry can label health by the actual primary briefer instead of hardcoding one. */
+export function primaryBriefer(config: Config): Provider | '' {
+  return buildSlots(config)[0]?.provider ?? '';
+}
+
 /**
  * POST one OpenAI-compatible chat completion in JSON mode. The single shared request path
  * for both the briefing loop and the cheap adjudicators, so the provider-specific bits (base

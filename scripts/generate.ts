@@ -25,6 +25,7 @@ import {
   adjudicateStory,
   resetLlmStats,
   getLlmStats,
+  primaryBriefer,
   type Briefing,
 } from './lib/groq';
 import { recordPipelineRun } from './lib/ops';
@@ -1805,9 +1806,12 @@ async function main(): Promise<void> {
   // so observability can never break the run.
   try {
     const llm = getLlmStats();
-    const gemini = llm.filter((u) => u.provider === 'gemini');
-    const geminiTried = gemini.reduce((n, u) => n + u.requests, 0);
-    const geminiOk = gemini.reduce((n, u) => n + u.ok, 0);
+    // Health is tracked for the PRIMARY briefer (whichever leads the pool — now NVIDIA/GLM-5.2),
+    // not a hardcoded provider, so the alert fires for the model that actually writes articles.
+    const primary = primaryBriefer(config);
+    const primaryStats = llm.filter((u) => u.provider === primary);
+    const primaryTried = primaryStats.reduce((n, u) => n + u.requests, 0);
+    const primaryOk = primaryStats.reduce((n, u) => n + u.ok, 0);
     await recordPipelineRun({
       at: new Date().toISOString(),
       durationMs: Date.now() - nowMs,
@@ -1822,7 +1826,8 @@ async function main(): Promise<void> {
       candidates: candidates.length,
       stories: stories.length,
       llm,
-      geminiDown: config.geminiKeys.length > 0 && geminiTried > 0 && geminiOk === 0,
+      primaryProvider: primary,
+      primaryDown: primary !== '' && primaryTried > 0 && primaryOk === 0,
       sourceErrors: getFetchErrors(),
       commit: (process.env.GITHUB_SHA || '').slice(0, 7),
       runId: process.env.GITHUB_RUN_ID || '',

@@ -297,7 +297,8 @@ export interface PipelineRunRow {
   skipped: number | null;
   results: number | null;
   briefed: number | null;
-  gemini_down: boolean;
+  primary_down: boolean;
+  primary_provider: string;
   commit_sha: string | null;
   run_id: string | null;
   /** The full end-of-run summary (LLM usage, source errors, funnel) the pipeline wrote. */

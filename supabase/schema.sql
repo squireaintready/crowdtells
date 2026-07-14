@@ -2261,7 +2261,8 @@ create table if not exists public.pipeline_runs (
   skipped integer,
   results integer,
   briefed integer,
-  gemini_down boolean not null default false,  -- Gemini configured but 0 successful calls
+  primary_down boolean not null default false,  -- primary briefer configured but 0 successful calls
+  primary_provider text not null default '',    -- provider that led the briefing pool (e.g. 'nvidia')
   commit_sha text,
   run_id text,
   detail jsonb,                                -- the full PipelineRunSummary (LLM usage, etc.)
@@ -2272,11 +2273,21 @@ create index if not exists pipeline_runs_run_at_idx on public.pipeline_runs (run
 alter table public.pipeline_runs enable row level security;
 -- No policies: written by the pipeline (service role), read only via admin_list_pipeline_runs().
 
-create or replace function public.admin_list_pipeline_runs(p_limit int default 100)
+-- Migration (idempotent): the run-health signal was generalized from Gemini-specific to the
+-- PRIMARY briefer (NVIDIA/GLM-5.2 is now primary). Adds the new columns to pre-existing tables
+-- and drops the old gemini_down. Safe to re-run.
+alter table public.pipeline_runs add column if not exists primary_down boolean not null default false;
+alter table public.pipeline_runs add column if not exists primary_provider text not null default '';
+alter table public.pipeline_runs drop column if exists gemini_down;
+
+-- Drop-then-create (not "create or replace"): the RETURNS TABLE signature changed, which
+-- create-or-replace cannot do. Idempotent because of "drop … if exists".
+drop function if exists public.admin_list_pipeline_runs(int);
+create function public.admin_list_pipeline_runs(p_limit int default 100)
 returns table (
   id uuid, run_at timestamptz, duration_ms integer, generated integer, skipped integer,
-  results integer, briefed integer, gemini_down boolean, commit_sha text, run_id text,
-  detail jsonb, total_count bigint
+  results integer, briefed integer, primary_down boolean, primary_provider text,
+  commit_sha text, run_id text, detail jsonb, total_count bigint
 ) language plpgsql security definer set search_path = public stable as $$
 declare
   v_limit int := greatest(1, least(coalesce(p_limit, 100), 500));
@@ -2285,7 +2296,7 @@ begin
   return query
   with counted as (select r.*, count(*) over () as tc from public.pipeline_runs r)
   select c.id, c.run_at, c.duration_ms, c.generated, c.skipped, c.results, c.briefed,
-         c.gemini_down, c.commit_sha, c.run_id, c.detail, c.tc
+         c.primary_down, c.primary_provider, c.commit_sha, c.run_id, c.detail, c.tc
   from counted c
   order by c.run_at desc
   limit v_limit;

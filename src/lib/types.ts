@@ -533,9 +533,12 @@ export interface PipelineRunSummary {
   stories: number;
   /** Per-provider×model LLM usage for the run. */
   llm: LlmModelUsage[];
-  /** True when Gemini was configured but produced ZERO successful calls this run —
-   * i.e. every briefing fell back to Groq/NVIDIA. The proactive "you should know" signal. */
-  geminiDown: boolean;
+  /** The provider that LED the briefing pool this run (e.g. "nvidia"), so the console can label
+   * run health by the ACTUAL primary briefer instead of hardcoding one. '' when no LLM key. */
+  primaryProvider: string;
+  /** True when the primary briefer was configured + tried but produced ZERO successful calls —
+   * i.e. every briefing fell back to a lower-priority provider. The proactive alert signal. */
+  primaryDown: boolean;
   /** Source-fetch health — feeds/outlets that errored, aggregated by source. */
   sourceErrors: { source: string; count: number }[];
   /** Short git commit the pipeline ran from (GITHUB_SHA), '' when unknown. */

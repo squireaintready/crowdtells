@@ -5,8 +5,8 @@ import type { PipelineRunRow } from '../lib/admin';
 import type { LlmModelUsage, PipelineRunSummary } from '../lib/types';
 
 const usage = (over: Partial<LlmModelUsage>): LlmModelUsage => ({
-  provider: 'gemini',
-  model: 'gemini-2.5-flash',
+  provider: 'nvidia',
+  model: 'z-ai/glm-5.2',
   requests: 0,
   ok: 0,
   rateLimited: 0,
@@ -35,7 +35,8 @@ const run = (i: number, over: Partial<PipelineRunRow> = {}, llm?: LlmModelUsage[
     llm: llm ?? [
       usage({ requests: 3, ok: 3, tokens: 4500, latencyMsTotal: 21_000 }),
     ],
-    geminiDown: false,
+    primaryProvider: 'nvidia',
+    primaryDown: false,
     sourceErrors: [],
     commit: 'abc1234',
     runId: '123',
@@ -48,7 +49,8 @@ const run = (i: number, over: Partial<PipelineRunRow> = {}, llm?: LlmModelUsage[
     skipped: 1,
     results: 0,
     briefed: 700,
-    gemini_down: false,
+    primary_down: false,
+    primary_provider: 'nvidia',
     commit_sha: 'abc1234',
     run_id: '123',
     total_count: 0,
@@ -66,28 +68,28 @@ describe('aggregateLlm', () => {
   it('sums per-model usage across runs', () => {
     const agg = aggregateLlm([run(1), run(2)]);
     expect(agg).toHaveLength(1);
-    expect(agg[0]).toMatchObject({ provider: 'gemini', requests: 6, ok: 6, tokens: 9000 });
+    expect(agg[0]).toMatchObject({ provider: 'nvidia', requests: 6, ok: 6, tokens: 9000 });
   });
 });
 
 describe('OperationsView', () => {
-  it('renders the healthy banner, LLM table, and run log when Gemini is up', () => {
+  it('renders the healthy banner, LLM table, and run log when the primary briefer is up', () => {
     view([run(2), run(1)]);
-    expect(screen.getByText(/Gemini healthy/i)).toBeInTheDocument();
-    expect(screen.getByText('gemini-2.5-flash')).toBeInTheDocument();
+    expect(screen.getByText(/NVIDIA healthy/i)).toBeInTheDocument();
+    expect(screen.getByText('z-ai/glm-5.2')).toBeInTheDocument();
     expect(screen.getByRole('log', { name: /recent pipeline runs/i })).toBeInTheDocument();
   });
 
-  it('shows the DOWN banner + fallback badge when the latest run lost Gemini', () => {
-    const down = run(3, { gemini_down: true }, [
-      usage({ provider: 'gemini', model: 'gemini-2.5-flash', requests: 4, ok: 0, rateLimited: 4 }),
-      usage({ provider: 'groq', model: 'llama-3.3-70b-versatile', requests: 4, ok: 4, tokens: 3000 }),
+  it('shows the DOWN banner + fallback badge when the latest run lost the primary briefer', () => {
+    const down = run(3, { primary_down: true }, [
+      usage({ provider: 'nvidia', model: 'z-ai/glm-5.2', requests: 4, ok: 0, rateLimited: 4 }),
+      usage({ provider: 'gemini', model: 'gemini-2.5-flash', requests: 4, ok: 4, tokens: 3000 }),
     ]);
     view([down]);
-    expect(screen.getByText(/Gemini unavailable/i)).toBeInTheDocument();
-    expect(screen.getByText(/Gemini DOWN/i)).toBeInTheDocument();
-    // both providers appear in the usage table
-    expect(screen.getByText('llama-3.3-70b-versatile')).toBeInTheDocument();
+    expect(screen.getByText(/NVIDIA unavailable/i)).toBeInTheDocument();
+    expect(screen.getByText(/NVIDIA DOWN/i)).toBeInTheDocument();
+    // the fallback provider appears in the usage table
+    expect(screen.getByText('gemini-2.5-flash')).toBeInTheDocument();
   });
 
   it('renders the empty state when there are no runs', () => {
