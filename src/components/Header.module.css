@@ -491,3 +491,17 @@
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
+
+/* On the DESKTOP article the masthead is a persistent sticky bar (it never scrolls
+   away like the feed's does), so trim its vertical weight: a lighter nameplate band
+   gives the reading spread more room above the fold. Desktop-only and pinned-only,
+   so the feed masthead and the compact phone reading-bar are both untouched. */
+@media (min-width: 561px) {
+  .masthead.pinned {
+    padding-top: var(--s-4);
+  }
+  .masthead.pinned .nameplateRow {
+    padding-top: var(--s-3);
+    padding-bottom: var(--s-3);
+  }
+}

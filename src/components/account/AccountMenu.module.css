@@ -31,6 +31,14 @@
      large viewport makes 90vh taller than the screen. */
   max-height: min(90vh, calc(100dvh - 2 * var(--s-4)));
   overflow-y: auto;
+  /* A modal sheet scrolls vertically only. Its own overflow-y:auto makes it a
+     scroll container, which otherwise resolves the default overflow-x:visible to
+     `auto` and lets any hair-wide descendant raise a sideways scrollbar. Pinning
+     overflow-x suppresses that while keeping the vertical scroll. (Here `clip`
+     and `hidden` render identically — a non-visible overflow-y coerces the x
+     value's used value to `hidden` regardless; `clip` matches the house spelling
+     from global.css.) */
+  overflow-x: clip;
   overscroll-behavior: contain;
   padding: var(--s-6) var(--s-5) var(--s-5);
   background: var(--elevated);
@@ -103,6 +111,9 @@
   padding: var(--s-2) var(--s-3);
   background: var(--surface-2);
   border-radius: var(--r);
+  /* A long address has no natural break, so let it wrap mid-string rather than
+     force the whole sheet wider than its column. */
+  overflow-wrap: anywhere;
 }
 
 .signedOut,

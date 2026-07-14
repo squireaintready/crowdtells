@@ -1,6 +1,9 @@
-/* The dedicated reading view. A slightly narrower measure than the feed for a
-   comfortable long read, centered in the page column — and on a wide desktop, a
-   two-column broadsheet spread (see the min-width media block below). */
+/* The dedicated reading view. On a phone it's one comfortable column: the cover
+   band, then the story's blocks re-sequenced into a natural single read (the two
+   desktop columns dissolve to `display:contents` so their blocks reorder — see the
+   phone-interleave rules below). On a wide desktop it opens into a two-column
+   broadsheet spread — a READING SPINE beside an EVIDENCE RAIL (see the spread
+   block). */
 .article {
   display: grid;
   gap: var(--s-4);
@@ -9,56 +12,103 @@
   padding: var(--s-4) 0 var(--s-6);
 }
 
-/* The three bands. Each is a nested grid with the article's own gap, so in the
-   single column they render exactly as the flat stack always did. */
-.head,
-.main,
-.rail {
+/* The cover band keeps its own internal grid in every layout. */
+.head {
   display: grid;
   gap: var(--s-4);
   align-content: start;
   min-width: 0; /* let grid children shrink instead of overflowing the column */
 }
 
-/* ── The broadsheet spread ─────────────────────────────────────────────────
-   On a wide desktop the article stops being a narrow strip in an empty page:
-   the cover band (kicker → headline → standfirst → byline rule) spans the full
-   spread, then the reporting runs in the reading column with the market rail —
-   the crowd's read, the story's other facets, the related board — ruled off
-   beside it by a hairline, like a stock box in a business daily. Journalism
-   leads (the prose column is the wide one); the money is marginalia. Everything
-   below the columns (your call, the revision trail, discussion) returns to the
-   reading column's measure. The page shell widens with it (App's
-   containerArticle → --maxw-wide). */
+/* ── Phone: one interleaved column ──────────────────────────────────────────
+   Below the spread breakpoint the two columns dissolve (`display:contents`) so
+   their blocks become direct grid items of the article and can be re-sequenced
+   with `order` into a natural single read: cover → lead art → the reporting → our
+   take → the read over time → the market & supporting evidence → save/share → the
+   conversation. The reporting body + our take (readCol) and the market panel,
+   figures, lens, synthesis, facets, related, sourcing (evidenceCol) all ride at
+   the default order 0 — and readCol precedes evidenceCol in the DOM, so the prose
+   reads before the images and data boxes. These `order` values are a
+   DOM-order-preserving merge of the two columns, so they stay correct WITHIN each
+   column on the desktop spread too (no reset needed there).
+
+   Accepted a11y tradeoff (WCAG 2.4.3 Focus Order / 1.3.2 Meaningful Sequence): a
+   single DOM can match visual order at only ONE breakpoint. We keep DOM = visual on
+   the desktop spread (spine-then-rail = a clean two-column tab path, where keyboard
+   use is universal); below it, `order` reflows the blocks visually while the DOM
+   (and thus focus + screen-reader order) stays spine-then-rail — an internally
+   coherent "the whole story, then the evidence" sequence, just not the interleaved
+   visual one. Eliminating it would mean folding the market panel into `.readCol`. */
+.readCol,
+.evidenceCol {
+  display: contents;
+}
+.head {
+  order: -3;
+}
+.hero {
+  order: -2;
+}
+.leadBlock {
+  order: -1;
+}
+.actions {
+  order: 1;
+}
+.chat {
+  order: 2;
+}
+
+/* ── The broadsheet spread (wide desktop) ───────────────────────────────────
+   The cover band spans the full spread; beneath it the reporting runs in the
+   reading spine (prose, our take, the read over time, the conversation) with the
+   evidence rail — the lead art, supporting figures, the crowd's market read,
+   where sources disagree, and the sourcing — ruled off beside it by a hairline,
+   like a stock box in a business daily. Journalism leads (the prose column is the
+   wide one); the images and the money are the margin. The page shell widens with
+   it (App's containerArticle → --maxw-wide). */
 @media (min-width: 1060px) {
   .article {
     max-width: none;
-    grid-template-columns: minmax(0, 1fr) 19.5rem;
-    column-gap: 0; /* the gutter is the rule's padding, so the hairline sits centered */
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 21rem);
+    column-gap: 0; /* the gutter is the rail's padding, so the hairline sits centered */
     row-gap: var(--s-5); /* a touch more air between the cover band and the columns */
+    align-items: start;
   }
-  /* Everything defaults to the reading column; the cover band spans the spread
-     and the rail takes the second column (auto-placed beside the reading column). */
-  .article > * {
-    grid-column: 1;
+  /* The columns re-form as independent vertical stacks (each flows on its own). */
+  .readCol,
+  .evidenceCol {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    min-width: 0;
   }
   .head {
     grid-column: 1 / -1;
   }
-  .main {
+  .readCol {
+    grid-column: 1;
     padding-right: clamp(var(--s-6), 3.5vw, 3.5rem);
   }
-  .rail {
+  .evidenceCol {
     grid-column: 2;
     border-left: 1px solid var(--border); /* the column rule (hairline, per house style) */
     padding-left: clamp(var(--s-5), 2.5vw, 2.25rem);
   }
-  /* The rail's sections carry their own top hairlines in the single column;
-     beside the column rule that doubles up — the rule + spacing is enough. */
-  .rail .facets,
-  .rail .related {
+  /* The rail's sections carry their own top hairlines in the single column; beside
+     the column rule that doubles up — the rule + spacing is enough. */
+  .evidenceCol .facets,
+  .evidenceCol .related {
     border-top: none;
     padding-top: 0;
+  }
+  /* The lead art fills the rail as a clean cutout, capped so the crowd's read
+     ("What the market shows") still sits high beside the lead paragraph. */
+  .evidenceCol .hero img {
+    width: 100%;
+    max-height: 380px;
+    object-fit: cover;
+    object-position: center top;
   }
   /* The cover headline earns a touch more presence across the wider band, and the
      standfirst keeps a reading measure instead of stretching the full spread. */
@@ -226,9 +276,10 @@
   color: var(--text-mute);
 }
 
-/* Lead figure — a portrait reads as an editorial cutout, not a full-bleed band. */
+/* Lead figure — a portrait reads as an editorial cutout leading the evidence rail
+   (top-aligned with the lead prose across the gutter), not a full-bleed band. */
 .hero {
-  margin: var(--s-2) 0 0;
+  margin: 0;
 }
 
 .hero img {
@@ -249,9 +300,21 @@
   color: var(--text-mute);
 }
 
-.body {
+/* The lead wrapper — a plain container so the briefing lead (or its aggressive
+   chart) can be pulled up as one unit on a phone (order) and shrink in the grid. */
+.leadBlock {
+  min-width: 0;
+}
+
+/* The conversation — TheCall + the Discussion stacked as one unit at the foot of
+   the reading spine, set apart from the reporting by a stronger rule + air. */
+.chat {
   display: grid;
-  gap: var(--s-4);
+  gap: var(--s-5);
+  min-width: 0;
+  margin-top: var(--s-2);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border-strong);
 }
 
 .sec {
@@ -1196,6 +1259,14 @@ a.facetLink:hover {
   flex-wrap: wrap;
   gap: var(--s-4);
   align-items: center;
+}
+
+/* The AI + odds disclosure that closes the evidence rail — a quiet footnote ruled
+   off from the sourcing above it (the rail's grid gap otherwise reads as a floating
+   line). */
+.railNote {
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--border);
 }
 
 /* ——— AGGRESSIVE reading style ———

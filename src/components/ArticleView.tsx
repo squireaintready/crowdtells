@@ -314,7 +314,13 @@ export function ArticleView({
       style={{ '--cat-h': categoryHue(m.category) } as CSSProperties}
     >
       {/* ── The cover band — kicker, headline, standfirst, byline rule. Spans the
-          full broadsheet spread on a wide desktop; the columns start beneath it. */}
+          full broadsheet spread on a wide desktop; the two columns start beneath it.
+          On a wide desktop the article splits into a READING SPINE (the reporting
+          prose, our take, the read-over-time, and the conversation — everything you
+          *read*) and an EVIDENCE RAIL (the lead art, supporting figures, the crowd's
+          market read, where sources disagree, and the sourcing — the images and data
+          boxes). On a phone the two dissolve into one interleaved column (see the CSS:
+          the columns become `display:contents` and `order` re-sequences the blocks). */}
       <header className={styles.head}>
       <button type="button" className={styles.back} onClick={onBack}>
         ← {backLabel ?? 'All stories'}
@@ -403,44 +409,28 @@ export function ArticleView({
       <EventsPin items={m.events} />
       </header>
 
-      {/* ── The reading column — the reporting itself. */}
-      <div className={styles.main}>
-      {hero && (
-        <figure className={styles.hero}>
-          <img
-            src={hero.url}
-            alt={hero.name || m.hook || m.title}
-            decoding="async"
-            onError={() => setHeroFailed(true)}
-            {...(hero.width && hero.height ? { width: hero.width, height: hero.height } : {})}
-          />
-          {(hero.name || hero.credit) && (
-            <figcaption className={styles.cap}>
-              {hero.name}
-              {hero.name && hero.credit ? ' · ' : ''}
-              {hero.credit}
-            </figcaption>
-          )}
-        </figure>
-      )}
-
-      <div className={styles.body}>
+      {/* ── READING SPINE — the reporting, our take, the read-over-time, and the
+          conversation. Everything you *read*; the left column on a wide desktop. */}
+      <div className={styles.readCol}>
         {/* The briefing lead. In the AGGRESSIVE reading style (client-only, once the
             Pretext engine loads) this becomes a real horizontal odds-over-time chart
             (time left→right) with the SAME prose set in its sky, or in full below it.
             In CALM mode — and always on the first render, in tests, with no JS, or for
             crawlers — it's the shipped `.prose` paragraph, untouched. A short or
-            series-less lead also stays calm. */}
-        {canFlowLead ? (
-          <AggressiveLead
-            text={analysis}
-            series={marketSeries}
-            coverageDates={coverage.map((c) => c.t)}
-            proseClassName={styles.prose!}
-          />
-        ) : (
-          <p className={styles.prose}>{analysis}</p>
-        )}
+            series-less lead also stays calm. Wrapped so it can be pulled up as one unit
+            on a phone (see the `order` re-sequence in the CSS). */}
+        <div className={styles.leadBlock}>
+          {canFlowLead ? (
+            <AggressiveLead
+              text={analysis}
+              series={marketSeries}
+              coverageDates={coverage.map((c) => c.t)}
+              proseClassName={styles.prose!}
+            />
+          ) : (
+            <p className={styles.prose}>{analysis}</p>
+          )}
+        </div>
 
         {background && (
           <section className={styles.sec}>
@@ -465,35 +455,6 @@ export function ArticleView({
           </section>
         )}
 
-        {figures.length > 0 && <Figures figures={figures} market={m} />}
-
-        {/* The market is ONE cited input — placed after the reporting — but it's the
-            article's signature panel: the crowd's odds set large beside the read. */}
-        {marketRead && (
-          <aside className={styles.lens}>
-            {/* Exact-fit odds — in aggressive the figure is measured to fill its column
-                to the pixel (whatever the digits); in calm it's the shipped CSS size. */}
-            <FitText
-              text={formatPct(m.oddsPct)}
-              className={`${styles.lensOdds} tnum`}
-              weight={340}
-              fillFrac={0.42}
-              maxWidthPx={210}
-              maxFontPx={208}
-              minFontPx={60}
-              aria-hidden
-            />
-            <span className={styles.lensBody}>
-              <span className={styles.lensLabel}>Market lens</span>
-              <span className={styles.lensRead}>{marketRead}</span>
-            </span>
-          </aside>
-        )}
-
-        {m.synthesis && (
-          <Synthesis data={m.synthesis} marketId={m.id} sourceCount={m.sources.length} />
-        )}
-
         {whatToWatch && (
           <section className={styles.sec}>
             <h2 className={styles.h2}>What to watch</h2>
@@ -510,15 +471,153 @@ export function ArticleView({
           </aside>
         )}
 
-        <SourceBias sources={m.sources} />
-        <Sources sources={m.sources} marketId={m.id} />
-      </div>
+        {(m.revisions?.length ?? 0) > 0 && (
+          <details className={styles.history}>
+            <summary className={styles.historySummary}>
+              Updated {m.revisions!.length}× as the odds moved — trace our read
+            </summary>
+            <ol className={styles.timeline}>
+              <li className={styles.tnow}>
+                <span className={styles.tdot} aria-hidden="true" />
+                <GhostOdds pct={m.oddsPct} />
+                <div className={styles.titem}>
+                  <span className={styles.tmeta}>
+                    <span className={styles.twhen}>Now</span>
+                    <span className={styles.todds}>
+                      {m.favored} {formatPct(m.oddsPct)}
+                    </span>
+                    {m.status === 'resolved' && m.resolvedOutcome && (
+                      <span className={m.calledCorrectly ? styles.tHit : styles.tMiss}>
+                        Resolved {m.resolvedOutcome}
+                      </span>
+                    )}
+                  </span>
+                  <p className={styles.thook}>{m.hook || m.title}</p>
+                </div>
+              </li>
+              {m.revisions!.map((r, i) => {
+                // A revision is expandable once we retained its body. Diff its
+                // headline against the NEXT-NEWER version (or "Now" for the latest)
+                // so the reader sees exactly how our read shifted at this step.
+                const expandable = !!r.analysis;
+                const newerHook = i === 0 ? m.hook || m.title : m.revisions![i - 1]!.hook;
+                const headlineDiff = expandable ? wordDiff(r.hook, newerHook) : [];
+                const meta = (
+                  <span className={styles.tmeta}>
+                    <span className={styles.twhen}>{formatRelative(r.generatedAt)}</span>
+                    <span className={styles.todds}>
+                      {r.favored} {formatPct(r.oddsPct)}
+                    </span>
+                  </span>
+                );
+                if (!expandable) {
+                  return (
+                    <li key={`${r.generatedAt}-${i}`}>
+                      <span className={styles.tdot} aria-hidden="true" />
+                      <GhostOdds pct={r.oddsPct} />
+                      <div className={styles.titem}>
+                        {meta}
+                        <p className={styles.thook}>{r.hook}</p>
+                        {r.dek && <p className={styles.tdek}>{r.dek}</p>}
+                      </div>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={`${r.generatedAt}-${i}`}>
+                    <span className={styles.tdot} aria-hidden="true" />
+                    <GhostOdds pct={r.oddsPct} />
+                    <details className={styles.trev}>
+                      <summary className={styles.titem}>
+                        {meta}
+                        <span className={styles.thook}>{r.hook}</span>
+                        {r.dek && <span className={styles.tdek}>{r.dek}</span>}
+                        <span className={styles.tmore}>Read this version</span>
+                      </summary>
+                      <div className={styles.tread}>
+                        {hasChange(headlineDiff) && (
+                          <p className={styles.tdiff} aria-label="How the headline changed">
+                            <span className={styles.tdiffKicker}>How the headline changed</span>
+                            {headlineDiff.map((seg, k) => (
+                              <Fragment key={k}>
+                                {k > 0 ? ' ' : ''}
+                                <span
+                                  className={
+                                    seg.op === 'add'
+                                      ? styles.dadd
+                                      : seg.op === 'del'
+                                        ? styles.ddel
+                                        : undefined
+                                  }
+                                >
+                                  {seg.text}
+                                </span>
+                              </Fragment>
+                            ))}
+                          </p>
+                        )}
+                        <p className={styles.treadBody}>{r.analysis}</p>
+                        {r.take && (
+                          <p className={styles.treadTake}>
+                            <span className={styles.treadKicker}>Our take then</span>
+                            {r.take}
+                          </p>
+                        )}
+                        {r.marketRead && <p className={styles.treadLens}>{r.marketRead}</p>}
+                      </div>
+                    </details>
+                  </li>
+                );
+              })}
+            </ol>
+          </details>
+        )}
+
+        <div className={styles.actions}>
+          <SaveButton marketId={m.id} />
+          <ShareButton marketId={m.id} title={m.hook || m.title} />
+        </div>
+
+        {/* You've seen the crowd's read and ours — now make your own, then discuss.
+            Both are lazy (keep supabase out of the main bundle) and grouped as one
+            "chat" unit that sits at the foot of the reading spine. */}
+        {commentsEnabled && (
+          <div className={styles.chat}>
+            <Suspense fallback={null}>
+              <TheCall market={m} />
+            </Suspense>
+            <div data-keep-open>
+              <Suspense fallback={<p className={card.dek}>Loading discussion…</p>}>
+                <Discussion marketId={m.id} favored={m.favored} />
+              </Suspense>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* ── The market rail — the crowd's read beside the reporting on a wide
-          desktop (a broadsheet stock-box, ruled off by a hairline); stacked after
-          the reporting on a phone, exactly where it has always sat. */}
-      <aside className={styles.rail} aria-label="The market on this story">
+      {/* ── EVIDENCE RAIL — the lead art, supporting figures, the crowd's market read,
+          where sources disagree, and the sourcing. The images and data boxes; on a wide
+          desktop this is the right column, ruled off from the spine by a hairline. */}
+      <aside className={styles.evidenceCol} aria-label="Supporting evidence and sourcing">
+      {hero && (
+        <figure className={styles.hero}>
+          <img
+            src={hero.url}
+            alt={hero.name || m.hook || m.title}
+            decoding="async"
+            onError={() => setHeroFailed(true)}
+            {...(hero.width && hero.height ? { width: hero.width, height: hero.height } : {})}
+          />
+          {(hero.name || hero.credit) && (
+            <figcaption className={styles.cap}>
+              {hero.name}
+              {hero.name && hero.credit ? ' · ' : ''}
+              {hero.credit}
+            </figcaption>
+          )}
+        </figure>
+      )}
+
       <section className={card.read}>
         <h2 className={card.readHead}>What the market shows</h2>
         <div className={card.readTop}>
@@ -636,6 +735,35 @@ export function ArticleView({
         </div>
       </section>
 
+      {figures.length > 0 && <Figures figures={figures} market={m} />}
+
+      {/* The market is ONE cited input, but it's the article's signature quote: the
+          crowd's odds set large beside the labeled read. */}
+      {marketRead && (
+        <aside className={styles.lens}>
+          {/* Exact-fit odds — in aggressive the figure is measured to fill its column
+              to the pixel (whatever the digits); in calm it's the shipped CSS size. */}
+          <FitText
+            text={formatPct(m.oddsPct)}
+            className={`${styles.lensOdds} tnum`}
+            weight={340}
+            fillFrac={0.42}
+            maxWidthPx={210}
+            maxFontPx={208}
+            minFontPx={60}
+            aria-hidden
+          />
+          <span className={styles.lensBody}>
+            <span className={styles.lensLabel}>Market lens</span>
+            <span className={styles.lensRead}>{marketRead}</span>
+          </span>
+        </aside>
+      )}
+
+      {m.synthesis && (
+        <Synthesis data={m.synthesis} marketId={m.id} sourceCount={m.sources.length} />
+      )}
+
       {/* The crowd's read across the OTHER facets of this same story — the absorbed
           sub-markets (e.g. for US-Iran: "Strait of Hormuz traffic returns to normal",
           "Israel withdraws from Lebanon"). This is the living record across every
@@ -717,137 +845,20 @@ export function ArticleView({
           </ul>
         </section>
       )}
-      </aside>
 
-      {/* You've seen the crowd's read and ours — now make your own, scored properly
-          when it resolves. Lazy (keeps supabase out of the main bundle). */}
-      {commentsEnabled && (
-        <Suspense fallback={null}>
-          <TheCall market={m} />
-        </Suspense>
-      )}
+      {/* Sourcing closes the evidence rail: the outlets' lean, then the cited list. */}
+      <SourceBias sources={m.sources} />
+      <Sources sources={m.sources} marketId={m.id} />
 
-      {(m.revisions?.length ?? 0) > 0 && (
-        <details className={styles.history}>
-          <summary className={styles.historySummary}>
-            Updated {m.revisions!.length}× as the odds moved — trace our read
-          </summary>
-          <ol className={styles.timeline}>
-            <li className={styles.tnow}>
-              <span className={styles.tdot} aria-hidden="true" />
-              <GhostOdds pct={m.oddsPct} />
-              <div className={styles.titem}>
-                <span className={styles.tmeta}>
-                  <span className={styles.twhen}>Now</span>
-                  <span className={styles.todds}>
-                    {m.favored} {formatPct(m.oddsPct)}
-                  </span>
-                  {m.status === 'resolved' && m.resolvedOutcome && (
-                    <span className={m.calledCorrectly ? styles.tHit : styles.tMiss}>
-                      Resolved {m.resolvedOutcome}
-                    </span>
-                  )}
-                </span>
-                <p className={styles.thook}>{m.hook || m.title}</p>
-              </div>
-            </li>
-            {m.revisions!.map((r, i) => {
-              // A revision is expandable once we retained its body. Diff its
-              // headline against the NEXT-NEWER version (or "Now" for the latest)
-              // so the reader sees exactly how our read shifted at this step.
-              const expandable = !!r.analysis;
-              const newerHook = i === 0 ? m.hook || m.title : m.revisions![i - 1]!.hook;
-              const headlineDiff = expandable ? wordDiff(r.hook, newerHook) : [];
-              const meta = (
-                <span className={styles.tmeta}>
-                  <span className={styles.twhen}>{formatRelative(r.generatedAt)}</span>
-                  <span className={styles.todds}>
-                    {r.favored} {formatPct(r.oddsPct)}
-                  </span>
-                </span>
-              );
-              if (!expandable) {
-                return (
-                  <li key={`${r.generatedAt}-${i}`}>
-                    <span className={styles.tdot} aria-hidden="true" />
-                    <GhostOdds pct={r.oddsPct} />
-                    <div className={styles.titem}>
-                      {meta}
-                      <p className={styles.thook}>{r.hook}</p>
-                      {r.dek && <p className={styles.tdek}>{r.dek}</p>}
-                    </div>
-                  </li>
-                );
-              }
-              return (
-                <li key={`${r.generatedAt}-${i}`}>
-                  <span className={styles.tdot} aria-hidden="true" />
-                  <GhostOdds pct={r.oddsPct} />
-                  <details className={styles.trev}>
-                    <summary className={styles.titem}>
-                      {meta}
-                      <span className={styles.thook}>{r.hook}</span>
-                      {r.dek && <span className={styles.tdek}>{r.dek}</span>}
-                      <span className={styles.tmore}>Read this version</span>
-                    </summary>
-                    <div className={styles.tread}>
-                      {hasChange(headlineDiff) && (
-                        <p className={styles.tdiff} aria-label="How the headline changed">
-                          <span className={styles.tdiffKicker}>How the headline changed</span>
-                          {headlineDiff.map((seg, k) => (
-                            <Fragment key={k}>
-                              {k > 0 ? ' ' : ''}
-                              <span
-                                className={
-                                  seg.op === 'add'
-                                    ? styles.dadd
-                                    : seg.op === 'del'
-                                      ? styles.ddel
-                                      : undefined
-                                }
-                              >
-                                {seg.text}
-                              </span>
-                            </Fragment>
-                          ))}
-                        </p>
-                      )}
-                      <p className={styles.treadBody}>{r.analysis}</p>
-                      {r.take && (
-                        <p className={styles.treadTake}>
-                          <span className={styles.treadKicker}>Our take then</span>
-                          {r.take}
-                        </p>
-                      )}
-                      {r.marketRead && <p className={styles.treadLens}>{r.marketRead}</p>}
-                    </div>
-                  </details>
-                </li>
-              );
-            })}
-          </ol>
-        </details>
-      )}
-
-      <p className={card.aiNote}>
+      {/* The AI + odds disclosure closes the rail — it's about the sources it cites and
+          the market number it quotes, so it belongs with them, not under the reporting. */}
+      <p className={`${card.aiNote} ${styles.railNote}`}>
         Synthesized by Crowdtells with AI
         {m.sources.length > 0 &&
           ` from ${m.sources.length} cited source${m.sources.length === 1 ? '' : 's'}`}
         . Odds are a market estimate, not a prediction or advice.
       </p>
-
-      <div className={styles.actions}>
-        <SaveButton marketId={m.id} />
-        <ShareButton marketId={m.id} title={m.hook || m.title} />
-      </div>
-
-      {commentsEnabled && (
-        <div data-keep-open>
-          <Suspense fallback={<p className={card.dek}>Loading discussion…</p>}>
-            <Discussion marketId={m.id} favored={m.favored} />
-          </Suspense>
-        </div>
-      )}
+      </aside>
     </article>
   );
 }
