@@ -794,6 +794,230 @@ export const EXPLAINERS: EvergreenPage[] = [
     ],
     relatedTopics: ['Finance', 'Economics', 'Crypto', 'Politics'],
   },
+  {
+    slug: 'how-to-check-nyc-dob-hpd-violations',
+    title: 'How to Check NYC Building Violations by Address',
+    h1: 'How to Check NYC Building Violations by Address',
+    metaDescription:
+      'A free how-to for checking NYC building violations by address — search DOB and HPD records, decode violation classes 1/2/3 and A/B/C, and why they matter.',
+    intro:
+      'Every building in New York City carries a public record of its open violations, and you can read most of it for free without a lawyer or an inspector. City agencies log problems by address: the Department of Buildings tracks structural and code issues, while the Department of Housing Preservation and Development handles residential conditions. Knowing where those records live, and what the violation classes mean, helps owners, renters, buyers, and lenders judge a property before a problem becomes expensive.',
+    sections: [
+      {
+        heading: 'Where NYC violation records actually live',
+        body: 'New York City spreads its property records across several agencies, so a full picture usually means checking more than one system. The Department of Buildings, or DOB, keeps construction and code data in two places: the older Buildings Information System (BIS) and the newer DOB NOW portal, which handles most current filings and permits. Both let you search by address at no cost.\n\nResidential conditions sit with a separate agency. The Department of Housing Preservation and Development, or HPD, records apartment-related violations — heat, hot water, leaks, pests, and similar issues — in its HPD Online system, also free and searchable by address.\n\nA third stream comes from summonses. Many agency violations are written as tickets adjudicated at the Office of Administrative Trials and Hearings (OATH), the tribunal that hears what were long called Environmental Control Board, or ECB, cases. Because the data is scattered, some free tools pull all three together; a [combined DOB, HPD, and ECB lookup by address](https://regwatch.nyc/nyc-violation-lookup) returns records from each system in one search.',
+      },
+      {
+        heading: 'How to search a building, step by step',
+        body: "You can start with the address itself. Find the building's borough, block, and lot — its BBL, the unique parcel identifier the city assigns to every lot — or simply enter the street address in the agency portal you need. DOB BIS and DOB NOW both accept an address and return the property's filings, permits, and violations.\n\nFor residential complaints, run the same address through HPD Online, which lists violations by apartment and class. To see summonses and unpaid fines, check the OATH hearings database, where each ticket shows its status, penalty, and whether a decision has been entered.\n\nRead the status field carefully. A violation may be open, meaning unresolved; closed or dismissed; or resolved with the city but still carrying an unpaid penalty. Open items and unpaid balances are the ones that follow a property forward.",
+      },
+      {
+        heading: 'What DOB violation classes mean',
+        body: 'The DOB sorts its violations into three classes by severity. Class 1 is Immediately Hazardous — the most serious, covering conditions that pose a direct danger, such as illegal construction or a structural risk. Class 2 is Major, and Class 3 is Minor, covering lesser, non-hazardous issues that are typically corrected once the owner is notified.\n\nThe class drives the potential penalty. A Class 1 violation can carry up to $25,000 per violation, and a Class 2 up to $10,000 per violation. Class 3 items are lower-stakes but still need to be cleared, because an open record can complicate a sale or a permit down the line.',
+      },
+      {
+        heading: 'What HPD violation classes mean',
+        body: "Residential violations from HPD use a different scale, lettered A through C. Class A is non-hazardous — minor upkeep issues that must be corrected but carry no immediate danger, generally within about 90 days. Class B is hazardous, and Class C is immediately hazardous, such as no heat or hot water in cold weather, which the city expects to be cured fastest.\n\nOwners clear an HPD violation by fixing the condition and then certifying the correction through HPD Online, usually with photo evidence that the work was done. Until that certification is accepted, the violation stays on the building's record even if the repair is finished.",
+      },
+      {
+        heading: 'ECB summonses, OATH, and how fines become liens',
+        body: 'An ECB violation is a summons — a ticket issued by an agency such as DOB, the Fire Department, the Sanitation Department, DEP, or HPD — and heard at OATH. Penalties commonly range from $250 to $25,000 per summons, depending on the offense and the agency.\n\nTiming matters. If you do not request a hearing within 30 days, the tribunal can enter a default judgment against you, often at a higher penalty than the original ticket. An unpaid judgment can then be docketed as a judgment lien against the property itself — not just the owner — which means it attaches to the building and generally must be cleared before a sale closes.',
+      },
+      {
+        heading: 'Why open violations matter for deals, financing, and insurance',
+        body: "Open violations are not just paperwork. In a sale, a title search will surface docketed liens and unpaid fines, and buyers routinely ask that they be cleared before closing. In a refinance, a lender may treat serious open items — especially Immediately Hazardous ones — as a condition to resolve before approving the loan.\n\nInsurers can factor a building's violation history into coverage and pricing, and a pattern of unresolved hazards can raise questions about risk. For any specific situation, this is general information rather than legal advice; verify the details with the relevant city agency or a qualified professional before acting.",
+      },
+    ],
+    faq: [
+      {
+        q: 'How do I check NYC building violations for free?',
+        a: "You can search each city system by address at no cost: DOB's Buildings Information System (BIS) and DOB NOW for construction and code violations, HPD Online for residential conditions, and the OATH hearings database for summonses. Because the records are split across agencies, some free tools combine them into a single address search. None of it requires a paid account.",
+      },
+      {
+        q: 'What is the difference between DOB Class 1, 2, and 3 violations?',
+        a: 'The class marks severity. Class 1 is Immediately Hazardous and the most serious, Class 2 is Major, and Class 3 is Minor and non-hazardous. Penalties scale with the class — up to $25,000 per Class 1 violation and up to $10,000 per Class 2 — while Class 3 items are lower-stakes but still need to be cleared.',
+      },
+      {
+        q: 'What do HPD Class A, B, and C violations mean?',
+        a: 'HPD uses letters for residential conditions. Class A is non-hazardous and must be corrected, generally within about 90 days; Class B is hazardous; and Class C is immediately hazardous, such as a lack of heat or hot water, which must be cured fastest. Owners certify the fix through HPD Online, usually with photo evidence.',
+      },
+      {
+        q: 'Can an unpaid NYC violation become a lien on the property?',
+        a: 'Yes. An ECB summons heard at OATH carries a penalty commonly between $250 and $25,000, and if you miss the 30-day window to request a hearing, a default judgment can be entered. An unpaid judgment can be docketed as a lien against the property itself, which typically must be cleared before a sale closes.',
+      },
+      {
+        q: 'Why do building violations matter when buying or refinancing?',
+        a: "Open violations and unpaid fines show up in title searches and can stall a deal until they are resolved. Lenders may require serious items to be cleared before approving a refinance, and insurers can weigh a building's history in coverage and pricing. This is general information, not legal advice — confirm specifics with the relevant agency or a professional.",
+      },
+    ],
+  },
+  {
+    slug: 'nyc-title-deed-lien-search-guide',
+    title: 'NYC Title, Deed & Lien Search: The ACRIS Guide',
+    h1: 'NYC Title, Deed and Lien Search: An ACRIS Guide',
+    metaDescription:
+      "Run an NYC title, deed and lien search through ACRIS, the city's public record. See what deeds, mortgages and liens reveal and what clears at closing.",
+    intro:
+      'Before you buy, refinance, or research a New York City property, much of its legal history is already public. The city records deeds, mortgages, and liens in ACRIS, an online database anyone can search. Reading those documents tells you who owns a property, what it owes, and what claims are attached to it. This guide explains what each record means, how a title search differs from a formal title report, and where a pre-purchase reader should look.',
+    sections: [
+      {
+        heading: "ACRIS: New York City's system of record",
+        body: "ACRIS, the Automated City Register Information System, is New York City's official record of property documents. The Department of Finance maintains it, and it is the primary source for recorded deeds, mortgages, and liens. The system covers documents from 1966 to the present.\n\nBecause these records are public, you do not need to own a property, or hire anyone, to read its filed history. You can search by address, by a parcel's borough-block-lot number (the BBL, the city's unique tax identifier for a piece of land), or by the name of a party to a document.\n\nWhat ACRIS shows is the paper trail: the documents themselves, the dates they were recorded, and the parties named on them. It does not interpret them for you, which is why knowing what each record type means matters.",
+      },
+      {
+        heading: 'Deed, mortgage, lien: what each document tells you',
+        body: 'A deed is the document that transfers ownership from one party to another. Reading the chain of deeds, meaning each recorded transfer over time, shows you who currently holds title (the legal ownership of the property) and how ownership has changed hands. The most recent deed names the current owner of record.\n\nA mortgage is a loan secured by the property. A recorded mortgage tells you the property was pledged as collateral for a debt; a later satisfaction, or release, indicates that debt was paid off. An open mortgage that was never satisfied on paper can raise a question a closing needs to resolve.\n\nA lien is a legal claim against the property for money owed. It can arise from unpaid property taxes, water and sewer charges, certain municipal debts, or unpaid judgments. A lien travels with the property, not just the person who incurred it, so it becomes the concern of whoever owns the parcel next.',
+      },
+      {
+        heading: 'A title search versus a formal title report',
+        body: "A title search is the act of reading the public record to reconstruct a property's history: who has owned it, what is borrowed against it, and what claims are outstanding. You can do a basic version yourself through ACRIS, and it is a reasonable first pass before making an offer or ordering deeper work.\n\nA formal title report, sometimes called a title abstract, is a different thing. It is a professional examination prepared by a title company that compiles the chain of title, flags defects and exceptions, and underpins title insurance at closing. It carries legal weight and financial backing that a self-serve search does not.\n\nPut simply, a public-record search tells you what is filed; a title report certifies what it means and stands behind it. The first is useful for orientation and due diligence; the second is what lenders and buyers rely on to actually close.",
+      },
+      {
+        heading: 'How liens attach to the property, and clear at closing',
+        body: "Two kinds of lien come up often in New York City. A tax lien is a claim for unpaid property taxes, water or sewer charges, or certain municipal debts. Left unpaid, these can be enforced against the property itself.\n\nThe second kind is a docketed judgment lien. When a fine goes unpaid, for example an unpaid Environmental Control Board (ECB) summons adjudicated at the city's Office of Administrative Trials and Hearings (OATH), it can be entered, or docketed, as a judgment lien against the property rather than only against the owner. Once docketed, it attaches to the parcel and appears on title searches.\n\nBoth kinds generally must be cleared at closing: the debt is paid, or otherwise resolved, so that title passes clean to the buyer. This is why open liens found in the public record matter well before a sale, since they can hold up a deal or reduce what a seller nets. You can screen a parcel for recorded claims with an [NYC lien search by address](https://regwatch.nyc/nyc-lien-search), then verify anything you find against the agency of record.",
+      },
+      {
+        heading: "How to look up a property's chain of title and open liens",
+        body: "You can start directly at ACRIS. Search by address or by BBL, and it returns the documents recorded against that parcel. Sort by document type and date to rebuild the timeline: deeds show ownership transfers, mortgages show borrowing, and satisfactions show debts marked paid.\n\nRead the most recent deed first to confirm the current owner of record, then work backward through earlier deeds to see the chain of title. For debts, note any mortgage without a matching satisfaction and any recorded lien, judgment, or lis pendens (a recorded notice that litigation affecting the property is pending).\n\nIf you would rather see a parcel's ownership and document history compiled in one view, a consolidated [NYC title and deed history pulled from ACRIS](https://regwatch.nyc/nyc-title-search) can save time. Treat any such summary as a starting point, and confirm the underlying documents in ACRIS itself before relying on them.",
+      },
+      {
+        heading: 'Where the public record stops',
+        body: "The public record is strong on documents that were filed, but it is not a guarantee of clean title. Some claims are not recorded in ACRIS, filings can contain errors, and a document's legal effect is not always obvious from its face.\n\nThat is why a self-serve search is due diligence, not a substitute for the professionals who close a deal. A title company and a real estate attorney examine the record, resolve defects, and back their work; a title search you run yourself does none of those things.\n\nThis guide is general information, not legal advice. For anything that affects a purchase, refinance, or dispute, verify specifics with the relevant city agency and have a title company or attorney review the record before you rely on it.",
+      },
+    ],
+    faq: [
+      {
+        q: 'Is an ACRIS deed search free?',
+        a: 'Yes. ACRIS is a public database maintained by the Department of Finance, and searching recorded deeds, mortgages, and liens costs nothing. You can look up documents by address, by borough-block-lot (BBL) number, or by party name. Copies of some documents may carry a small fee, but the search itself is free.',
+      },
+      {
+        q: 'How far back does ACRIS go?',
+        a: 'ACRIS covers recorded property documents from 1966 to the present. Transactions before 1966 are generally held on older systems and are not part of the online database. For a full historical chain of title, a title company can search beyond what ACRIS shows.',
+      },
+      {
+        q: 'Do liens stay with the property or the owner?',
+        a: 'Many liens attach to the property itself, not only the person who incurred them. Tax liens and docketed judgment liens, including unpaid ECB fines entered against a parcel, travel with the property and typically must be cleared at closing. That is why a buyer, not just a seller, has a stake in resolving them.',
+      },
+      {
+        q: 'Can I run my own NYC title search instead of hiring a title company?',
+        a: "You can read the public record yourself through ACRIS to see ownership, mortgages, and recorded liens, which is useful for early research. It is not a substitute for a formal, insured title report. Lenders and closings rely on a title company's examination and title insurance, which a self-serve search does not provide.",
+      },
+      {
+        q: 'What is the difference between a deed and a title?',
+        a: 'Title is the legal right of ownership of a property; a deed is the document that transfers that title from one party to another. You cannot search for title as a single filing, so you read the chain of recorded deeds to establish who holds title today. The most recent deed names the current owner of record.',
+      },
+    ],
+  },
+  {
+    slug: 'nyc-local-law-97-compliance',
+    title: "Local Law 97 Compliance in NYC: A 2026 Owner's Guide",
+    h1: "Local Law 97 Compliance in NYC: The 2026 Owner's Guide",
+    metaDescription:
+      "Local Law 97 sets carbon caps on NYC buildings over 25,000 sq ft. See who's covered, how the $268-per-ton penalty works, and the May 1 filing deadline.",
+    intro:
+      'Local Law 97 is a New York City rule that sets carbon limits on large buildings, and 2026 is the first year owners are living with it in full force. Passed as part of the Climate Mobilization Act, the law caps emissions from most large properties and fines those that run over. The first compliance period is already underway, the first reports have come due, and penalties now attach to real emissions. This guide explains who is covered, how the penalty math works, the reporting deadline, and what owners should check.',
+    sections: [
+      {
+        heading: 'What Local Law 97 is, and why the city passed it',
+        body: "Local Law 97, codified at NYC Admin Code § 28-320, is the centerpiece of the Climate Mobilization Act, a package the City Council adopted as Local Law 97 of 2019. Its purpose is to cut greenhouse-gas emissions from large buildings, which are among the city's biggest sources of carbon.\n\nThe mechanism is a cap-and-penalty system. Each covered building is assigned an annual emissions limit based on its size and use, and an owner who exceeds that limit pays a fine tied to how far over the building runs. The caps are designed to tighten over time, so a building that complies today may not comply later without changes.\n\nThis is general information, not legal or engineering advice. The rules carry technical definitions and exceptions, so confirm your building's status with the Department of Buildings or a qualified professional.",
+      },
+      {
+        heading: 'Which buildings are covered',
+        body: "The core threshold is size. Local Law 97 generally applies to buildings over 25,000 gross square feet. It also reaches two or more buildings on the same tax lot that together exceed 50,000 square feet, capturing campus-style arrangements that a single-building test would miss.\n\nCoverage is not uniform. Certain rent-regulated buildings and several other property types follow separate compliance pathways with different requirements, so being over the size threshold does not automatically mean the standard caps apply in the standard way.\n\nBecause the lines turn on gross floor area, tax-lot configuration, and building use, an owner who is unsure should confirm coverage rather than assume it. You can look up a building's size and use characteristics and [check whether a specific address falls under Local Law 97](https://regwatch.nyc/ll97-compliance) before drawing conclusions.",
+      },
+      {
+        heading: 'The caps and how the penalty math works',
+        body: 'Local Law 97 phases in through compliance periods. The first period runs 2024 through 2029 and, for many buildings, requires roughly a 40 percent cut from a 2005 baseline. Stricter limits take effect January 1, 2030, opening the tougher 2030 through 2034 period.\n\nThe penalty for exceeding a cap is $268 for every metric ton of carbon-dioxide-equivalent (CO2e) over the limit, assessed each year. The math scales linearly: a building about 10 tons over its cap would owe roughly $2,680 a year, while one about 500 tCO2e over would owe roughly $134,000 a year.\n\nBecause the fine is annual and the caps drop in 2030, a building that is comfortably under today can face exposure later. A [Local Law 97 penalty calculator](https://regwatch.nyc/tools/ll97-calculator) can translate a projected overage into an estimated annual dollar figure.',
+      },
+      {
+        heading: 'Reporting: the annual May 1 deadline',
+        body: "Compliance is proven through a report, not just by staying under the cap. Covered owners must file an annual emissions report through DOB NOW, the Department of Buildings' online portal, due May 1 each year for the prior calendar year.\n\nThe timing matters in 2026 because the program is no longer theoretical. Penalties apply to 2024 emissions, and the first reports were due May 1, 2025. The first full cycle of filings and any resulting penalties are already behind us, and the next report follows the same May 1 schedule.\n\nMissing or misfiling the report is its own risk, separate from the emissions cap itself. Owners who have not yet filed for a covered building should treat the deadline as a live obligation and confirm their standing with the Department of Buildings.",
+      },
+      {
+        heading: 'What owners, managers, and buyers should do now',
+        body: "Start by confirming coverage and pulling the building's baseline: gross square footage, use type, and energy consumption. Those inputs determine the applicable cap and whether the standard pathway or a separate one applies.\n\nOne lever built into the law is renewable energy credits. Owners may offset up to 50 percent of a building's electricity emissions by purchasing RECs, which can narrow or close a gap without physical retrofits, though it does not address emissions from on-site fuel such as gas heat.\n\nBuyers should treat Local Law 97 exposure as part of diligence, since the obligation runs with the building. Reviewing projected caps, recent DOB NOW filings, and any accrued penalties before closing can reveal a recurring annual cost that outlasts the current owner. As always, this is general information, not legal advice; verify specifics with the relevant city agency or a professional.",
+      },
+    ],
+    faq: [
+      {
+        q: 'Which buildings does Local Law 97 apply to?',
+        a: "Local Law 97 generally covers buildings over 25,000 gross square feet, plus two or more buildings on the same tax lot that together exceed 50,000 square feet. Some rent-regulated buildings and other property types follow separate compliance pathways. If you are unsure, confirm your building's status with the Department of Buildings rather than assuming.",
+      },
+      {
+        q: 'How much are Local Law 97 penalties?',
+        a: 'The penalty for exceeding your emissions cap is $268 per metric ton of CO2-equivalent over the limit, assessed annually. As a rough scale, about 10 tons over is roughly $2,680 a year, and about 500 tons over is roughly $134,000 a year. Because it is charged every year, a persistent overage becomes a recurring cost.',
+      },
+      {
+        q: 'When is the Local Law 97 reporting deadline?',
+        a: 'Covered owners file an annual emissions report through the DOB NOW portal, due May 1 each year for the prior calendar year. Penalties apply to 2024 emissions, and the first reports were due May 1, 2025. The report is a separate obligation from staying under the cap, and missing it carries its own risk.',
+      },
+      {
+        q: 'Can renewable energy credits reduce Local Law 97 compliance costs?',
+        a: "Yes, within limits. Owners may offset up to 50 percent of a building's electricity emissions by buying renewable energy credits, known as RECs. This can help close a gap without physical upgrades, but it does not offset emissions from on-site fuel such as gas heating.",
+      },
+      {
+        q: 'Do the Local Law 97 caps get stricter over time?',
+        a: 'Yes. The first compliance period runs 2024 through 2029 and, for many buildings, requires roughly a 40 percent cut from a 2005 baseline. Tighter limits begin January 1, 2030 for the 2030 through 2034 period, so a building that complies today may exceed its cap later without changes.',
+      },
+    ],
+  },
+  {
+    slug: 'nyc-facade-inspection-fisp-local-law-11',
+    title: 'NYC Facade Inspection: FISP / Local Law 11 Explained',
+    h1: 'NYC Facade Inspection: FISP and Local Law 11 Explained',
+    metaDescription:
+      'FISP, or Local Law 11, requires NYC buildings taller than six stories to have their facades inspected every five years. Cycle 10 windows, ratings, and fines.',
+    intro:
+      "Every few years, scaffolding and sidewalk sheds appear around New York City's taller buildings. Much of that work traces back to one rule: the Facade Inspection Safety Program, better known by its original name, Local Law 11. It requires owners of buildings taller than six stories to have a qualified inspector examine the exterior walls on a fixed five-year schedule and file a report with the city. This explainer covers who must comply, the current inspection cycle, the ratings, and the penalties for missing a deadline.",
+    sections: [
+      {
+        heading: 'What FISP and Local Law 11 require',
+        body: "FISP stands for the Facade Inspection Safety Program. It is set out in New York City Administrative Code § 28-302 and traces back to Local Law 11 of 1998, which is why many owners and contractors still refer to it simply as Local Law 11.\n\nThe rule applies to buildings taller than six stories. Height, not use, is what triggers coverage, so residential, commercial, and mixed-use buildings above that threshold are all included. The term exterior walls covers the facade and its attached parts, such as cornices, balconies, and window guards.\n\nBecause the requirement turns on details of a building's construction and address, it helps to read the underlying rule directly, which is available on a [detail page for Local Law 11](https://regwatch.nyc/regulations/nyc-dob-ll11) that reproduces the § 28-302 provisions.",
+      },
+      {
+        heading: 'The five-year cycle and the QEWI',
+        body: "Under FISP, the inspection is not a one-time event. Every five years, the owner of a covered building must retain a Qualified Exterior Wall Inspector, or QEWI. A QEWI is a licensed professional engineer or registered architect who meets the Department of Buildings' experience criteria for this work.\n\nThe QEWI examines the exterior walls, including a close, hands-on look at representative sections rather than only a view from the ground. The inspector then files a technical report with the Department of Buildings that assigns the facade a formal condition.\n\nThe QEWI also oversees any required repairs and, where conditions are serious, the protective measures that go up while the work is scheduled. The report must be filed within the building's assigned window, described below.",
+      },
+      {
+        heading: 'Safe, SWARMP, and Unsafe',
+        body: 'Each FISP report places the facade in one of three categories. Safe means the inspector found no conditions that require repair before the next cycle.\n\nSWARMP stands for Safe With a Repair and Maintenance Program. It describes a facade that is safe today but has conditions that will become unsafe if they are not corrected on a set schedule. The owner is expected to fix those conditions before the next inspection, and SWARMP items left unaddressed can carry a penalty of up to $1,000 per year.\n\nUnsafe is the most serious rating. It means the facade has conditions that pose a present hazard to the public. The owner must put up public-protection measures, such as a sidewalk shed, promptly, complete the repairs, and have the QEWI re-inspect and file an amended report.',
+      },
+      {
+        heading: 'Cycle 10 and its staggered deadlines',
+        body: "FISP runs in numbered five-year cycles. The current one is Cycle 10, which runs from February 21, 2025 to February 21, 2030. Every covered building must file one report during that window.\n\nThe deadlines are staggered so that filings do not all land at once. A building's specific filing window is set by the last digit of its block number, the tax-map identifier the city assigns to the parcel of land a building sits on. Buildings are sorted into sub-windows within the larger cycle based on that digit.\n\nBecause the schedule is fixed years in advance, owners can line up a QEWI and budget for any repairs well before their window opens. Filing late, or not at all, is what triggers the failure-to-file penalties covered next.",
+      },
+      {
+        heading: 'Penalties, sidewalk sheds, and liability',
+        body: 'Failure to file a required FISP report carries a penalty of $1,000 or more per month, and that amount rises for continuing violations. As noted above, unaddressed SWARMP conditions can carry a separate penalty of up to $1,000 per year.\n\nThe costs are not only financial. When a facade is rated unsafe, or when repairs are delayed, a sidewalk shed usually stays in place until the work is finished, which can mean months or years of scaffolding and added expense. The program exists chiefly for public safety, since loose masonry and failing anchors can fall onto sidewalks below.\n\nThere is also liability to weigh: an owner who leaves a known hazardous condition unrepaired can face significant exposure if someone is hurt. This is general information, not engineering or legal advice, and owners should confirm their obligations with the Department of Buildings or a licensed professional.',
+      },
+      {
+        heading: "How to find your building's deadline and status",
+        body: "Start with two facts about your building: its height and its block number. If the building is taller than six stories, FISP applies. You can look up the block number on your property tax bill or the city's public property records, and its last digit points to your Cycle 10 sub-window.\n\nTo see whether prior FISP reports were filed and how the facade was rated, you can search the Department of Buildings' online records by address, which list past filings and their status.\n\nIf you would rather view your FISP date next to a building's other recurring obligations, a [calendar of NYC compliance deadlines](https://regwatch.nyc/nyc-compliance-deadlines) gathers them in one place. Treat any date you find as a starting point, and confirm the exact deadline with the Department of Buildings or your QEWI.",
+      },
+    ],
+    faq: [
+      {
+        q: 'What is FISP, and how is it related to Local Law 11?',
+        a: "FISP is the Facade Inspection Safety Program, New York City's rule requiring periodic inspection of building facades. It is codified in Administrative Code § 28-302 and originated with Local Law 11 of 1998, so the two names refer to the same program. Owners of covered buildings must file inspection reports on a recurring schedule.",
+      },
+      {
+        q: 'Which NYC buildings must comply with FISP?',
+        a: 'FISP applies to buildings taller than six stories. Coverage is based on height rather than how the building is used, so qualifying residential, commercial, and mixed-use buildings are all included. Owners of these buildings must have a qualified inspector examine the exterior walls every five years.',
+      },
+      {
+        q: 'What does a SWARMP rating mean?',
+        a: 'SWARMP stands for Safe With a Repair and Maintenance Program. It means the facade is safe now but has conditions that will become unsafe if they are not repaired on a schedule. Owners must correct SWARMP conditions before the next cycle, and leaving them unaddressed can carry a penalty of up to $1,000 per year.',
+      },
+      {
+        q: 'When is the FISP Cycle 10 deadline?',
+        a: "Cycle 10 runs from February 21, 2025 to February 21, 2030. Every covered building must file one inspection report during that period, but the exact window is staggered by the last digit of the building's block number. That means two buildings can have different Cycle 10 deadlines within the same five-year span.",
+      },
+      {
+        q: 'What is the penalty for not filing a FISP report?',
+        a: 'Failing to file a required FISP report carries a penalty of $1,000 or more per month, which increases for continuing violations. Unaddressed SWARMP conditions can carry a separate penalty of up to $1,000 per year. Beyond fines, an unsafe facade often requires a sidewalk shed to remain up until repairs are complete.',
+      },
+    ],
+  },
 ];
 
 export const EVENTS: EvergreenPage[] = [

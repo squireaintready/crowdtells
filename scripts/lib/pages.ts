@@ -24,7 +24,6 @@ import {
   crowdShort,
   fmtDate,
   pageHead,
-  paragraphs,
   siteFooter,
   siteHeader,
   sourceName,
@@ -176,9 +175,35 @@ const faqHtml = (faq: EvergreenFaq[]) =>
       </section>`
     : '';
 
+// Evergreen bodies — and only these — may carry inline links written as
+// `[label](https://…)`. The shared paragraphs() in syndication.ts stays
+// escape-only because it also renders untrusted, LLM-written market briefings;
+// this variant is used solely for hand-authored explainer/event content. Every
+// character outside a well-formed https link is escaped exactly as paragraphs()
+// would, so link-free bodies render byte-for-byte identically.
+const EVERGREEN_LINK = /\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g;
+const evergreenInline = (p: string): string => {
+  let out = '';
+  let last = 0;
+  for (const m of p.matchAll(EVERGREEN_LINK)) {
+    const i = m.index ?? 0;
+    out += xml(p.slice(last, i));
+    out += `<a href="${xml(m[2])}" target="_blank" rel="noopener">${xml(m[1])}</a>`;
+    last = i + m[0].length;
+  }
+  return out + xml(p.slice(last));
+};
+const evergreenBody = (text: string): string =>
+  text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${evergreenInline(p)}</p>`)
+    .join('\n        ');
+
 const sectionsHtml = (sections: EvergreenPage['sections']) =>
   sections
-    .map((s) => `<h2>${xml(s.heading)}</h2>\n        ${paragraphs(s.body)}`)
+    .map((s) => `<h2>${xml(s.heading)}</h2>\n        ${evergreenBody(s.body)}`)
     .join('\n        ');
 
 const authorLd = {
