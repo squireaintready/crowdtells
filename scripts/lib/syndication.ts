@@ -382,6 +382,8 @@ main{padding:36px 0 8px}
 .eyebrow>span[aria-hidden]{color:var(--border-strong);font-weight:400}
 .eyebrow .byline,.eyebrow .byline a{font-weight:600}
 .eyebrow .flag{text-transform:none;letter-spacing:.01em;border:1px solid var(--border-strong);border-radius:999px;padding:2px 10px;color:var(--dim);font-weight:600}
+.eyebrow .flag-sponsored{text-transform:uppercase;letter-spacing:.08em;font-weight:700;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:3px 11px}
+.sponsor-note{font-family:var(--sans);font-size:.82rem;line-height:1.5;color:var(--dim);border:1px solid var(--border-strong);border-radius:10px;padding:10px 14px;margin:0 0 22px}
 h1{font-family:var(--serif);font-weight:440;font-size:clamp(1.95rem,1.2rem + 3.4vw,3rem);line-height:1.08;letter-spacing:-.018em;text-wrap:balance;margin:0 0 18px}
 .lead{font-family:var(--prose);font-size:clamp(1.18rem,1.08rem + .5vw,1.3rem);line-height:1.52;color:var(--dim);text-wrap:pretty;margin:0 0 26px}
 article{font-size:1.06rem}

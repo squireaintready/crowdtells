@@ -182,28 +182,31 @@ const faqHtml = (faq: EvergreenFaq[]) =>
 // character outside a well-formed https link is escaped exactly as paragraphs()
 // would, so link-free bodies render byte-for-byte identically.
 const EVERGREEN_LINK = /\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g;
-const evergreenInline = (p: string): string => {
+// `sponsored` marks outbound links rel="sponsored" (Google's requirement for
+// paid/advertorial links); editorial pages stay dofollow (rel="noopener").
+const evergreenInline = (p: string, sponsored = false): string => {
+  const rel = sponsored ? 'sponsored noopener' : 'noopener';
   let out = '';
   let last = 0;
   for (const m of p.matchAll(EVERGREEN_LINK)) {
     const i = m.index ?? 0;
     out += xml(p.slice(last, i));
-    out += `<a href="${xml(m[2])}" target="_blank" rel="noopener">${xml(m[1])}</a>`;
+    out += `<a href="${xml(m[2])}" target="_blank" rel="${rel}">${xml(m[1])}</a>`;
     last = i + m[0].length;
   }
   return out + xml(p.slice(last));
 };
-const evergreenBody = (text: string): string =>
+const evergreenBody = (text: string, sponsored = false): string =>
   text
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p>${evergreenInline(p)}</p>`)
+    .map((p) => `<p>${evergreenInline(p, sponsored)}</p>`)
     .join('\n        ');
 
-const sectionsHtml = (sections: EvergreenPage['sections']) =>
+const sectionsHtml = (sections: EvergreenPage['sections'], sponsored = false) =>
   sections
-    .map((s) => `<h2>${xml(s.heading)}</h2>\n        ${evergreenBody(s.body)}`)
+    .map((s) => `<h2>${xml(s.heading)}</h2>\n        ${evergreenBody(s.body, sponsored)}`)
     .join('\n        ');
 
 const authorLd = {
@@ -224,9 +227,11 @@ const publisherLd = {
 // per-run dateModified freshness signal. Bump only on a genuine re-authoring.
 const PUBLISHED = '2026-06-17';
 
-/** A combined list of every guide, for the "more guides" cross-link nav. */
+/** A combined list of every guide, for the "more guides" cross-link nav.
+ * Sponsored advertorials are excluded so editorial pages never pass them a
+ * dofollow "guide" link or list them as editorial content. */
 const ALL_GUIDES = [
-  ...EXPLAINERS.map((g) => ({ slug: g.slug, h1: g.h1, url: explainerUrl(g.slug) })),
+  ...EXPLAINERS.filter((g) => !g.sponsored).map((g) => ({ slug: g.slug, h1: g.h1, url: explainerUrl(g.slug) })),
   ...EVENTS.map((g) => ({ slug: g.slug, h1: g.h1, url: eventUrl(g.slug) })),
 ];
 
@@ -308,7 +313,9 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
     isAccessibleForFree: true,
     datePublished: PUBLISHED,
     dateModified: lastmod,
-    author: authorLd,
+    // A labeled advertorial is not the editor's reporting — attribute it to the
+    // publisher org, never to the Person byline, so schema doesn't misrepresent.
+    author: c.sponsored ? publisherLd : authorLd,
     publisher: publisherLd,
     image: [`${SITE}/og.png`],
   });
@@ -323,16 +330,25 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
     canonical: url,
     ogType: 'article',
     jsonld: [articleLd, crumbLd, faqLd(c.faq)].filter(Boolean),
-    author: 'Samuel Jo',
+    author: c.sponsored ? 'RegWatch NYC (Sponsored)' : 'Samuel Jo',
   });
+  const eyebrow = c.sponsored
+    ? '<p class="eyebrow"><span class="flag-sponsored">Sponsored</span></p>'
+    : '<p class="eyebrow"><a class="cat" href="/learn">Guide</a></p>';
+  const disclosure = c.sponsored
+    ? `\n        <p class="sponsor-note">Sponsored content, published in partnership with RegWatch NYC. It was produced for the advertiser and did not involve Crowdtells' newsroom.</p>`
+    : '';
+  const footerNote = c.sponsored
+    ? 'Sponsored content from Crowdtells — produced for the advertiser, not newsroom reporting, and not legal or financial advice.'
+    : 'Evergreen guide from Crowdtells — news, told through the crowd, not financial advice.';
   const body = `    ${siteHeader('<a href="/learn">← Guides</a>')}
 
     <main class="wrap">
       <article>
-        <p class="eyebrow"><a class="cat" href="/learn">Guide</a></p>
+        ${eyebrow}
         <h1>${xml(c.h1)}</h1>
-        <p class="lead">${xml(c.intro)}</p>
-        ${sectionsHtml(c.sections)}
+        <p class="lead">${xml(c.intro)}</p>${disclosure}
+        ${sectionsHtml(c.sections, c.sponsored)}
         ${faqHtml(c.faq)}
         ${topicsNav(c.relatedTopics, hubSet)}
         <a class="cta" href="/">See the live news feed →</a>
@@ -340,7 +356,7 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
       </article>
     </main>
 
-    ${siteFooter('Evergreen guide from Crowdtells — news, told through the crowd, not financial advice.')}`;
+    ${siteFooter(footerNote)}`;
   return docShell(head, body);
 }
 
@@ -459,7 +475,7 @@ export function guidesIndexPage(lastmod: string): string {
       <p class="eyebrow"><span class="cat">Guides</span></p>
       <h1>Prediction-market guides</h1>
       <p class="lead">How prediction markets work, how the platforms compare, how to read the odds — plus durable hubs for the events the crowd trades, with live odds embedded.</p>
-      ${EXPLAINERS.length ? `<h2>Explainers</h2>\n      <ul class="hub-list">\n        ${list(EXPLAINERS, explainerUrl.bind(null))}\n      </ul>` : ''}
+      ${EXPLAINERS.some((e) => !e.sponsored) ? `<h2>Explainers</h2>\n      <ul class="hub-list">\n        ${list(EXPLAINERS.filter((e) => !e.sponsored), explainerUrl.bind(null))}\n      </ul>` : ''}
       ${EVENTS.length ? `<h2>Event hubs</h2>\n      <ul class="hub-list">\n        ${list(EVENTS, eventUrl.bind(null))}\n      </ul>` : ''}
       <a class="cta" href="/mispriced">See where the crowd and the coverage disagree →</a>
     </main>

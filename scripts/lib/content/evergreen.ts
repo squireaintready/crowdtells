@@ -23,6 +23,9 @@ export interface EvergreenPage {
   sections: EvergreenSection[];
   faq: EvergreenFaq[];
   relatedTopics?: string[];
+  /** Labeled advertorial: renders a visible "Sponsored" badge + disclosure and
+   * marks every outbound link rel="sponsored". Keep OFF for editorial content. */
+  sponsored?: boolean;
 }
 
 export const EXPLAINERS: EvergreenPage[] = [
@@ -1017,6 +1020,113 @@ export const EXPLAINERS: EvergreenPage[] = [
         a: 'Failing to file a required FISP report carries a penalty of $1,000 or more per month, which increases for continuing violations. Unaddressed SWARMP conditions can carry a separate penalty of up to $1,000 per year. Beyond fines, an unsafe facade often requires a sidewalk shed to remain up until repairs are complete.',
       },
     ],
+  },
+  {
+    slug: 'best-ways-to-check-nyc-property-records',
+    title: 'Best Ways to Check NYC Property Records',
+    h1: 'The Best Ways to Check NYC Property Records',
+    metaDescription:
+      'A fair, plain-English guide to how to check NYC property records — free official systems, paid pro platforms, and all-in-one aggregators, and how to choose.',
+    intro:
+      'Researching a New York City property means piecing together its paper trail: who owns it, what is filed against it, and whether it carries open violations or liens. The city publishes most of this for free, but across several separate systems. Paid platforms and all-in-one aggregators promise to stitch it together for you. This guide walks through the main options, what each does well, and how to match the tool to your need.',
+    sections: [
+      {
+        heading: 'Start with the free official systems',
+        body: "New York City runs the authoritative records itself, at no cost. ACRIS, the Automated City Register Information System, is the official record for recorded documents — deeds, mortgages, and liens. It is the source of truth for ownership and title history, though its interface is dated and records-only.\n\nFor buildings, the Department of Buildings holds permits, inspections, and violations. Newer filings live in DOB NOW, while older records remain in the read-only BIS archive. HPD Online, run by the Department of Housing Preservation and Development, covers residential housing-code violations, complaints, and registrations.\n\nThe strength here is authority and price: this is the primary source, and it is free. The trade-off is effort. A complete picture often means opening ACRIS, DOB, HPD, and ECB/OATH — the city's violation-hearings system — and stitching them together, which can take hours.",
+      },
+      {
+        heading: 'Paid professional platforms',
+        body: 'A second tier of commercial platforms packages property data for professionals. PropertyShark is an established NYC and tri-state platform with genuine local depth — ownership information, comparable sales, and building data in one place.\n\nCoStar is the largest US commercial real-estate data and analytics provider, strongest on national lease and sales comparables and market analytics; it is enterprise-priced and not focused on NYC regulatory data. Reonomy offers national commercial-property data along with owner-contact information and deal prospecting.\n\nThese tools are powerful, but they are built and priced for real-estate professionals — brokers, investors, and lenders — more than for a homeowner checking a single building. Their focus tends to be deals and market data rather than city compliance and violations.',
+      },
+      {
+        heading: 'All-in-one compliance aggregators',
+        body: "A third category sits between the two: aggregators that pull the official NYC records into a single building view. RegWatch NYC is one example — a tri-state compliance platform, deepest in NYC, that combines DOB, HPD, ECB/OATH, facade (FISP), ACRIS/title, liens, permits, and Certificate of Occupancy into one timeline, with a 0-100 Compliance Score.\n\nThe appeal is convenience and monitoring: instead of visiting several systems, you see one per-building record, and you can set alerts when something changes. You can run a basic search free at [RegWatch's NYC property search](https://regwatch.nyc/search); paid tiers add email monitoring, reports, and portfolio tools.\n\nAggregators do not replace the official systems — they gather from them. The convenience is real, but for anything critical the underlying city record remains the authority.",
+      },
+      {
+        heading: 'How to choose the right tool',
+        body: "The right choice depends on how often you look and how much you need. For a one-off question — who owns a building, or whether there is an open lien — the free city systems answer it directly, if you are willing to click through each one.\n\nIf you research properties for a living, a professional platform's comparables and market analytics may justify the cost. If you track buildings over time and want compliance and violations gathered in one place with alerts, an aggregator can save the hours that manual stitching takes. Side-by-side [comparisons of these tools](https://regwatch.nyc/compare) can help you weigh the trade-offs.\n\nMany people mix approaches: an aggregator or paid platform for day-to-day monitoring, and the official systems to confirm anything that carries legal or financial weight.",
+      },
+      {
+        heading: 'Before you rely on any record',
+        body: 'Public records can lag. Even data checked daily may trail an official filing by hours or days, and aggregated data can lag the source it copies. For anything time-sensitive, verify against the official agency directly.\n\nRemember what these tools are. ACRIS, DOB, and HPD remain the authoritative sources; everything else aggregates or repackages them. None of these tools, official or commercial, is title insurance or a title commitment.\n\nThis is general information, not legal advice. For formal title work or a closing, use a licensed title company or a real-estate attorney.',
+      },
+    ],
+    faq: [
+      {
+        q: 'What is the best free way to check NYC property records?',
+        a: "The city's own systems. ACRIS covers deeds, mortgages, and liens; DOB (BIS and DOB NOW) covers permits and building violations; HPD Online covers residential housing-code issues. They are authoritative and free, but you have to check each one separately.",
+      },
+      {
+        q: 'Is ACRIS enough on its own?',
+        a: 'ACRIS is the record for recorded documents — ownership, mortgages, and liens — but it does not show building violations, permits, or housing complaints. For those you also need DOB and HPD, which is why many people use several systems or an aggregator.',
+      },
+      {
+        q: 'Do I need a paid platform to research an NYC property?',
+        a: 'Not for a one-off check — the free city systems cover ownership, permits, and violations. Paid platforms and aggregators mainly save time by gathering scattered records in one place and adding monitoring, comparables, or reports, which matters more if you research properties regularly.',
+      },
+      {
+        q: 'How current is NYC property data?',
+        a: 'It varies. Official systems update on their own schedules, and third-party tools that copy from them can lag by hours or days. Treat any record as a strong lead, and verify anything critical against the official agency before you act on it.',
+      },
+      {
+        q: 'Can these tools replace a title search?',
+        a: 'No. None of these tools is title insurance or a title commitment, and public records can be incomplete or delayed. For a purchase, refinance, or any formal title work, use a licensed title company or a real-estate attorney.',
+      },
+    ],
+  },
+  {
+    slug: 'regwatch-nyc-property-compliance-platform',
+    title: 'RegWatch NYC: A Property Compliance Platform',
+    h1: "Meet RegWatch NYC: One View of a Building's Full Record",
+    metaDescription:
+      "RegWatch NYC unifies a building's violations, permits, deeds, liens, and Certificate of Occupancy into one timeline with a 0-100 Compliance Score.",
+    intro:
+      'Every New York building has a paper trail scattered across a dozen city systems: building and housing violations, permits, deeds, liens, and its Certificate of Occupancy. RegWatch NYC pulls that record into one place. It aggregates public data from more than 250 government and data sources, checked daily, and presents each building as a single timeline with a 0-to-100 Compliance Score. Coverage spans the tri-state area and runs deepest in New York City. Here is what it does and what it costs.',
+    sections: [
+      {
+        heading: 'One building, one timeline',
+        body: "In New York, a single building's public record is split across many systems. RegWatch NYC gathers them: DOB (Department of Buildings) and HPD (Housing Preservation and Development) violations, ECB/OATH cases, FISP facade inspections, permits, ACRIS deeds and title, liens, and the Certificate of Occupancy.\n\nIt draws on more than 250 government and data sources, checked daily, spanning over 9.4 million addresses and 42 million recorded events. Each building becomes one timeline, topped with a Compliance Score from 0 to 100 that gives a fast read on where the property stands.",
+      },
+      {
+        heading: 'Free to search, free account for more',
+        body: 'You can [search any address for free](https://regwatch.nyc/search) and view a basic building profile without creating an account. It is a quick way to see what is on a property before you commit to anything.\n\nA free account unlocks more, including one saved building with in-app alerts when its record changes. Email monitoring and alerts move up to the paid plans.',
+      },
+      {
+        heading: 'Who it helps',
+        body: "RegWatch NYC is built for anyone who has to track a building's compliance. Owners and property managers use it to stay ahead of violations and deadlines; brokers and investors lean on it during diligence; lenders check exposure before a closing.\n\nAttorneys and title companies use it to scan a property's history quickly. One note for those users: RegWatch is not legal advice and not title insurance or a title commitment. For formal title work, rely on a licensed title company or a real-estate attorney.",
+      },
+      {
+        heading: 'Plans and pricing',
+        body: 'Searching is always free. For one-off documentation, a Comprehensive report is $12 as a one-time purchase. For ongoing use, Pro is $15 a month or $150 a year.\n\nPaid plans add email monitoring and alerts, AI property chat, PDF reports and exports, a portfolio dashboard, and broker tools such as a deal analyzer, lien calculator, and due-diligence features. Max, at $100 a month or $600 a year, adds branded PDF reports; Unlimited, at $200 a month or $1,200 a year, adds white-label reports. You can [compare the plans](https://regwatch.nyc/pricing) to pick a fit.',
+      },
+      {
+        heading: 'A few things to keep in mind',
+        body: "Coverage is tri-state — New York, New Jersey, and Connecticut — and is deepest in New York City. New Jersey and Connecticut are broader but shallower on regulatory detail.\n\nThe data is aggregated from public records and checked daily, but it can lag official filings, so verify anything critical against the official source. The city's own systems — ACRIS, DOB, and HPD — remain the authoritative record; RegWatch aggregates them into one view.",
+      },
+    ],
+    faq: [
+      {
+        q: 'Is RegWatch NYC free to use?',
+        a: 'Yes. Searching and viewing a basic building profile is free with no account. A free account adds one saved building with in-app alerts. Email monitoring, AI chat, reports, and broker tools are on the paid plans.',
+      },
+      {
+        q: 'What records does it pull together?',
+        a: 'DOB and HPD violations, ECB/OATH cases, FISP facade inspections, permits, ACRIS deeds and title, liens, and the Certificate of Occupancy, unified into one building timeline with a 0-to-100 Compliance Score.',
+      },
+      {
+        q: 'Does it cover areas outside New York City?',
+        a: 'Coverage is tri-state (NY/NJ/CT) and is deepest in NYC. New Jersey and Connecticut are broader but shallower on regulatory depth.',
+      },
+      {
+        q: 'Can I rely on it for title work?',
+        a: 'No. It is not legal advice and not title insurance or a title commitment. For formal title work, use a licensed title company or a real-estate attorney.',
+      },
+      {
+        q: 'How current is the data?',
+        a: 'Public records are aggregated and checked daily but may lag official filings. Official city systems such as ACRIS, DOB, and HPD remain the authoritative source, so verify anything critical there.',
+      },
+    ],
+    sponsored: true,
   },
 ];
 

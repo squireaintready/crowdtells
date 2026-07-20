@@ -26,8 +26,8 @@ function assertLdSafe(page: string) {
 }
 
 describe('content data', () => {
-  it('ships 18 substantial explainers and 17 event hubs', () => {
-    expect(EXPLAINERS).toHaveLength(18);
+  it('ships 20 substantial explainers and 17 event hubs', () => {
+    expect(EXPLAINERS).toHaveLength(20);
     expect(EVENTS).toHaveLength(17);
     for (const p of [...EXPLAINERS, ...EVENTS]) {
       expect(p.sections.length).toBeGreaterThanOrEqual(3);
