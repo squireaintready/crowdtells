@@ -1181,6 +1181,324 @@ export const EXPLAINERS: EvergreenPage[] = [
       },
     ],
   },
+  {
+    slug: 'nyc-unpaid-building-fines-data',
+    title: '$3.13B in NYC building fines, $819M unpaid',
+    h1: 'NYC building fines: $3.13 billion issued, about $819 million still unpaid',
+    metaDescription:
+      'NYC has issued about $3.13 billion in ECB/OATH building-code fines and is still owed roughly $819 million, per NYC OpenData. Brooklyn owes the most.',
+    intro:
+      'New York City has issued about $3.13 billion in building-code penalties through its OATH/ECB enforcement system, and it is still owed roughly $819 million of that total, according to NYC OpenData. The figures come from the DOB ECB (OATH) Violations dataset, queried in July 2026, covering 1,824,490 violations. The unpaid balance is largest in Brooklyn, and the Bronx is owed more than Manhattan despite issuing far fewer violations.',
+    sections: [
+      {
+        heading: 'About $3.13 billion imposed, roughly $819 million unpaid',
+        body: "New York City's building-code enforcement has produced about $3.13 billion in penalties over the life of the system, according to NYC OpenData. Of that, about $1.39 billion has been paid, leaving an unpaid balance of about $819 million. The records cover 1,824,490 violations.\n\nThe figures come from the DOB ECB (OATH) Violations dataset (6bgk-3dad), queried in July 2026. DOB is the city's Department of Buildings; ECB refers to the Environmental Control Board; and OATH is the Office of Administrative Trials and Hearings, which now runs the hearings for these cases.\n\nIn plain terms, these are civil penalties for building-code and related violations — the kind of tickets a building can accumulate over years. The dataset tracks how much was charged, how much came in, and how much is still outstanding.",
+      },
+      {
+        heading: 'Brooklyn holds the largest unpaid balance',
+        body: "Broken out by borough, Brooklyn carries the most unpaid money: about $293.9 million across 547,900 violations. Queens is next at about $207.6 million on 483,322 violations.\n\nThe Bronx follows at about $175.5 million on 248,334 violations, then Manhattan at about $111.0 million on 472,440 violations. Staten Island is smallest at about $31.2 million on 72,493 violations.\n\nThose five balances are cumulative and reflect the city's records as reported to NYC OpenData.",
+      },
+      {
+        heading: 'The Bronx owes more than Manhattan',
+        body: "One pattern stands out. The Bronx is owed about $175.5 million on 248,334 violations — more than Manhattan's about $111.0 million on 472,440 violations, even though Manhattan has roughly twice as many violations on record.\n\nThe dataset does not explain the gap, and these figures do not measure how much of each balance is realistically collectible. They show only what the city's records report as charged and unpaid.",
+      },
+      {
+        heading: 'Most of the unpaid money sits in active cases',
+        body: "Violations flagged as active status account for 275,903 of the cases and hold about $523.6 million in unpaid penalties — about 64% of the total unpaid balance, according to the dataset.\n\nThat leaves the rest spread across cases in other statuses. Importantly, a case marked 'resolved' can still carry an unpaid balance, so the outstanding money spans both active and resolved cases.",
+      },
+      {
+        heading: 'How to read these numbers',
+        body: "These totals are cumulative. The enforcement records run back to roughly 1988, so the figures represent decades of activity, not a single year. A high balance in one borough partly reflects how long and how heavily the system has operated there.\n\nTwo caveats matter. A 'resolved' status can still carry an unpaid balance, so unpaid money is not the same as open cases. And the data reflects the city's records, not a judgment of what is currently collectible.\n\nFor a single address, it helps to check the underlying records directly. RegWatch offers a [NYC ECB/OATH violation lookup](https://regwatch.nyc/nyc-ecb-violations) that surfaces a building's ECB/OATH penalties and whether unpaid fines have hardened into liens. Always verify a specific building or case against the official city agency, and treat this as general information, not legal advice.",
+      },
+    ],
+    faq: [
+      {
+        q: 'How much does New York City say it is owed in building fines?',
+        a: "About $819 million, according to NYC OpenData's DOB ECB (OATH) Violations dataset queried in July 2026. That is the unpaid balance out of about $3.13 billion in penalties imposed across 1,824,490 violations; about $1.39 billion has been paid.",
+      },
+      {
+        q: 'Which borough owes the most?',
+        a: 'Brooklyn, with about $293.9 million unpaid across 547,900 violations. Queens follows at about $207.6 million, the Bronx at about $175.5 million, Manhattan at about $111.0 million, and Staten Island at about $31.2 million.',
+      },
+      {
+        q: 'Why does the Bronx owe more than Manhattan?',
+        a: "The dataset does not say. It only shows that the Bronx has about $175.5 million unpaid on 248,334 violations, more than Manhattan's about $111.0 million on 472,440 violations — even though Manhattan has roughly twice as many violations on record.",
+      },
+      {
+        q: "Does a 'resolved' case mean the fine was paid?",
+        a: 'Not necessarily. A case marked resolved can still carry an unpaid balance, so unpaid money spans both active and resolved cases. Active-status violations alone hold about $523.6 million, about 64% of the unpaid total.',
+      },
+      {
+        q: 'Do these figures cover a single year?',
+        a: "No. They are cumulative and the records run back to roughly 1988, so they represent decades of enforcement. The numbers reflect the city's records, not a judgment of what is currently collectible. Verify any specific building or case against the official city agency; this is general information, not legal advice.",
+      },
+    ],
+  },
+  {
+    slug: 'where-nyc-builds-permit-data',
+    title: 'Manhattan leads NYC permits, but Queens builds the most',
+    h1: 'Where New York City builds: DOB permits by borough',
+    metaDescription:
+      "Manhattan holds 1,624,255 of NYC's 3,989,483 building permits but issues the fewest new-building permits. Queens and Brooklyn lead. NYC OpenData.",
+    intro:
+      "New York City has issued 3,989,483 building permits in the record kept by NYC OpenData, and 1,624,255 of them were filed in Manhattan. Yet Manhattan issues the fewest new-building permits of any borough. The pattern comes from the city's DOB Permit Issuance dataset, queried in July 2026: most Manhattan permits cover alterations to existing buildings, while new construction is concentrated in Queens and Brooklyn.",
+    sections: [
+      {
+        heading: 'Manhattan leads on permits but builds the least',
+        body: "New York City's Department of Buildings (DOB) has issued 3,989,483 building permits in the record published by NYC OpenData, and Manhattan accounts for 1,624,255 of them. Brooklyn follows with 947,115, Queens with 841,002, the Bronx with 344,134, and Staten Island with 232,977.\n\nThe ranking flips for new construction. Although Manhattan files the most permits overall, it issues the fewest new-building permits of any borough, a sign that its building activity is dominated by work on structures that already exist.\n\nThese counts come from the DOB Permit Issuance dataset (dataset ipu4-2q9a), queried in July 2026. Each figure is a cumulative total, not an annual one.",
+      },
+      {
+        heading: 'Where new construction is filed',
+        body: 'Across the city, DOB has issued 571,507 new-building (NB) permits, the category for constructing a structure from the ground up. Queens leads with 181,523, followed closely by Brooklyn at 176,087.\n\nManhattan sits last with 37,067 new-building permits. Queens issues roughly five times as many as Manhattan (181,523 versus 37,067), while Staten Island, with 101,019, and the Bronx, with 75,811, both out-file the borough most associated with the New York skyline.\n\nThe gap reflects geography and land use. Manhattan is largely built out, so most of its activity is renovation rather than replacement, while the outer boroughs still have room for new housing and commercial stock.',
+      },
+      {
+        heading: 'What most permits are for',
+        body: "Sorted by job type, the dataset is dominated by alterations rather than new construction. Minor alterations (type A2) account for 2,389,439 permits, far more than any other category.\n\nNew buildings (NB) come next at 571,507, followed by major alterations (A1) at 434,633 and A3 permits at 413,610. Demolition (DM) permits number 102,287 citywide, and sign (SG) permits 78,007.\n\nBecause minor alterations lead by such a wide margin, the citywide picture is mostly one of maintaining and modifying existing buildings, which helps explain Manhattan's profile as a borough of renovation.",
+      },
+      {
+        heading: 'How to read these numbers',
+        body: "A few caveats matter. The totals are cumulative: the dataset spans roughly 1989 to the present, so these are not counts for any single year.\n\nEach row is one permit, not one building. A single project can generate several permits, and one building can appear many times over its life, so permit counts should not be read as building counts.\n\nIssuance dates are stored as text in the dataset, which means a clean year-by-year trend is not available through the data portal's API (the interface that lets software query the data directly). Treat the figures as a cumulative snapshot, not a time series.",
+      },
+      {
+        heading: 'Checking a single building',
+        body: "These borough-level totals describe the city as a whole, not any one address. To see the permit history of a specific property, you can look it up directly. Tools such as [RegWatch's NYC property search](https://regwatch.nyc/nyc-property-search) pull a single address's DOB permit record alongside its violations and other filings.\n\nFor any decision that turns on a particular building or case, verify the details against the official agency: the DOB for permits, HPD for housing, and the ECB or OATH for violations and hearings. Portal snapshots can lag or omit recent activity.\n\nThis article is general information drawn from public data, not legal advice.",
+      },
+    ],
+    faq: [
+      {
+        q: 'How many building permits has New York City issued?',
+        a: "3,989,483 in total, according to NYC OpenData's DOB Permit Issuance dataset (ipu4-2q9a), queried July 2026. The figure is cumulative, covering roughly 1989 to the present rather than a single year.",
+      },
+      {
+        q: 'Which borough has the most building permits?',
+        a: 'Manhattan, with 1,624,255 permits, the most of any borough. Brooklyn has 947,115, Queens 841,002, the Bronx 344,134, and Staten Island 232,977.',
+      },
+      {
+        q: 'Which borough files the most new-building permits?',
+        a: 'Queens, with 181,523 new-building permits, followed by Brooklyn at 176,087. Manhattan is lowest at 37,067, roughly five times fewer than Queens.',
+      },
+      {
+        q: 'Why does Manhattan have so many permits but the fewest new buildings?',
+        a: 'Most Manhattan permits are A2 minor alterations to existing buildings. The borough is largely built out, so its activity is renovation rather than new construction, which drives the overall count up while new-building permits stay low.',
+      },
+      {
+        q: "Can I look up a specific address's permit history?",
+        a: 'The public dataset is cumulative and counts permits, not buildings, so it does not summarize one property. For a single address, use an address search tool and verify the details against the DOB. This is general information, not legal advice.',
+      },
+    ],
+  },
+  {
+    slug: 'nyc-unsafe-facades-fisp-data',
+    title: "5,819 NYC facade filings rated 'Unsafe'",
+    h1: "5,819 NYC facade-inspection filings came back rated 'Unsafe'",
+    metaDescription:
+      "NYC OpenData's facade dataset shows 5,819 filings rated 'Unsafe' and 32,127 'SWARMP'; more than half the unsafe filings — 3,059 of 5,819 — are in Manhattan.",
+    intro:
+      "Across New York City's facade-inspection filings, 5,819 have come back rated 'Unsafe' and another 32,127 are listed as 'SWARMP' — safe only with required repairs — according to NYC OpenData's DOB NOW: Safety Facades Compliance Filings dataset. The records cover 86,713 filings in all. More than half of the unsafe filings, 3,059 of 5,819, are in Manhattan. The data tracks filings, not unique buildings.",
+    sections: [
+      {
+        heading: "5,819 filings came back rated 'Unsafe'",
+        body: "New York City requires owners of buildings taller than six stories to have their facades inspected on a recurring cycle and to file the results with the city. Across those filings, 5,819 are rated 'Unsafe,' according to NYC OpenData, DOB NOW: Safety Facades Compliance Filings (dataset xubg-57si), queried July 2026.\n\nThe same records show 44,124 filings rated 'Safe' and 32,127 rated 'SWARMP,' a status that means the wall is stable for now but needs required repairs. Another 4,355 filings are marked 'No Report Filed,' meaning the owner never filed a result.\n\nIn total the dataset holds 86,713 filings, with 288 left blank. The program is administered by the Department of Buildings (DOB).",
+      },
+      {
+        heading: 'More than half the unsafe filings are in Manhattan',
+        body: "The unsafe filings are not spread evenly across the five boroughs. Manhattan accounts for 3,059 of the 5,819 unsafe filings — more than half.\n\nBrooklyn follows with 1,155 and the Bronx with 1,045. Queens has 519 unsafe filings, and Staten Island has 41.\n\nThe concentration in Manhattan tracks with where the city's tall buildings cluster, since the inspection requirement applies only to buildings above six stories.",
+      },
+      {
+        heading: 'The most recent completed cycle',
+        body: "Inspections run in five-year cycles. In the most recent completed cycle, known as Cycle 9, filings totaled 30,526.\n\nOf those, 13,433 were rated 'Safe' and 10,987 'SWARMP.' Another 3,622 came back 'Unsafe,' and 2,465 were 'No Report Filed.'\n\nThat works out to about 12% of Cycle 9 filings rated unsafe and about 36% rated SWARMP, according to the same NYC OpenData dataset.",
+      },
+      {
+        heading: "What 'SWARMP' and the other labels mean",
+        body: "'SWARMP' stands for 'Safe With A Repair And Maintenance Program.' It describes a facade that is deficient and needs scheduled repair — not a wall at immediate risk of collapse.\n\nAn important caveat: each row is a filing, not a unique building. The dataset holds one filing per building per five-year cycle, covering cycles 6 through 10, so the same address can appear more than once.\n\nThe program is the Facade Inspection Safety Program (FISP), the city's name for the [Local Law 11 facade compliance rules](https://regwatch.nyc/regulations/nyc-dob-ll11). RegWatch is one tool that tracks a building's FISP or Local Law 11 status and its filing deadlines.",
+      },
+      {
+        heading: 'How to check a specific building',
+        body: "The dataset is a citywide snapshot, not a verdict on any one address. Because rows are filings rather than buildings, and because a status can change between cycles, verify a specific building or case against the official agency — the Department of Buildings — before relying on it.\n\nThis article is general information drawn from public data, not legal advice. A building's current status, any matter before the Office of Administrative Trials and Hearings (OATH) or its Environmental Control Board (ECB), and pending deadlines should be confirmed with the city.\n\nThe figures here were queried in July 2026 and will shift as owners file for the current cycle.",
+      },
+    ],
+    faq: [
+      {
+        q: "What does 'Unsafe' mean in a facade filing?",
+        a: "An 'Unsafe' rating means the inspecting engineer found a facade condition that poses a risk to the public, obliging the owner to install protection and make repairs. Across the NYC OpenData facade dataset, 5,819 filings carry this status.",
+      },
+      {
+        q: "What does 'SWARMP' mean?",
+        a: "SWARMP stands for 'Safe With A Repair And Maintenance Program.' The facade is stable now but has deficiencies that need scheduled repair, not immediate action for collapse risk. The dataset lists 32,127 filings as SWARMP.",
+      },
+      {
+        q: 'Why is Manhattan so heavily represented?',
+        a: "Manhattan accounts for 3,059 of the 5,819 unsafe filings, more than half. The inspection requirement applies only to buildings taller than six stories, and Manhattan holds a large share of the city's tall buildings.",
+      },
+      {
+        q: 'Does each filing represent a different building?',
+        a: 'No. Each row is one filing per building per five-year cycle, covering cycles 6 through 10, so a single address can appear more than once. The counts are filings, not unique buildings.',
+      },
+      {
+        q: 'How current is this data?',
+        a: "The figures come from NYC OpenData's DOB NOW: Safety Facades Compliance Filings dataset (xubg-57si), queried July 2026. Confirm any specific building's status with the Department of Buildings, since this is general information, not legal advice.",
+      },
+    ],
+  },
+  {
+    slug: 'nyc-heat-hot-water-complaints-data',
+    title: '16.2M NYC housing problems: a third are heat or hot water',
+    h1: 'New Yorkers have logged 16.2 million housing problems — a third about heat or hot water',
+    metaDescription:
+      'New Yorkers logged 16.2 million HPD housing-maintenance problems, per NYC OpenData. Roughly one in three is about heat or hot water; Bronx and Brooklyn lead.',
+    intro:
+      "New Yorkers have filed 16,191,607 individual housing-maintenance problems with the city's housing agency, according to NYC OpenData. Roughly one in three concerns heat or hot water, making it the most common housing grievance in the five boroughs. The records, drawn from the HPD Housing Maintenance Code Complaints and Problems dataset, cover reports made from roughly 2014 onward. Brooklyn and the Bronx account for the bulk of the total. Nearly all of these problems have since been closed.",
+    sections: [
+      {
+        heading: 'Heat and hot water top the list',
+        body: 'New Yorkers have logged 16,191,607 housing-maintenance problems with the Department of Housing Preservation and Development (HPD), according to NYC OpenData\'s HPD Housing Maintenance Code Complaints and Problems dataset (ygpa-z7cr), queried in July 2026. Each row is a single "problem," the specific issue a tenant reports.\n\nHeat and hot water dominate. The dataset logs 2,901,364 problems tagged HEAT/HOT WATER and another 2,509,671 tagged HEATING — about 5,411,035 combined, or roughly a third of everything reported.\n\nThat makes a cold apartment the city\'s single most common housing grievance, outpacing every other category by a wide margin.',
+      },
+      {
+        heading: 'Plumbing, paint and pests come next',
+        body: 'After heat, plumbing is the next-largest category, with 2,058,756 problems. Paint and plaster follow at 1,865,127, and a catch-all GENERAL category accounts for 1,812,526.\n\nUnsanitary conditions — a label that covers pests, mold and garbage — total 1,305,187. Electrical problems, at 838,108, round out the major categories tracked in the data.',
+      },
+      {
+        heading: 'The Bronx nearly matches Brooklyn',
+        body: 'By borough, Brooklyn leads with 5,398,468 problems and the Bronx follows closely at 5,113,360. Manhattan records 3,440,536, Queens 1,984,344 and Staten Island 254,899.\n\nThe Bronx figure stands out: the borough has a smaller housing stock than Brooklyn yet logs nearly as many problems. The two boroughs together account for most of the citywide total.',
+      },
+      {
+        heading: 'Nearly all problems are closed',
+        body: 'The vast majority of these problems are resolved, at least on paper. HPD marks 16,143,010 as CLOSE (closed) against 48,597 that remain OPEN.\n\nAmong those still open, 2,602 are heat or hot water problems. A status of "open" reflects the record as logged, not necessarily the current condition of an apartment.',
+      },
+      {
+        heading: 'How to read these numbers',
+        body: "A few caveats matter. Each row is an individual problem, and one tenant complaint can generate several, so 16.2 million is a count of problems, not of complaints or of buildings. The figures are unverified tenant reports, not adjudicated violations, and the merged dataset runs from roughly 2014.\n\nTo check the record for one address, you can look it up directly. Tools like RegWatch let you [look up a building's HPD complaint and violation history](https://regwatch.nyc/hpd-violation-lookup) in one place, alongside actions from agencies such as DOB, ECB and OATH.\n\nThis article is general information, not legal advice. Always verify a specific building or case against the official agency record before relying on it.",
+      },
+    ],
+    faq: [
+      {
+        q: 'How many housing complaints has NYC logged?',
+        a: "NYC OpenData's HPD dataset lists 16,191,607 individual maintenance problems, drawn from reports since roughly 2014. Each row is one problem, so the total counts problems, not complaints or buildings.",
+      },
+      {
+        q: 'What is the most common housing complaint in NYC?',
+        a: 'Heat and hot water. HEAT/HOT WATER (2,901,364) and HEATING (2,509,671) problems combine to about 5,411,035, or roughly one in three of all logged problems.',
+      },
+      {
+        q: 'Which borough has the most HPD complaints?',
+        a: 'Brooklyn, with 5,398,468 problems, narrowly ahead of the Bronx at 5,113,360. The Bronx nearly matches Brooklyn despite a smaller housing stock. Manhattan records 3,440,536, Queens 1,984,344 and Staten Island 254,899.',
+      },
+      {
+        q: 'How many complaints are still open?',
+        a: 'Of 16,191,607 problems, 16,143,010 are marked closed and 48,597 remain open, including 2,602 open heat or hot water problems.',
+      },
+      {
+        q: 'Do these numbers mean the violations are confirmed?',
+        a: 'No. They are unverified tenant reports, not adjudicated violations. To confirm the record for a specific building or case, check the official agency source. This is general information, not legal advice.',
+      },
+    ],
+  },
+  {
+    slug: 'nyc-ll97-covers-apartment-buildings-data',
+    title: '66% of NYC Local Law 97 buildings are apartments',
+    h1: 'Two of every three Local Law 97 buildings are apartments, not offices',
+    metaDescription:
+      'NYC OpenData shows 68,575 of 103,259 benchmarking filings - about 66% - are apartment buildings, far more than the 7,578 offices tied to Local Law 97.',
+    intro:
+      "About two of every three buildings in New York City's energy-benchmarking dataset are multifamily housing, not the office towers usually linked to the city's climate law. NYC OpenData's Building Energy and Water Data Disclosure records 103,259 filings under Local Law 84; 68,575 of them, about 66 percent, are apartment buildings. Office buildings account for 7,578. The figures reframe who bears the weight of Local Law 97, the emissions-cap rule that draws on the same benchmarking data.",
+    sections: [
+      {
+        heading: "What NYC's benchmarking data covers",
+        body: "Local Law 84 requires owners of large buildings to file their annual energy and water use. The resulting dataset, published as Building Energy and Water Data Disclosure on NYC OpenData (dataset 5zyy-y8am), held 103,259 filings when queried in July 2026.\n\nThe filings span three report years: 30,485 for 2022, 33,684 for 2023, and 39,090 for 2024. Benchmarking - the practice of measuring a building's energy use so it can be compared over time - is the data backbone the city uses to administer Local Law 97, its building-emissions cap.",
+      },
+      {
+        heading: 'Apartment buildings outnumber offices about nine to one',
+        body: 'Multifamily housing - residential buildings with multiple units - accounts for 68,575 filings, about 66 percent of the dataset. Office buildings, the property type most often associated with the law, account for 7,578, roughly nine times fewer.\n\nThe rest of the list drops off quickly: K-12 schools (5,739), hotels (1,996), warehouses (1,429), colleges and universities (1,313), manufacturing sites (1,250), and retail (1,017). By count, Local Law 97 is largely a law about where New Yorkers live.',
+      },
+      {
+        heading: 'Coverage has grown as thresholds phased in',
+        body: "Annual filings rose about 28 percent from report year 2022 (30,485) to 2024 (39,090). The increase reflects the benchmarking mandate reaching more buildings as size thresholds were lowered over time.\n\nMore buildings in the dataset means more owners potentially facing Local Law 97's emissions caps, which the city phases in over time. The benchmarking count is not itself the compliance list, but it is the pool the city draws from.",
+      },
+      {
+        heading: 'What the numbers do not show',
+        body: 'The dataset covers only buildings above the roughly 25,000-square-foot benchmarking threshold, so smaller buildings are absent. Each row represents one building for one report year, which means 103,259 is a count of building-years, not unique buildings - a single building filing in all three years appears three times.\n\nThe energy-score fields contain "Not Available" placeholders in many records, so no average energy score is reported here. Readers should treat the property-type counts as a picture of what is filed, not a full census of the city\'s building stock.',
+      },
+      {
+        heading: 'How to check a specific building',
+        body: 'Whether an individual building falls under Local Law 97 depends on its size, use, and other factors that a citywide tally cannot resolve. RegWatch offers a [Local Law 97 compliance check](https://regwatch.nyc/ll97-compliance) that estimates whether a building is covered and what its emissions-cap exposure might be.\n\nThat estimate is a starting point, not a ruling. Verify a specific building or case against the official city agencies - the Department of Buildings (DOB), Housing Preservation and Development (HPD), and the enforcement bodies ECB and OATH - and treat this article as general information, not legal advice.',
+      },
+    ],
+    faq: [
+      {
+        q: "How many buildings are in NYC's benchmarking dataset?",
+        a: "NYC OpenData's Building Energy and Water Data Disclosure held 103,259 filings when queried in July 2026, split across report years 2022 (30,485), 2023 (33,684), and 2024 (39,090). Because each row is one building per year, that total counts building-years, not unique buildings.",
+      },
+      {
+        q: 'What share of Local Law 97 buildings are apartments?',
+        a: 'Multifamily housing makes up 68,575 filings, about 66 percent of the dataset - roughly two of every three. Office buildings account for 7,578, about nine times fewer.',
+      },
+      {
+        q: 'Which property types come after multifamily and office?',
+        a: 'By filing count: K-12 schools (5,739), hotels (1,996), warehouses (1,429), colleges and universities (1,313), manufacturing (1,250), and retail (1,017).',
+      },
+      {
+        q: "Why doesn't the article report an average energy score?",
+        a: 'The dataset\'s energy-score fields contain "Not Available" placeholders in many records, so no reliable average can be drawn from them. The counts here describe property types, not building performance.',
+      },
+      {
+        q: 'Does being in the dataset mean a building must comply with Local Law 97?',
+        a: 'Not necessarily. Benchmarking under Local Law 84 and emissions caps under Local Law 97 have related but distinct coverage rules. Verify any specific building against the Department of Buildings or the relevant city agency; this is general information, not legal advice.',
+      },
+    ],
+  },
+  {
+    slug: 'nyc-work-without-permit-violations-data',
+    title: "13,002 NYC 'work without permit' flags, 81% in 2 boroughs",
+    h1: "NYC has 13,002 active 'work without a permit' violations — 81% in Brooklyn and Queens",
+    metaDescription:
+      "NYC OpenData lists 13,002 active 'work without a permit' violations, about 81% of them in Brooklyn and Queens. See the borough breakdown and caveats.",
+    intro:
+      "New York City's building department has 13,002 active violations for 'work without a permit' — a flag that construction or alteration happened without the required city approval. That count comes from NYC OpenData's DOB Violations dataset, queried in July 2026. About 81 percent of the active cases sit in just two boroughs: Brooklyn and Queens hold 10,573 of them combined. The same boroughs lead the city in new construction. Here is what the public data shows, and what it does not.",
+    sections: [
+      {
+        heading: 'What the data shows',
+        body: "NYC OpenData's DOB Violations dataset — the record kept in the Department of Buildings' Building Information System, or BIS — lists 13,002 active violations for work without a permit. A 'work without a permit' violation means the city recorded construction or alteration done without the approval it requires. The figure is drawn from NYC OpenData, DOB Violations (dataset 3h2n-5cm9), queried July 2026.\n\nThat 13,002 is a small slice of the file. The same dataset holds 2,475,641 DOB violations of all types, accumulated over decades. The work-without-permit flags are the ones that point specifically at unpermitted building.",
+      },
+      {
+        heading: 'Where the active violations cluster',
+        body: 'The active work-without-permit cases are heavily concentrated. Brooklyn has 5,848 and Queens has 4,725 — together 10,573, or about 81 percent of the citywide total.\n\nThe other three boroughs trail well behind. Manhattan has 1,224, the Bronx has 654, and Staten Island has 551.',
+      },
+      {
+        heading: 'The same boroughs are building the most',
+        body: "Brooklyn and Queens are also where much of the city's new construction is happening, so the concentration is not surprising on its face. More building generally means more chances for work to begin ahead of a permit.\n\nManhattan is a partial exception. With 1,224 active flags it sits far below the outer-borough leaders — the same borough that leads in alteration permits but trails in new construction.",
+      },
+      {
+        heading: "What 'active' does and does not mean",
+        body: "'Active' in the BIS system is not the same as 'current' or 'confirmed today.' The status can include older, uncertified cases that may be stale — a violation resolved in practice but never formally closed can still read as active.\n\nThis dataset also carries no dollar penalties. Fines for building violations live in a separate system run by the Environmental Control Board and the Office of Administrative Trials and Hearings — the ECB/OATH system — not in the BIS file counted here.\n\nCategory labels in the source data are inconsistent, so any single count should be read as an indicator rather than an exact tally. Treat these figures as general information, not legal advice.",
+      },
+      {
+        heading: 'How to check a specific building',
+        body: "Because the citywide numbers are indicators, verify a specific building or case against the official agency before drawing conclusions about an address. The Department of Buildings publishes the authoritative record for any given property.\n\nFor a quicker starting point, RegWatch, a tool that lets you [search a building's DOB violations](https://regwatch.nyc/dob-violation-search) by address, flags work-without-permit cases among the results. Use it to find leads, then confirm the details in the city's own system.",
+      },
+    ],
+    faq: [
+      {
+        q: "What is a 'work without a permit' violation?",
+        a: 'It is a Department of Buildings violation the city records when construction or alteration is done without the permit or approval it requires. In the data it flags unpermitted building work at a property.',
+      },
+      {
+        q: 'How many active work-without-permit violations does NYC have?',
+        a: "13,002, according to NYC OpenData's DOB Violations dataset (3h2n-5cm9), queried July 2026. That sits within a file of 2,475,641 DOB violations of all types.",
+      },
+      {
+        q: 'Which boroughs have the most?',
+        a: 'Brooklyn (5,848) and Queens (4,725) lead, together holding 10,573, or about 81 percent. Manhattan has 1,224, the Bronx 654, and Staten Island 551.',
+      },
+      {
+        q: 'Does an active violation mean a fine is owed?',
+        a: "Not necessarily. This dataset carries no dollar penalties; those live in the separate ECB/OATH system. 'Active' status can also include older, uncertified cases that may be stale.",
+      },
+      {
+        q: 'How can I check a specific address?',
+        a: "Verify the case against the Department of Buildings' official record before relying on it. This is general information, not legal advice.",
+      },
+    ],
+  },
 ];
 
 export const EVENTS: EvergreenPage[] = [
