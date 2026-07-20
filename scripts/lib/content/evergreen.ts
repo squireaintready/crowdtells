@@ -1128,6 +1128,59 @@ export const EXPLAINERS: EvergreenPage[] = [
     ],
     sponsored: true,
   },
+  {
+    slug: 'nyc-open-housing-violations-data',
+    title: "NYC's 2.9M Open Housing Violations, by the Numbers",
+    h1: "NYC's Open Housing Violations, by the Numbers",
+    metaDescription:
+      "NYC lists about 2.9 million open HPD housing violations across 168,000+ buildings. See the borough and severity breakdown, and what 'open' really means.",
+    intro:
+      "New York City's housing agency records a violation every time an inspector finds a code problem: no heat, a leak, peeling lead paint, a broken lock. Most never formally close. As of July 2026, the city's public records list about 2.9 million open housing violations across roughly 169,000 buildings, according to NYC OpenData. Here is how that backlog breaks down by borough and severity, and why an open violation does not always mean an unfixed one.",
+    sections: [
+      {
+        heading: 'About 2.9 million open violations',
+        body: "The Department of Housing Preservation and Development (HPD) enforces New York City's housing maintenance code. Every time an inspector cites a condition, from a leak to a lack of heat, it becomes a recorded violation, and the city publishes them all through NYC OpenData.\n\nAs of July 2026, that dataset lists 2,875,206 violations with an open status, out of more than 11 million recorded since the early 2000s. Put another way, roughly one in four housing violations the city has ever written is still on the books as open.\n\nThat total is large for a reason worth understanding up front. A violation stays open until the owner certifies that it was corrected. Many owners fix the problem but never file that certification, so a meaningful share of these open violations describe conditions that were resolved long ago in the apartment but never closed on paper.",
+      },
+      {
+        heading: 'Brooklyn and the Bronx carry the most',
+        body: 'The open violations are not spread evenly. Brooklyn leads by a wide margin with about 1.21 million, followed by the Bronx with roughly 653,000. Queens (about 498,000) and Manhattan (about 448,000) sit well behind, and Staten Island trails with about 68,000.\n\nBrooklyn alone accounts for around 42 percent of the citywide total, and Brooklyn and the Bronx together make up nearly two-thirds of it.\n\nThese are raw counts, not rates. The boroughs with the most open violations are also those with the largest stock of older, multi-unit rental housing, so a higher tally partly reflects having more apartments to inspect, not only worse conditions.',
+      },
+      {
+        heading: 'How serious are the violations?',
+        body: "HPD sorts violations into classes by severity. Class A is non-hazardous, Class B is hazardous, and Class C is immediately hazardous, the tier that covers dangers like a lack of heat or hot water in winter.\n\nBy that scale, the open backlog skews toward the serious end. Class B, hazardous, is the largest group at about 1.37 million, nearly half of all open violations. Class C, immediately hazardous, accounts for about 582,000, or roughly one in five. Class A, non-hazardous, makes up about 681,000, and a smaller group of about 241,000 falls under a separate 'I' class.\n\nEven read with the certification caveat in mind, that mix shows a large number of serious, safety-related conditions sitting on the city's open rolls at any given time.",
+      },
+      {
+        heading: 'A backlog that keeps growing',
+        body: 'The open count is not just a historical residue. In the twelve months ending July 2026, HPD issued roughly 494,000 violations that are still open, close to half a million new open entries in a single year.\n\nThe violations are also concentrated. The 2.9 million open items are attached to about 168,835 distinct buildings, which works out to an average of roughly 17 open violations per affected building. A relatively small number of heavily-cited buildings carry a disproportionate share.\n\nFor a tenant, buyer, or lender, that concentration is the practical takeaway: the citywide total matters less than whether one specific building is among the heavily-cited ones.',
+      },
+      {
+        heading: "Why one building's record is hard to read",
+        body: "HPD violations are only part of a building's story. Housing-code issues live in HPD's system, but construction and safety problems sit with the Department of Buildings, and monetary penalties run through the ECB and OATH hearings system. No single official page stitches them together.\n\nThat is the gap tools in this space try to fill. Services like RegWatch aggregate the public records, so you can pull a building's [combined HPD, DOB, and ECB violation history](https://regwatch.nyc/nyc-violation-lookup) in one search rather than checking each system separately. The underlying data is still the city's; the value is in seeing it in one place.\n\nA final caveat: this analysis reflects the city's own status field. Because open includes uncertified but possibly-corrected violations, treat these figures as a map of the public record, not a live census of unsafe apartments, and verify any specific building against HPD directly. This is general information, not legal advice.",
+      },
+    ],
+    faq: [
+      {
+        q: 'How many open housing violations does NYC have?',
+        a: "About 2.9 million. NYC OpenData's HPD Housing Maintenance Code Violations dataset listed 2,875,206 violations marked open as of July 2026, out of more than 11 million recorded since the early 2000s. The figure includes older violations that were fixed but never formally certified as corrected.",
+      },
+      {
+        q: 'Which NYC borough has the most housing violations?',
+        a: 'Brooklyn, with about 1.21 million open violations, or roughly 42 percent of the citywide total. The Bronx is next at about 653,000, followed by Queens, Manhattan, and Staten Island. These are raw counts, so boroughs with more rental housing tend to show higher totals.',
+      },
+      {
+        q: 'What do HPD violation classes A, B, and C mean?',
+        a: 'Class A is non-hazardous, Class B is hazardous, and Class C is immediately hazardous, such as no heat or hot water. Among open violations, Class B is the largest group at about 1.37 million, and Class C accounts for roughly 582,000.',
+      },
+      {
+        q: 'Does an open violation mean the problem still exists?',
+        a: "Not necessarily. A violation stays open until the owner certifies the correction, and many owners fix the condition without filing that paperwork. So the open count reflects the city's records, not a live count of unresolved problems. Always verify a specific building with HPD.",
+      },
+      {
+        q: 'Where does this data come from?',
+        a: "NYC OpenData's 'Housing Maintenance Code Violations' dataset, published by HPD and queried in July 2026. It is public and free to search. Building-level violation data is also aggregated by third-party tools alongside DOB and ECB records.",
+      },
+    ],
+  },
 ];
 
 export const EVENTS: EvergreenPage[] = [
