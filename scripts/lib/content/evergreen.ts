@@ -29,6 +29,8 @@ export interface EvergreenPage {
   /** Topical cluster. 'nyc' pages live under the /nyc hub and are kept out of the
    * prediction-markets /learn index; undefined = the default markets cluster. */
   section?: 'nyc';
+  /** Optional "By the numbers" / "Key facts" rail box — a few scannable stats. */
+  keyFacts?: { value: string; label: string }[];
 }
 
 export const EXPLAINERS: EvergreenPage[] = [
@@ -802,6 +804,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'how-to-check-nyc-dob-hpd-violations',
+    keyFacts: [
+      { value: '3 systems', label: 'DOB, HPD & OATH to check' },
+      { value: '$25,000', label: 'max penalty, DOB Class 1' },
+      { value: '30 days', label: 'to contest an ECB summons' },
+    ],
     section: 'nyc',
     title: 'How to Check NYC Building Violations by Address',
     h1: 'How to Check NYC Building Violations by Address',
@@ -860,6 +867,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-title-deed-lien-search-guide',
+    keyFacts: [
+      { value: '1966', label: 'ACRIS records reach back to' },
+      { value: 'Free', label: 'to search deeds, mortgages & liens' },
+      { value: 'At closing', label: 'liens must be cleared' },
+    ],
     section: 'nyc',
     title: 'NYC Title, Deed & Lien Search: The ACRIS Guide',
     h1: 'NYC Title, Deed and Lien Search: An ACRIS Guide',
@@ -918,6 +930,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-local-law-97-compliance',
+    keyFacts: [
+      { value: '25,000 sq ft', label: 'coverage threshold' },
+      { value: '$268', label: 'per ton CO2e over the cap, yearly' },
+      { value: 'May 1', label: 'annual DOB NOW report' },
+    ],
     section: 'nyc',
     title: "Local Law 97 Compliance in NYC: A 2026 Owner's Guide",
     h1: "Local Law 97 Compliance in NYC: The 2026 Owner's Guide",
@@ -972,6 +989,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-facade-inspection-fisp-local-law-11',
+    keyFacts: [
+      { value: '6+ stories', label: 'buildings covered' },
+      { value: 'Every 5 yrs', label: 'QEWI inspection cycle' },
+      { value: 'Cycle 10', label: 'Feb 2025 – Feb 2030' },
+    ],
     section: 'nyc',
     title: 'NYC Facade Inspection: FISP / Local Law 11 Explained',
     h1: 'NYC Facade Inspection: FISP and Local Law 11 Explained',
@@ -1139,6 +1161,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-open-housing-violations-data',
+    keyFacts: [
+      { value: '2.9M', label: 'open HPD violations citywide' },
+      { value: '168,835', label: 'buildings affected' },
+      { value: '~42%', label: 'in Brooklyn, the most' },
+    ],
     section: 'nyc',
     title: "NYC's 2.9M Open Housing Violations, by the Numbers",
     h1: "NYC's Open Housing Violations, by the Numbers",
@@ -1193,6 +1220,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-unpaid-building-fines-data',
+    keyFacts: [
+      { value: '$819M', label: 'unpaid ECB/OATH penalties' },
+      { value: '$3.13B', label: 'total penalties imposed' },
+      { value: '1.8M', label: 'violations on record' },
+    ],
     section: 'nyc',
     title: '$3.13B in NYC building fines, $819M unpaid',
     h1: 'NYC building fines: $3.13 billion issued, about $819 million still unpaid',
@@ -1247,6 +1279,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'where-nyc-builds-permit-data',
+    keyFacts: [
+      { value: '4.0M', label: 'DOB permits issued' },
+      { value: 'Queens', label: 'most new-building permits' },
+      { value: '37,067', label: 'Manhattan new-building permits' },
+    ],
     section: 'nyc',
     title: 'Manhattan leads NYC permits, but Queens builds the most',
     h1: 'Where New York City builds: DOB permits by borough',
@@ -1301,6 +1338,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-unsafe-facades-fisp-data',
+    keyFacts: [
+      { value: '5,819', label: 'facade filings rated Unsafe' },
+      { value: '32,127', label: 'SWARMP — repairs required' },
+      { value: '~12%', label: 'unsafe in the latest cycle' },
+    ],
     section: 'nyc',
     title: "5,819 NYC facade filings rated 'Unsafe'",
     h1: "5,819 NYC facade-inspection filings came back rated 'Unsafe'",
@@ -1355,6 +1397,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-heat-hot-water-complaints-data',
+    keyFacts: [
+      { value: '16.2M', label: 'housing problems logged' },
+      { value: '~1 in 3', label: 'about heat or hot water' },
+      { value: 'Bronx', label: 'nearly ties Brooklyn' },
+    ],
     section: 'nyc',
     title: '16.2M NYC housing problems: a third are heat or hot water',
     h1: 'New Yorkers have logged 16.2 million housing problems — a third about heat or hot water',
@@ -1409,6 +1456,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-ll97-covers-apartment-buildings-data',
+    keyFacts: [
+      { value: '66%', label: 'of LL97 buildings are apartments' },
+      { value: '68,575', label: 'multifamily buildings covered' },
+      { value: '~9x', label: 'apartments vs offices' },
+    ],
     section: 'nyc',
     title: '66% of NYC Local Law 97 buildings are apartments',
     h1: 'Two of every three Local Law 97 buildings are apartments, not offices',
@@ -1463,6 +1515,11 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-work-without-permit-violations-data',
+    keyFacts: [
+      { value: '13,002', label: 'active work-without-permit cases' },
+      { value: '81%', label: 'in Brooklyn & Queens' },
+      { value: '1,224', label: 'in Manhattan' },
+    ],
     section: 'nyc',
     title: "13,002 NYC 'work without permit' flags, 81% in 2 boroughs",
     h1: "NYC has 13,002 active 'work without a permit' violations — 81% in Brooklyn and Queens",

@@ -359,10 +359,9 @@ function relatedBlock(related: Market[], category: string): string {
 const PAGE_CSS = `@font-face{font-family:'Source Serif 4';font-style:normal;font-display:swap;font-weight:200 900;src:url(/fonts/source-serif-4-latin.woff2) format('woff2-variations')}
 @font-face{font-family:'Fraunces Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/fraunces-latin.woff2) format('woff2-variations')}
 @font-face{font-family:'Inter Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin.woff2) format('woff2-variations')}
-:root{--bg:#fbfaf7;--surface:#fff;--surface-2:#f4f1ea;--border:#e7e2d8;--border-strong:#d6cfc1;--ink:#1a1813;--dim:#54504a;--mute:#6f695e;--accent:#27496d;--accent-strong:#1b3650;--on-accent:#fbfaf7;--up:#1f7a4d;--down:#b23a2e;--display:'Source Serif 4',Georgia,'Times New Roman',serif;--serif:'Fraunces Variable',Georgia,'Times New Roman',serif;--sans:'Inter Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+:root{--bg:#fbfaf7;--surface:#fff;--surface-2:#f4f1ea;--border:#e7e2d8;--border-strong:#d6cfc1;--ink:#1a1813;--dim:#54504a;--mute:#6f695e;--accent:#27496d;--accent-strong:#1b3650;--on-accent:#fbfaf7;--up:#1f7a4d;--down:#b23a2e;--display:'Source Serif 4',Georgia,'Times New Roman',serif;--serif:'Fraunces Variable',Georgia,'Times New Roman',serif;--sans:'Inter Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--prose:var(--sans)}
 [data-theme='bordeaux']{color-scheme:dark;--bg:#090406;--surface:#160a0c;--surface-2:#1d0f12;--border:#381b21;--border-strong:#4c2530;--ink:#f4ece9;--dim:#c7b9b6;--mute:#968985;--accent:#d6a35b;--accent-strong:#e9bd80;--on-accent:#291106;--up:#56c395;--down:#de846c}
 [data-theme='forest']{color-scheme:dark;--bg:#0c1410;--surface:#111c16;--surface-2:#16241c;--border:#27392e;--border-strong:#365044;--ink:#eaf1ea;--dim:#aebdb2;--mute:#8a9b8f;--accent:#cf9d63;--accent-strong:#e0b585;--on-accent:#1b1206;--up:#5fc78d;--down:#e8917f}
-@media(prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark;--bg:#090406;--surface:#160a0c;--surface-2:#1d0f12;--border:#381b21;--border-strong:#4c2530;--ink:#f4ece9;--dim:#c7b9b6;--mute:#968985;--accent:#d6a35b;--accent-strong:#e9bd80;--on-accent:#291106;--up:#56c395;--down:#de846c}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 var(--prose);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -485,7 +484,43 @@ footer .wrap>*{display:block;margin-bottom:7px}
 .code code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink)}
 .cal-table code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem}
 .embed-demo{margin:0 0 22px}
-@media(max-width:560px){.wrap{padding:0 17px}main{padding:28px 0 8px}.lens{gap:15px}.lens .fig{font-size:2.7rem}}`;
+@media(max-width:560px){.wrap{padding:0 17px}main{padding:28px 0 8px}.lens{gap:15px}.lens .fig{font-size:2.7rem}}
+.theme-btn{margin-left:14px;flex:0 0 auto;background:none;border:1px solid var(--border-strong);border-radius:999px;width:30px;height:30px;color:var(--dim);font-size:.95rem;line-height:1;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent)}
+.brand{position:relative;padding-bottom:4px}
+.brand::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--accent);opacity:.9}
+.spread{max-width:728px;margin:0 auto;padding:0 22px}
+.spine{min-width:0}
+.rail{min-width:0;font-family:var(--sans)}
+.rail-mod{margin:0 0 26px}
+.rail-mod:last-child{margin-bottom:0}
+.rail-h{font-family:var(--sans);font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);margin:0 0 12px}
+.rail-note{font-size:.88rem;line-height:1.5;color:var(--dim);margin:0}
+.toc{list-style:none;margin:0;padding:0;font-size:.92rem;line-height:1.35}
+.toc a{display:block;color:var(--dim);text-decoration:none;border-left:2px solid var(--border);padding:5px 0 5px 12px}
+.toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+.keyfacts{list-style:none;margin:0;padding:0}
+.keyfacts li{padding:12px 0;border-top:1px solid var(--border)}
+.keyfacts li:first-child{border-top:0;padding-top:0}
+.keyfacts .kf-v{display:block;font-family:var(--serif);font-weight:360;font-size:1.55rem;line-height:1.02;letter-spacing:-.02em;color:var(--accent);font-variant-numeric:tabular-nums}
+.keyfacts .kf-l{display:block;font-family:var(--sans);font-size:.8rem;line-height:1.35;color:var(--mute);margin-top:4px}
+.lookup{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:15px 16px}
+.lookup p{margin:0 0 11px;font-size:.88rem;line-height:1.45;color:var(--dim)}
+.lookup form{display:flex;flex-direction:column;gap:8px;margin:0}
+.lookup input{width:100%;font-family:var(--sans);font-size:.92rem;padding:9px 11px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--ink)}
+.lookup input::placeholder{color:var(--mute)}
+.lookup button{font-family:var(--sans);font-weight:700;font-size:.9rem;background:var(--accent);color:var(--on-accent);border:0;border-radius:7px;padding:10px;cursor:pointer}
+.lookup button:hover{background:var(--accent-strong)}
+.lookup .credit{margin:10px 0 0;font-size:.74rem;color:var(--mute)}
+.lookup .credit a{color:var(--mute)}
+.rail-rel{list-style:none;margin:0;padding:0;font-size:.92rem;line-height:1.4}
+.rail-rel li{padding:9px 0;border-top:1px solid var(--border)}
+.rail-rel li:first-child{border-top:0;padding-top:0}
+.rail-rel a{color:var(--ink);text-decoration:none}
+.rail-rel a:hover{color:var(--accent)}
+@media(min-width:1080px){.spread{max-width:1120px;display:grid;grid-template-columns:minmax(0,1fr) minmax(19rem,21rem);column-gap:clamp(2.2rem,4vw,3.6rem);align-items:start}.rail{position:sticky;top:26px;border-left:1px solid var(--border);padding-left:clamp(1.6rem,2vw,2.2rem)}}
+@media(max-width:1079px){.rail{margin:38px 0 0;border-top:1px solid var(--border-strong);padding-top:26px}.toc-mod{display:none}}
+@media(max-width:560px){.spread{padding:0 17px}}`;
 
 /** Shared <head> for the static pages — identical icons, fonts, theme-color,
  * robots, OG/Twitter, and structured data across article and hub pages. */
@@ -521,16 +556,28 @@ export function pageHead(o: {
     <meta name="theme-color" content="#fbfaf7" />
     <script>
       (function () {
-        try {
-          var t = localStorage.getItem('crowdtell-theme');
-          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
-          if (t !== 'light' && t !== 'bordeaux' && t !== 'forest')
-            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'bordeaux' : 'light';
+        var THEMES = ['light', 'bordeaux', 'forest'];
+        var BG = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' };
+        function apply(t) {
           document.documentElement.setAttribute('data-theme', t);
-          var c = { light: '#fbfaf7', bordeaux: '#090406', forest: '#0c1410' }[t];
           var m = document.querySelector('meta[name=theme-color]');
-          if (m && c) m.setAttribute('content', c);
+          if (m && BG[t]) m.setAttribute('content', BG[t]);
+        }
+        var t;
+        try {
+          t = localStorage.getItem('crowdtell-theme');
+          if (t === 'dark' || t === 'oxblood') t = 'bordeaux';
         } catch (e) {}
+        if (THEMES.indexOf(t) < 0) t = 'light'; // default matches the app (light), not OS
+        apply(t);
+        document.addEventListener('click', function (e) {
+          var b = e.target && e.target.closest && e.target.closest('.theme-btn');
+          if (!b) return;
+          var cur = document.documentElement.getAttribute('data-theme') || 'light';
+          var next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+          apply(next);
+          try { localStorage.setItem('crowdtell-theme', next); } catch (e) {}
+        });
       })();
     </script>
     ${o.headScript ?? ''}
@@ -565,6 +612,7 @@ export const siteHeader = (nav: string) => `<header class="site">
       <div class="wrap">
         <a class="brand" href="/">Crowdtells</a>
         <nav aria-label="Primary">${nav}</nav>
+        <button type="button" class="theme-btn" aria-label="Switch color theme" title="Switch theme">◐</button>
       </div>
     </header>`;
 export const siteFooter = (note: string) => `<footer>

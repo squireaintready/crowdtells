@@ -204,9 +204,18 @@ const evergreenBody = (text: string, sponsored = false): string =>
     .map((p) => `<p>${evergreenInline(p, sponsored)}</p>`)
     .join('\n        ');
 
+const headingId = (h: string) =>
+  h
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
 const sectionsHtml = (sections: EvergreenPage['sections'], sponsored = false) =>
   sections
-    .map((s) => `<h2>${xml(s.heading)}</h2>\n        ${evergreenBody(s.body, sponsored)}`)
+    .map(
+      (s) =>
+        `<h2 id="${headingId(s.heading)}">${xml(s.heading)}</h2>\n        ${evergreenBody(s.body, sponsored)}`,
+    )
     .join('\n        ');
 
 const authorLd = {
@@ -249,6 +258,47 @@ const guidesNav = (currentSlug: string, section?: 'nyc') => {
         .map((g) => `<a href="${g.url}">${xml(g.h1)}</a>`)
         .join('')}</nav>`
     : '';
+};
+
+/** A few same-cluster links for the rail (markets↔markets, nyc↔nyc). */
+const railRelated = (slug: string, section: 'nyc' | undefined) => {
+  const others = ALL_GUIDES.filter((g) => g.slug !== slug && g.section === section).slice(0, 5);
+  if (!others.length) return '';
+  return `<div class="rail-mod"><p class="rail-h">${
+    section === 'nyc' ? 'More NYC coverage' : 'More guides'
+  }</p><ul class="rail-rel">${others
+    .map((g) => `<li><a href="${g.url}">${xml(g.h1)}</a></li>`)
+    .join('')}</ul></div>`;
+};
+
+/** A zero-JS "look up any NYC building" civic tool that hands the reader into
+ * RegWatch's public property record — a source credit + reader service, not an
+ * ad (the sitewide credit link is rel="nofollow"). */
+const lookupTool = () =>
+  `<div class="rail-mod"><p class="rail-h">Look up a building</p><div class="lookup"><p>Check any NYC building's public record — violations, permits, liens, and compliance.</p><form action="https://regwatch.nyc/property" method="get" target="_blank" rel="noopener nofollow"><input type="text" name="address" placeholder="123 Main St, Brooklyn" aria-label="NYC building address" required /><button type="submit">Check the record →</button></form><p class="credit">Building records via <a href="https://regwatch.nyc" target="_blank" rel="nofollow noopener">RegWatch</a></p></div></div>`;
+
+/** The evidence rail for an evergreen article: "on this page" TOC, a key-facts
+ * box, the building look-up tool (NYC cluster only), and related links. */
+const railHtml = (c: EvergreenPage): string => {
+  const toc =
+    c.sections.length >= 2
+      ? `<div class="rail-mod toc-mod"><p class="rail-h">On this page</p><ul class="toc">${c.sections
+          .map((s) => `<li><a href="#${headingId(s.heading)}">${xml(s.heading)}</a></li>`)
+          .join('')}</ul></div>`
+      : '';
+  const facts =
+    c.keyFacts && c.keyFacts.length
+      ? `<div class="rail-mod"><p class="rail-h">${
+          c.section === 'nyc' ? 'By the numbers' : 'Key facts'
+        }</p><ul class="keyfacts">${c.keyFacts
+          .map(
+            (f) =>
+              `<li><span class="kf-v">${xml(f.value)}</span><span class="kf-l">${xml(f.label)}</span></li>`,
+          )
+          .join('')}</ul></div>`
+      : '';
+  const lookup = c.section === 'nyc' ? lookupTool() : '';
+  return [toc, facts, lookup, railRelated(c.slug, c.section)].filter(Boolean).join('\n        ');
 };
 
 /** Link only to topic hubs that actually exist this run (≥2 briefed stories), so
@@ -350,8 +400,8 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
     : 'Evergreen guide from Crowdtells — news, told through the crowd, not financial advice.';
   const body = `    ${siteHeader('<a href="/learn">← Guides</a>')}
 
-    <main class="wrap">
-      <article>
+    <main class="spread">
+      <article class="spine">
         ${eyebrow}
         <h1>${xml(c.h1)}</h1>
         <p class="lead">${xml(c.intro)}</p>${disclosure}
@@ -359,8 +409,10 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
         ${faqHtml(c.faq)}
         ${topicsNav(c.relatedTopics, hubSet)}
         <a class="cta" href="/">See the live news feed →</a>
-        ${guidesNav(c.slug, c.section)}
       </article>
+      <aside class="rail" aria-label="Article extras">
+        ${railHtml(c)}
+      </aside>
     </main>
 
     ${siteFooter(footerNote)}`;
@@ -530,13 +582,19 @@ export function nycHubPage(lastmod: string): string {
   });
   const body = `    ${siteHeader('<a href="/">← Live feed</a>')}
 
-    <main class="wrap">
-      <p class="eyebrow"><span class="cat">NYC</span></p>
-      <h1>NYC property records, violations &amp; compliance</h1>
-      <p class="lead">Plain-English guides and data on the New York City building record — violations, Local Law 97, facade inspections, permits, liens, and title — built from public records. Not legal advice.</p>
-      <ul class="hub-list">
-        ${items}
-      </ul>
+    <main class="spread">
+      <div class="spine">
+        <p class="eyebrow"><span class="cat">NYC</span></p>
+        <h1>NYC property records, violations &amp; compliance</h1>
+        <p class="lead">Plain-English guides and data on the New York City building record — violations, Local Law 97, facade inspections, permits, liens, and title — built from public records. Not legal advice.</p>
+        <ul class="hub-list">
+          ${items}
+        </ul>
+      </div>
+      <aside class="rail" aria-label="NYC tools">
+        ${lookupTool()}
+        <div class="rail-mod"><p class="rail-h">About this coverage</p><p class="rail-note">Every figure here comes from public records — NYC OpenData, ACRIS, DOB, and HPD. Aggregated building data via RegWatch. Not legal advice; verify any specific building with the relevant city agency.</p></div>
+      </aside>
     </main>
 
     ${siteFooter('NYC coverage from Crowdtells — built from public records, not legal advice.')}`;
