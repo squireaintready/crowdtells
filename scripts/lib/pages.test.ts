@@ -7,6 +7,7 @@ import {
   explainerPage,
   guidesIndexPage,
   mispricedPage,
+  nycHubPage,
 } from './pages';
 import { EXPLAINERS, EVENTS } from './content/evergreen';
 import { makeMarket } from '../../src/test/factory';
@@ -105,6 +106,23 @@ describe('guidesIndexPage', () => {
     expect(page).toContain('href="https://crowdtells.com/event/fed-rate-decision-odds"');
     expect(page).toContain('"@type":"CollectionPage"');
     expect(page).toContain('rel="canonical" href="https://crowdtells.com/learn"');
+    assertLdSafe(page);
+  });
+
+  it('keeps NYC-section pages out of the markets index but cross-links the NYC hub', () => {
+    expect(page).not.toContain('/learn/nyc-open-housing-violations-data');
+    expect(page).toContain('href="/nyc"');
+  });
+});
+
+describe('nycHubPage', () => {
+  const page = nycHubPage(lastmod);
+  it('is a self-canonical CollectionPage listing the NYC cluster, minus the ad', () => {
+    expect(page).toContain('rel="canonical" href="https://crowdtells.com/nyc"');
+    expect(page).toContain('"@type":"CollectionPage"');
+    expect(page).toContain('href="https://crowdtells.com/learn/nyc-open-housing-violations-data"');
+    // the sponsored advertorial is never listed in the editorial hub
+    expect(page).not.toContain('/learn/regwatch-nyc-property-compliance-platform');
     assertLdSafe(page);
   });
 });

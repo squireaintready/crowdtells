@@ -571,7 +571,7 @@ export const siteFooter = (note: string) => `<footer>
       <div class="wrap">
         <span><a href="/">Crowdtells</a> — news, ranked by what the world is watching. Markets via Polymarket &amp; Kalshi.</span>
         <span>${note}</span>
-        <span><a href="/accuracy">Track record</a> · <a href="/learn">Guides</a> · <a href="/mispriced">Mispriced</a> · <a href="/embed">Embed</a> · <a href="/learn/how-prediction-markets-work">How prediction markets work</a></span>
+        <span><a href="/accuracy">Track record</a> · <a href="/learn">Guides</a> · <a href="/nyc">NYC</a> · <a href="/mispriced">Mispriced</a> · <a href="/embed">Embed</a> · <a href="/learn/how-prediction-markets-work">How prediction markets work</a></span>
         <span><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/feed.xml">RSS</a></span>
       </div>
     </footer>`;

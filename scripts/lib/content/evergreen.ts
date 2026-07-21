@@ -26,6 +26,9 @@ export interface EvergreenPage {
   /** Labeled advertorial: renders a visible "Sponsored" badge + disclosure and
    * marks every outbound link rel="sponsored". Keep OFF for editorial content. */
   sponsored?: boolean;
+  /** Topical cluster. 'nyc' pages live under the /nyc hub and are kept out of the
+   * prediction-markets /learn index; undefined = the default markets cluster. */
+  section?: 'nyc';
 }
 
 export const EXPLAINERS: EvergreenPage[] = [
@@ -799,6 +802,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'how-to-check-nyc-dob-hpd-violations',
+    section: 'nyc',
     title: 'How to Check NYC Building Violations by Address',
     h1: 'How to Check NYC Building Violations by Address',
     metaDescription:
@@ -856,6 +860,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-title-deed-lien-search-guide',
+    section: 'nyc',
     title: 'NYC Title, Deed & Lien Search: The ACRIS Guide',
     h1: 'NYC Title, Deed and Lien Search: An ACRIS Guide',
     metaDescription:
@@ -913,6 +918,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-local-law-97-compliance',
+    section: 'nyc',
     title: "Local Law 97 Compliance in NYC: A 2026 Owner's Guide",
     h1: "Local Law 97 Compliance in NYC: The 2026 Owner's Guide",
     metaDescription:
@@ -966,6 +972,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-facade-inspection-fisp-local-law-11',
+    section: 'nyc',
     title: 'NYC Facade Inspection: FISP / Local Law 11 Explained',
     h1: 'NYC Facade Inspection: FISP and Local Law 11 Explained',
     metaDescription:
@@ -1023,6 +1030,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'best-ways-to-check-nyc-property-records',
+    section: 'nyc',
     title: 'Best Ways to Check NYC Property Records',
     h1: 'The Best Ways to Check NYC Property Records',
     metaDescription:
@@ -1076,6 +1084,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'regwatch-nyc-property-compliance-platform',
+    section: 'nyc',
     title: 'RegWatch NYC: A Property Compliance Platform',
     h1: "Meet RegWatch NYC: One View of a Building's Full Record",
     metaDescription:
@@ -1130,6 +1139,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-open-housing-violations-data',
+    section: 'nyc',
     title: "NYC's 2.9M Open Housing Violations, by the Numbers",
     h1: "NYC's Open Housing Violations, by the Numbers",
     metaDescription:
@@ -1183,6 +1193,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-unpaid-building-fines-data',
+    section: 'nyc',
     title: '$3.13B in NYC building fines, $819M unpaid',
     h1: 'NYC building fines: $3.13 billion issued, about $819 million still unpaid',
     metaDescription:
@@ -1236,6 +1247,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'where-nyc-builds-permit-data',
+    section: 'nyc',
     title: 'Manhattan leads NYC permits, but Queens builds the most',
     h1: 'Where New York City builds: DOB permits by borough',
     metaDescription:
@@ -1289,6 +1301,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-unsafe-facades-fisp-data',
+    section: 'nyc',
     title: "5,819 NYC facade filings rated 'Unsafe'",
     h1: "5,819 NYC facade-inspection filings came back rated 'Unsafe'",
     metaDescription:
@@ -1342,6 +1355,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-heat-hot-water-complaints-data',
+    section: 'nyc',
     title: '16.2M NYC housing problems: a third are heat or hot water',
     h1: 'New Yorkers have logged 16.2 million housing problems — a third about heat or hot water',
     metaDescription:
@@ -1395,6 +1409,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-ll97-covers-apartment-buildings-data',
+    section: 'nyc',
     title: '66% of NYC Local Law 97 buildings are apartments',
     h1: 'Two of every three Local Law 97 buildings are apartments, not offices',
     metaDescription:
@@ -1448,6 +1463,7 @@ export const EXPLAINERS: EvergreenPage[] = [
   },
   {
     slug: 'nyc-work-without-permit-violations-data',
+    section: 'nyc',
     title: "13,002 NYC 'work without permit' flags, 81% in 2 boroughs",
     h1: "NYC has 13,002 active 'work without a permit' violations — 81% in Brooklyn and Queens",
     metaDescription:

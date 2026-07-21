@@ -231,12 +231,19 @@ const PUBLISHED = '2026-06-17';
  * Sponsored advertorials are excluded so editorial pages never pass them a
  * dofollow "guide" link or list them as editorial content. */
 const ALL_GUIDES = [
-  ...EXPLAINERS.filter((g) => !g.sponsored).map((g) => ({ slug: g.slug, h1: g.h1, url: explainerUrl(g.slug) })),
-  ...EVENTS.map((g) => ({ slug: g.slug, h1: g.h1, url: eventUrl(g.slug) })),
+  ...EXPLAINERS.filter((g) => !g.sponsored).map((g) => ({
+    slug: g.slug,
+    h1: g.h1,
+    url: explainerUrl(g.slug),
+    section: g.section,
+  })),
+  ...EVENTS.map((g) => ({ slug: g.slug, h1: g.h1, url: eventUrl(g.slug), section: g.section })),
 ];
 
-const guidesNav = (currentSlug: string) => {
-  const others = ALL_GUIDES.filter((g) => g.slug !== currentSlug).slice(0, 6);
+/** "More guides" links stay within the same topical cluster (markets vs NYC), so
+ * cross-links reinforce topical authority instead of scattering it. */
+const guidesNav = (currentSlug: string, section?: 'nyc') => {
+  const others = ALL_GUIDES.filter((g) => g.slug !== currentSlug && g.section === section).slice(0, 6);
   return others.length
     ? `<nav class="guides" aria-label="More guides">More guides: ${others
         .map((g) => `<a href="${g.url}">${xml(g.h1)}</a>`)
@@ -352,7 +359,7 @@ export function explainerPage(c: EvergreenPage, lastmod: string, hubSet: Set<str
         ${faqHtml(c.faq)}
         ${topicsNav(c.relatedTopics, hubSet)}
         <a class="cta" href="/">See the live news feed →</a>
-        ${guidesNav(c.slug)}
+        ${guidesNav(c.slug, c.section)}
       </article>
     </main>
 
@@ -428,7 +435,7 @@ export function eventPage(
         ${faqHtml(c.faq)}
         ${topicsNav(c.relatedTopics, hubSet)}
         <a class="cta" href="/">See the live news feed →</a>
-        ${guidesNav(c.slug)}
+        ${guidesNav(c.slug, c.section)}
       </article>
     </main>
 
@@ -475,12 +482,64 @@ export function guidesIndexPage(lastmod: string): string {
       <p class="eyebrow"><span class="cat">Guides</span></p>
       <h1>Prediction-market guides</h1>
       <p class="lead">How prediction markets work, how the platforms compare, how to read the odds — plus durable hubs for the events the crowd trades, with live odds embedded.</p>
-      ${EXPLAINERS.some((e) => !e.sponsored) ? `<h2>Explainers</h2>\n      <ul class="hub-list">\n        ${list(EXPLAINERS.filter((e) => !e.sponsored), explainerUrl.bind(null))}\n      </ul>` : ''}
+      ${EXPLAINERS.some((e) => !e.sponsored && e.section !== 'nyc') ? `<h2>Explainers</h2>\n      <ul class="hub-list">\n        ${list(EXPLAINERS.filter((e) => !e.sponsored && e.section !== 'nyc'), explainerUrl.bind(null))}\n      </ul>` : ''}
       ${EVENTS.length ? `<h2>Event hubs</h2>\n      <ul class="hub-list">\n        ${list(EVENTS, eventUrl.bind(null))}\n      </ul>` : ''}
+      ${EXPLAINERS.some((e) => e.section === 'nyc' && !e.sponsored) ? `<p class="lead">Covering New York City? See the <a href="/nyc">NYC property &amp; compliance hub</a>.</p>` : ''}
       <a class="cta" href="/mispriced">See where the crowd and the coverage disagree →</a>
     </main>
 
     ${siteFooter('Evergreen guides from Crowdtells — news, told through the crowd.')}`;
+  return docShell(head, body);
+}
+
+/** Dedicated topical hub for the NYC property/compliance cluster: its own landing
+ * page that concentrates internal links + topical authority, separate from the
+ * prediction-markets /learn index. */
+export function nycHubPage(lastmod: string): string {
+  const url = `${SITE}/nyc`;
+  const title = 'NYC property records, violations & compliance';
+  const desc = clip(
+    'Guides and data on the New York City building record — DOB and HPD violations, Local Law 97, facade (FISP) rules, permits, liens, and title — built from public sources.',
+  );
+  const pages = EXPLAINERS.filter((e) => e.section === 'nyc' && !e.sponsored);
+  const items = pages
+    .map(
+      (p) => `<li class="hub-item">
+          <h2><a href="${explainerUrl(p.slug)}">${xml(p.h1)}</a></h2>
+          <p class="excerpt">${xml(clip(p.metaDescription || p.intro, 180))}</p>
+        </li>`,
+    )
+    .join('\n        ');
+  const collectionLd = harden({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'NYC property & compliance',
+    description: desc,
+    url,
+    inLanguage: 'en',
+    isPartOf: { '@type': 'WebSite', name: 'Crowdtells', url: `${SITE}/` },
+    dateModified: lastmod,
+  });
+  const crumbLd = breadcrumb([{ name: 'Crowdtells', url: `${SITE}/` }, { name: 'NYC' }]);
+  const head = pageHead({
+    title,
+    desc,
+    canonical: url,
+    ogType: 'website',
+    jsonld: [collectionLd, crumbLd],
+  });
+  const body = `    ${siteHeader('<a href="/">← Live feed</a>')}
+
+    <main class="wrap">
+      <p class="eyebrow"><span class="cat">NYC</span></p>
+      <h1>NYC property records, violations &amp; compliance</h1>
+      <p class="lead">Plain-English guides and data on the New York City building record — violations, Local Law 97, facade inspections, permits, liens, and title — built from public records. Not legal advice.</p>
+      <ul class="hub-list">
+        ${items}
+      </ul>
+    </main>
+
+    ${siteFooter('NYC coverage from Crowdtells — built from public records, not legal advice.')}`;
   return docShell(head, body);
 }
 
@@ -909,6 +968,11 @@ export function writeEvergreen(
   if (EXPLAINERS.length || EVENTS.length) {
     writeFileSync(join(dir, 'learn.html'), guidesIndexPage(lastmod));
     entries.push({ loc: `${SITE}/learn`, priority: '0.6', changefreq: 'weekly', lastmod });
+  }
+
+  if (EXPLAINERS.some((e) => e.section === 'nyc' && !e.sponsored)) {
+    writeFileSync(join(dir, 'nyc.html'), nycHubPage(lastmod));
+    entries.push({ loc: `${SITE}/nyc`, priority: '0.7', changefreq: 'weekly', lastmod });
   }
 
   writeFileSync(join(dir, 'mispriced.html'), mispricedPage(feed, lastmod));
