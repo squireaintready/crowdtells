@@ -19,6 +19,7 @@ on:
     - cron: '5 20-23 * * 1-5' # weekdays: hourly 4-7pm ET (market close + evening)
     - cron: '5 0-2 * * 1-5' # weekdays: hourly 8-10pm ET (UTC next-day wrap)
     - cron: '5 3,6,9 * * *' # overnight: every ~3h (11pm / 2am / 5am ET), all days
+    - cron: '5 8 * * *' # DAILY BRIEFING RUN — the ONLY scheduled run that spends the LLM (mirror: env.BRIEF_CRON). 4:05am ET.
     - cron: '5 11,13,15,17,19,21,23 * * 0,6' # weekends: every 2h, 7am-7pm ET
     - cron: '5 1 * * 0,6' # weekends: 9pm ET (UTC next-day wrap)
   workflow_dispatch:
@@ -46,6 +47,14 @@ concurrency:
 # above, so keep this byte-identical to that cron entry (search "MARKET_HOURS_CRON").
 env:
   MARKET_HOURS_CRON: '0,15,30,45 14-19 * * 1-5'
+  # The ONE scheduled run per day that spends the LLM (writes/refreshes briefings, result
+  # articles, and the collision-merge tier). Every OTHER scheduled cron runs LLM-free —
+  # odds sampling, breaking clusters, and the events strip still refresh on every run, so
+  # the live feed stays current; only the (free-tier-limited) briefing writes are batched
+  # to this cron. Keep byte-identical to the '5 8 * * *' schedule entry above. Human-
+  # triggered runs (push to main, manual dispatch, backfill) are NEVER throttled — they
+  # always brief, so the owner can force a refresh on demand. See "Throttle LLM" step below.
+  BRIEF_CRON: '5 8 * * *'
 
 jobs:
   pulse:
@@ -97,6 +106,21 @@ jobs:
           # Unlimited Actions minutes → re-brief ALL active stories in ONE pass
           # (the default GENERATE_LIMIT=20 is for normal runs, not a full restyle).
           echo "GENERATE_LIMIT=200" >> "$GITHUB_ENV"
+
+      # Batch ALL LLM spend to one scheduled run/day (env.BRIEF_CRON) to stay inside the
+      # free-tier limits. On every OTHER scheduled cron, zero the three LLM budgets so the
+      # run gathers data (odds/breaking/events, which cost no LLM) but writes no briefings,
+      # result articles, or collision merges. Only fires for `schedule` events on a non-brief
+      # cron, so push/dispatch/backfill runs are untouched (they always brief). GENERATE_LIMIT=0
+      # → pickCandidates yields no regen and the news-check loop breaks immediately; RESULT_LIMIT=0
+      # → no result articles; COLLISION_ADJUDICATE_MAX=0 → no borderline-pair adjudication.
+      - name: Throttle LLM on non-briefing scheduled runs
+        if: github.event_name == 'schedule' && github.event.schedule != env.BRIEF_CRON
+        run: |
+          echo "GENERATE_LIMIT=0" >> "$GITHUB_ENV"
+          echo "RESULT_LIMIT=0" >> "$GITHUB_ENV"
+          echo "COLLISION_ADJUDICATE_MAX=0" >> "$GITHUB_ENV"
+          echo "LLM throttled: data-only run (briefings batched to the daily BRIEF_CRON)."
 
       - name: Generate feed (Polymarket → news → Groq)
         id: generate
